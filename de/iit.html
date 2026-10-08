@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSP DATA – Infrastructure Innovation Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;
+      --radius-card: 6px;
+      --max-width: 960px;
+      --section-pad: 48px 24px;
+      --tab-h: 52px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-base); font-size: 16px; line-height: 1.6; color: var(--tsp-text); background: var(--tsp-offwhite); }
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+    h1 { font-size: 2.1rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.4rem; font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.4; }
+    p  { font-size: 1rem; line-height: 1.7; }
+
+    /* ---- HEADER ---- */
+    .site-header {
+      background: var(--tsp-white);
+      border-bottom: 3px solid var(--tsp-red);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-header .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .site-header .logo-svg { width: 88px; height: auto; flex-shrink: 0; }
+    .logo-divider { width: 1px; height: 28px; background: var(--tsp-light); flex-shrink: 0; }
+    .rh-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .rh-logo-svg { width: 26px; height: 26px; flex-shrink: 0; }
+    .rh-label { font-size: 0.7rem; font-weight: 600; color: var(--tsp-text-muted); letter-spacing: 0.04em; line-height: 1.2; }
+    .doc-label {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-white);
+      background: var(--tsp-red); padding: 4px 10px; border-radius: 3px;
+    }
+
+    /* ---- TAB NAV ---- */
+    .tab-nav-wrap {
+      background: var(--tsp-dark);
+      position: sticky;
+      top: 57px;
+      z-index: 100;
+      border-bottom: 2px solid var(--tsp-blue);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-nav-wrap::-webkit-scrollbar { display: none; }
+    .tab-nav {
+      display: flex;
+      min-width: max-content;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-base); font-size: 0.8rem; font-weight: 600;
+      color: var(--tsp-light); padding: 0 16px; height: var(--tab-h);
+      letter-spacing: 0.04em; text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--tsp-white); }
+    .tab-btn.active { color: var(--tsp-teal); border-bottom-color: var(--tsp-teal); }
+
+    /* ---- PANELS ---- */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ---- HERO ---- */
+    .hero {
+      background: var(--tsp-dark); color: var(--tsp-white);
+      padding: var(--section-pad); position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -40px; right: -60px;
+      width: 260px; height: 260px; background: var(--tsp-blue);
+      opacity: 0.25; transform: rotate(15deg) skewX(10deg);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -50px; right: 40px;
+      width: 140px; height: 140px; background: var(--tsp-teal);
+      opacity: 0.15; border-radius: var(--radius-human);
+    }
+    .hero .container { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 10px;
+    }
+    .hero h1 { color: var(--tsp-white); margin-bottom: 18px; max-width: 640px; }
+    .hero .hero-intro { font-size: 1rem; color: var(--tsp-light); max-width: 580px; }
+
+    /* ---- CAPABILITIES ---- */
+    .capabilities { background: var(--tsp-offwhite); padding: var(--section-pad); }
+    .section-header { margin-bottom: 28px; }
+    .section-header h2 { color: var(--tsp-dark); margin-bottom: 6px; }
+    .section-header .section-lead { color: var(--tsp-text-muted); font-size: 0.9rem; }
+    .capabilities-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .capability-card {
+      background: var(--tsp-white); border-top: 4px solid var(--tsp-red);
+      border-radius: var(--radius-card); padding: 20px 18px;
+    }
+    .capability-card .card-icon {
+      width: 30px; height: 30px; background: var(--tsp-red); border-radius: 7px;
+      margin-bottom: 12px; display: flex; align-items: center; justify-content: center;
+    }
+    .capability-card .card-icon::after {
+      content: ''; display: block; width: 14px; height: 14px;
+      background: rgba(255,255,255,0.7); border-radius: 3px;
+    }
+    .capability-card h3 { color: var(--tsp-dark); margin-bottom: 6px; }
+    .capability-card p { font-size: 0.85rem; color: var(--tsp-text-muted); }
+
+    /* ---- USE CASES ---- */
+    .use-cases { background: var(--tsp-white); padding: var(--section-pad); }
+    .use-cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .use-case-col h3 { color: var(--tsp-blue); margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid var(--tsp-light); }
+    .use-case-col ul { list-style: none; }
+    .use-case-col ul li { font-size: 0.9rem; color: var(--tsp-text); padding: 6px 0 6px 16px; border-bottom: 1px solid var(--tsp-offwhite); position: relative; }
+    .use-case-col ul li::before { content: ''; position: absolute; left: 0; top: 14px; width: 6px; height: 6px; background: var(--tsp-red); border-radius: 50%; }
+
+    /* ---- DIFFERENTIATORS ---- */
+    .differentiators { background: var(--tsp-offwhite); padding: var(--section-pad); }
+    .diff-list { display: flex; flex-direction: column; gap: 20px; }
+    .diff-item { display: flex; gap: 20px; align-items: flex-start; }
+    .diff-accent { font-size: 1.5rem; font-weight: 700; color: var(--tsp-red); min-width: 40px; line-height: 1; }
+    .diff-text h3 { color: var(--tsp-dark); margin-bottom: 4px; }
+    .diff-text p { font-size: 0.875rem; color: var(--tsp-text-muted); }
+
+    /* ---- CTA ---- */
+    .cta-section { background: var(--tsp-blue); color: var(--tsp-white); padding: var(--section-pad); text-align: center; }
+    .cta-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 10px; }
+    .cta-section h2 { color: var(--tsp-white); margin-bottom: 14px; }
+    .cta-body { font-size: 0.9375rem; color: var(--tsp-light); max-width: 560px; margin: 0 auto 24px; }
+    .cta-btn {
+      display: inline-block; background: var(--tsp-red); color: var(--tsp-white);
+      font-weight: 700; font-size: 0.9rem; padding: 12px 28px; border-radius: 4px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .cta-btn:hover { background: #c42211; text-decoration: none; }
+    .cta-contact-block { margin-top: 20px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 0.875rem; color: var(--tsp-light); }
+    .cta-contact-block a { color: var(--tsp-teal); }
+
+    /* ---- FOOTER ---- */
+    .site-footer { background: var(--tsp-dark); padding: 20px 24px; }
+    .site-footer .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .footer-logo { width: 72px; height: auto; filter: brightness(0) invert(1); }
+    .footer-slogan { font-size: 0.78rem; color: var(--tsp-text-muted); font-style: italic; }
+    .footer-contact { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.8rem; }
+    .footer-contact a { color: var(--tsp-light); }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 700px) {
+      h1 { font-size: 1.5rem; }
+      .capabilities-grid { grid-template-columns: 1fr; }
+      .use-cases-grid { grid-template-columns: 1fr; }
+      .site-footer .container { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+<style>.tspweb-back{position:fixed;left:12px;bottom:12px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;background:#20313A;color:#fff!important;font:600 14px/1 Inter,Arial,sans-serif;text-decoration:none!important;padding:12px 16px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:2px solid #E52A18}.tspweb-back:hover{background:#E52A18}@media print{.tspweb-back{display:none!important}}</style>
+</head>
+<body>
+<a class="tspweb-back" href="../?lang=de">&larr; Zur Übersicht</a>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container">
+    <div class="logo-wrap">
+      <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+        <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+        <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+        <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+        <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+        <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+        <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+        <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+        <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+        <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+      </svg>
+      <span style="font-size:0.8rem;color:var(--tsp-text-muted);font-style:italic;">Success driven by data.</span>
+      <span class="logo-divider"></span>
+      <div class="rh-logo-wrap">
+        <svg class="rh-logo-svg" viewBox="0 -31 256 256" xmlns="http://www.w3.org/2000/svg" aria-label="Red Hat">
+          <path d="M170.758031,111.610687 C187.582343,111.610687 211.924474,108.140925 211.924474,88.1292728 C211.974775,86.5848226 211.834752,85.0400539 211.507565,83.5298204 L201.48829,40.009856 C199.175115,30.434388 197.144363,26.0904607 180.333499,17.6850288 C167.288269,11.014478 138.871184,0 130.465752,0 C122.638614,0 120.365785,10.0865183 111.032394,10.0865183 C102.048668,10.0865183 95.3781173,2.55525131 86.9726853,2.55525131 C78.9034707,2.55525131 73.6450325,8.05576597 69.5835277,19.3661152 C69.5835277,19.3661152 58.2731785,51.2664105 56.8207199,55.8927602 C56.5898643,56.7423115 56.4900906,57.6221338 56.5248487,58.5018063 C56.5248487,70.9014995 105.343597,111.556893 170.758031,111.556893 M214.506623,96.2522822 C216.833247,107.26676 216.833247,108.423348 216.833247,109.875806 C216.833247,128.703974 195.665007,139.153607 167.839665,139.153607 C104.953585,139.193953 49.8677466,102.344539 49.8677466,77.9889597 C49.8641113,74.5987697 50.555245,71.2437963 51.898499,68.1310691 C29.2778005,69.2607592 0,73.2953665 0,99.1437508 C0,141.48023 100.313787,193.661152 179.741757,193.661152 C240.63743,193.661152 255.995835,166.118232 255.995835,144.371699 C255.995835,127.264964 241.202275,107.845054 214.53352,96.2522822" fill="#EE0000"/>
+          <path d="M214.506623,96.2522822 C216.833247,107.26676 216.833247,108.423348 216.833247,109.875806 C216.833247,128.703974 195.665007,139.15364 167.839665,139.15364 C104.953585,139.193953 49.8677323,102.344539 49.8677323,77.9889597 C49.8641113,74.5987697 50.555245,71.2437963 51.898499,68.1310691 L56.8207199,55.946555 C56.5952566,56.7787916 56.4955298,57.6400686 56.5248487,58.5018063 C56.5248487,70.9014995 105.343597,111.556893 170.758031,111.556893 C187.582343,111.556893 211.924474,108.08713 211.924474,88.075478 C211.974775,86.5310279 211.834752,84.9862591 211.507565,83.4760257 L214.506623,96.2522822 Z" fill="#000000"/>
+        </svg>
+        <span class="rh-label">Red Hat<br>Partner</span>
+      </div>
+    </div>
+    <span class="doc-label">Infrastructure Innovation Team</span>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav-wrap" aria-label="Lösungen">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('apm',this)">APM</button>
+    <button class="tab-btn" onclick="switchTab('devops',this)">DevOps</button>
+    <button class="tab-btn" onclick="switchTab('hashicorp',this)">HashiCorp</button>
+    <button class="tab-btn" onclick="switchTab('rh-ai',this)">Red Hat AI</button>
+    <button class="tab-btn" onclick="switchTab('automation',this)">Automatisierung</button>
+    <button class="tab-btn" onclick="switchTab('openshift',this)">OpenShift</button>
+    <button class="tab-btn" onclick="switchTab('virtualization',this)">Virtualisierung</button>
+  </div>
+</nav>
+
+<!-- ================================================================
+     PANEL: APM
+     ================================================================ -->
+<div class="tab-panel active" id="panel-apm">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Alles sehen. Ursachen verstehen. Schneller lösen.</h1>
+      <p class="hero-intro">Verteilte Anwendungen haben Fehlerbilder, die einzelne Monitoring-Tools nicht erkennen. TSP DATA liefert Full-Stack Observability und führt Metriken, Logs, Traces und User Experience in einem stimmigen Gesamtbild zusammen. Ob Microservices auf Kubernetes oder hybride Legacy-Systeme: Wir geben Ihren Teams den Kontext, um Incidents zu lösen, bevor Ihre Nutzer etwas davon merken.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Full-Stack Observability vom Distributed Tracing bis zum User Experience Monitoring.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Distributed Tracing</h3><p>Durchgängiges Request-Tracing über Microservices hinweg mit OpenTelemetry. Sie finden Latenzquellen und die Ausbreitungswege von Fehlern punktgenau.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Korrelation von Metriken, Logs &amp; Traces</h3><p>Eine gemeinsame Sicht auf alle Signale zeigt, was passiert ist, wann und warum, ohne Wechsel zwischen Tools.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Application Dependency Mapping</h3><p>Automatische Erkennung und Visualisierung von Service-Abhängigkeiten in komplexen hybriden Umgebungen.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>User Experience Monitoring</h3><p>Real User Monitoring (RUM) und synthetische Checks verbinden die technische Performance mit dem, was Nutzer tatsächlich erleben.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>KI-gestützte Root Cause Analysis</h3><p>Automatische Anomalieerkennung und Kausalketten machen die Ursache sichtbar, bevor daraus ein größerer Incident wird.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Abdeckung für Hybrid- &amp; Multi-Cloud</h3><p>Einheitliche Observability für On-Prem, Kubernetes, Public Cloud und Edge, mit einer Sicht und einem Workflow.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>DevOps- &amp; SRE-Teams</h3><ul>
+          <li>Kürzere MTTR und Schluss mit Feuerwehreinsätzen dank korrelierter Signale</li>
+          <li>Kubernetes-Workloads gemeinsam mit der On-Prem-Infrastruktur überwachen</li>
+          <li>SLOs und Error Budgets mit automatisiertem Alerting einführen</li>
+          <li>Observability in CI/CD-Pipelines integrieren, für mehr Sicherheit bei jedem Release</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Application Owner &amp; Management</h3><ul>
+          <li>Anwendungsperformance direkt mit Business-KPIs verknüpfen</li>
+          <li>Einheitliche Transparenz über Dev-, Staging- und Produktionsumgebungen</li>
+          <li>Leistungseinbußen proaktiv erkennen, bevor Nutzer sie spüren</li>
+          <li>Compliance-taugliche Audit Trails zum Systemverhalten</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>Herstellerneutraler Ansatz</h3><p>Wir integrieren die besten Open-Source- und kommerziellen Tools für Ihre Umgebung, ohne Bindung an einen einzelnen Hersteller.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>OpenTelemetry-First</h3><p>Instrumentierung auf Basis offener Standards sichert Portabilität, Zukunftssicherheit und Kompatibilität mit dem Ökosystem.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Infrastruktur + APM + Business-Ebene</h3><p>Wir verbinden die gesamte Signalkette: von Hardware-Metriken über Application Traces bis zur Auswirkung auf das Geschäft.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Fester Bestandteil der DevOps-Pipelines</h3><p>Observability ist von Anfang an Teil Ihrer Delivery-Pipeline und wird nicht erst nach dem Deployment nachgerüstet.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Zuverlässigkeit ist ein Wettbewerbsvorteil.</h2>
+      <p class="cta-body">Mit Full-Stack Observability haben Ihre Teams den Kontext, um Incidents schneller zu lösen, Releases sicher auszuliefern und die User Experience zu schützen, von der Ihr Geschäft lebt.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: DEVOPS
+     ================================================================ -->
+<div class="tab-panel" id="panel-devops">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Von Ad-hoc-CI/CD zu ausgereiftem GitOps, auf Basis von OpenShift &amp; ArgoCD</h1>
+      <p class="hero-intro">Zersplitterte Toolchains, manuelle Deployments und teamspezifische Skripte bremsen Ihre Delivery und erhöhen das Risiko. TSP DATA setzt die DevOps-Transformation durchgängig mit RHEL-first-Ansatz um: vom Design der Pipeline-Architektur über die Einführung von GitOps bis zu Developer Experience und Release Management.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Durchgängige DevOps-Transformation vom Pipeline-Design bis zur Progressive Delivery.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>CI/CD-Pipeline-Design</h3><p>Pipeline-Architektur für Unternehmen mit standardisierten Prozessen, Quality Gates und teamübergreifender Wiederverwendbarkeit.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>GitOps mit ArgoCD</h3><p>Deklaratives Deployment-Modell mit Git als Single Source of Truth für den Zustand von Anwendungen und Infrastruktur.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>OpenShift Pipelines (Tekton)</h3><p>Cloud-native CI-Pipelines nach dem Prinzip Pipelines as Code: versioniert, auditierbar, skalierbar.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>GitLab-CI/CD-Integration</h3><p>GitLab als SCM- und CI-Plattform, eng mit OpenShift integriert, für einen durchgängigen Entwickler-Workflow.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Developer Experience</h3><p>Optimierter Inner Loop mit OpenShift Dev Spaces: vom Code zum laufenden Container in wenigen Minuten.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Progressive Delivery</h3><p>Blue-Green-, Canary- und Feature-Flag-Strategien senken das Deployment-Risiko und ermöglichen Continuous Delivery.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>GitOps-Einführung im Unternehmen</h3><ul>
+          <li>Reifegradanalyse der Pipelines und Gap-Analyse</li>
+          <li>Design und Umsetzung von GitOps-Workflows mit ArgoCD</li>
+          <li>Migration von Jenkins oder Legacy-CI auf OpenShift Pipelines</li>
+          <li>Schulung der Entwickler und praxisnaher Wissenstransfer</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Modernisierung von Legacy-CI/CD</h3><ul>
+          <li>Analyse bestehender Pipelines und Konsolidierung der Toolchain</li>
+          <li>Schrittweise Migration bei voller Produktivität der Teams</li>
+          <li>Baseline für DORA-Metriken und Verbesserungsziele festlegen</li>
+          <li>Cloud-native CI für containerisierte Anwendungsportfolios</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>RHEL-first und Open-Source-freundlich</h3><p>Dank fundierter Expertise im Red Hat Ökosystem fügt sich Ihr DevOps-Stack nativ in Ihre Infrastruktur ein.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Durchgängige GitOps-Expertise</h3><p>Vom ersten ArgoCD-Deployment bis zur produktionsreifen Multi-Cluster-GitOps-Governance im Enterprise-Maßstab.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Praxisnaher Wissenstransfer statt Blackbox</h3><p>Wir arbeiten Seite an Seite mit Ihren Teams, damit sie die Pipelines, die wir bauen, selbst verantworten und betreiben. So entsteht keine Abhängigkeit von uns als Dienstleister.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Messbare Ergebnisse (DORA-Metriken)</h3><p>Wir messen zu Beginn Deployment-Frequenz, Change Failure Rate und MTTR und verfolgen die Verbesserung während des gesamten Projekts.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Schneller und sicherer releasen, mit Vertrauen in jedes Deployment.</h2>
+      <p class="cta-body">Ausgereifte GitOps-Praktiken senken das Deployment-Risiko, ersetzen manuelle Schritte und geben Ihren Teams die Feedback-Schleifen, um schnell voranzukommen, ohne etwas kaputt zu machen.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: HASHICORP
+     ================================================================ -->
+<div class="tab-panel" id="panel-hashicorp">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Secrets abgesichert. Infrastruktur als Code. Umgesetzt von Experten.</h1>
+      <p class="hero-intro">Moderne Enterprise-Infrastruktur braucht automatisiertes Provisioning und zentrales Secrets Management. HashiCorp Vault und Terraform sind der Industriestandard, für den richtigen Einsatz braucht es aber tiefes Know-how. TSP DATA bietet Beratung, Implementierung und Migration für den gesamten HashiCorp Stack.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Der gesamte HashiCorp Stack: von Secrets Management mit Vault bis zu Terraform IaC im Enterprise-Maßstab.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Vault Secrets Management</h3><p>Aufbau und Konfiguration eines zentralen Secrets Managements: dynamische Credentials, PKI, Encryption as a Service.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Terraform Infrastructure as Code</h3><p>Automatisiertes Provisioning der Infrastruktur mit wiederverwendbaren Modulen, Remote State und Policy Enforcement.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Legacy-Migration</h3><p>Begleitete Migration von Legacy-Tools, hartcodierten Credentials und manuellem Provisioning auf den HashiCorp Stack.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Enterprise-Architektur &amp; Design</h3><p>Referenzarchitektur für Vault und Terraform in regulierten Enterprise-Umgebungen mit vielen Teams.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Compliance &amp; Policy-as-Code</h3><p>Umsetzung von Sentinel- und OPA-Policies für Governance, Audit Trails und die Durchsetzung von Compliance-Vorgaben.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Integration in den Enterprise-Stack</h3><p>Anbindung von Vault und Terraform an bestehende Plattformen: OpenShift, Ansible, CI/CD-Pipelines und ITSM-Systeme.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>Zero Trust Secrets</h3><ul>
+          <li>Bestandsaufnahme verstreuter Secrets und der Risikolage</li>
+          <li>Aufbau von HA-Vault-Clustern in regulierten Umgebungen</li>
+          <li>Umstellung von Anwendungen von statischen auf dynamische Credentials</li>
+          <li>Automatisierte Rotation von Secrets und Audit Logging</li>
+        </ul></div>
+        <div class="use-case-col"><h3>IaC-Standardisierung</h3><ul>
+          <li>Design von Modulbibliotheken für Multi-Cloud- und Hybrid-Umgebungen</li>
+          <li>Remote-State-Management und Governance für Team-Workspaces</li>
+          <li>Umstieg von manuellem Provisioning auf Terraform-first-Workflows</li>
+          <li>Onboarding von Entwicklern und Self-Service-Portale für Infrastruktur</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>Know-how im gesamten HashiCorp Stack</h3><p>Vault, Terraform und ihre Integrationen, umgesetzt als produktionsreife Enterprise-Implementierungen statt als oberflächliche Installationen.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Enterprise-Infrastruktur in der DNA</h3><p>Wir kommen aus der Infrastruktur. Vault- und Terraform-Projekte sind bei uns Teil der gesamten Plattformlieferung und keine Insellösungen.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Regionale Nähe (CZ/DACH)</h3><p>Vor Ort und als Nearshore-Partner verfügbar, für sensible Security-Projekte, bei denen Nähe und Vertrauen zählen.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Kein Vendor Lock-in</h3><p>Open-Source-Vault und -Terraform als Grundlage: Ihre Infrastruktur bleibt portabel und lässt sich unabhängig betreiben.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Passwörter unter Kontrolle, Infrastruktur als Code, alles von einem Team.</h2>
+      <p class="cta-body">HashiCorp Vault und Terraform sind die Grundlage für sichere, automatisierte und auditierbare Infrastruktur, vorausgesetzt, sie werden vom ersten Tag an richtig umgesetzt.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: RED HAT AI
+     ================================================================ -->
+<div class="tab-panel" id="panel-rh-ai">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Enterprise-KI auf Ihrer Infrastruktur: offen, sicher, unter Ihrer Kontrolle</h1>
+      <p class="hero-intro">Die meisten Unternehmen haben KI-Piloten, nur wenige betreiben sie produktiv. Red Hat AI Enterprise schließt diese Lücke mit einer einheitlichen Plattform für Modelltraining, Fine-Tuning, Inferenz und agentische Workflows, on-prem oder hybrid. TSP DATA gehört zu den ersten Partnern, die Red Hat AI in Tschechien aktiv implementieren.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Vom Model Serving bis zur Edge-Inferenz: der gesamte Red Hat AI Lifecycle auf Ihrer Infrastruktur.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Model Serving auf OpenShift AI</h3><p>Produktiver Betrieb von KI-Modellen mit Inferenz auf Basis von vLLM: skalierbar, GPU-optimiert, enterprise-tauglich.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Fine-Tuning mit InstructLab</h3><p>Passen Sie LLMs mit Ihren Fachdaten an, ohne proprietäre Cloud. Die Daten bleiben in Ihrer Umgebung.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>RHEL AI Edge-Inferenz</h3><p>KI-Modelle auf Einzelservern und an Edge-Standorten betreiben, mit Inferenz direkt dort, wo die Daten entstehen.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>MLOps-Pipeline</h3><p>Durchgängiges Management des ML-Lifecycles vom Experiment-Tracking bis zu Produktions-Monitoring und Model Governance.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>GPU-Ressourcenmanagement</h3><p>Automatisiertes Scheduling und Orchestrierung von GPU- und XPU-Ressourcen über alle Ihre Cluster.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Hybrides KI-Deployment</h3><p>Einheitliches Deployment und einheitlicher Betrieb in On-Prem-, Edge- und Public-Cloud-Umgebungen.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>Enterprise-KI on-prem</h3><ul>
+          <li>LLMs für interne Use Cases einsetzen, ohne Public Cloud</li>
+          <li>Produktive Inferenz für KI-Funktionen mit Kundenkontakt</li>
+          <li>Sichere agentische KI-Workflows mit vollständigem Audit Trail</li>
+          <li>Aufbau von GPU-Clustern und Lifecycle-Management</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Modellanpassung &amp; Edge</h3><ul>
+          <li>Foundation Models mit InstructLab an Ihre Branche anpassen</li>
+          <li>Edge-Inferenz in Niederlassungen und in der Produktion</li>
+          <li>Hybride KI mit einheitlichen Tools in allen Umgebungen</li>
+          <li>MLOps-Pipeline für die laufende Verbesserung der Modelle</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>First Mover in Tschechien</h3><p>Wir gehören zu den ersten Red Hat Partnern in der Region, die Red Hat AI Enterprise aktiv in Produktionsumgebungen implementieren.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Fundierte OpenShift-Kompetenz</h3><p>Red Hat AI läuft auf OpenShift. Mit unserer vorhandenen Plattformerfahrung sind die Projektlaufzeiten kürzer und es gibt weniger Überraschungen bei der Integration.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Spezialist für On-Prem &amp; Hybrid</h3><p>Wir lösen den schwierigsten Teil: KI sicher und zuverlässig auf Ihrer eigenen Infrastruktur zu betreiben, nicht nur in der Public Cloud.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Umsetzung + Betrieb unter einem Dach</h3><p>Vom ersten PoC über das produktive Deployment bis zum Day-2-Betrieb, mit einem Team, das die volle Verantwortung trägt.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Vom KI-Piloten in die Produktion, zu Ihren Bedingungen.</h2>
+      <p class="cta-body">Red Hat AI Enterprise bietet einen erprobten Weg vom Experiment zur produktionsreifen KI: offen, sicher und auf Infrastruktur, die Sie selbst kontrollieren.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: AUTOMATION
+     ================================================================ -->
+<div class="tab-panel" id="panel-automation">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Infrastruktur-Automatisierung ohne Kompromisse: vom Server bis zum Netzwerk, auf einer Plattform, mit voller Kontrolle</h1>
+      <p class="hero-intro">Unternehmen und Telcos betreiben Hunderte Server und Netzwerkgeräte verschiedener Hersteller, verwaltet über Ad-hoc-Skripte. TSP DATA automatisiert die Infrastruktur durchgängig mit der Ansible Automation Platform: IaC, Konfigurationsmanagement, Multi-Vendor-Netzwerkautomatisierung und Telco-OSS/BSS-Orchestrierung.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Von IaC für Server bis zu Multi-Vendor-Netzwerkautomatisierung und Closed-Loop-Remediation.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Infrastructure as Code (IaC)</h3><p>Deklarative Verwaltung von Server- und Cloud-Infrastruktur: wiederholbar, auditierbar, versioniert.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Konfigurationsmanagement &amp; Drift Detection</h3><p>Laufende Durchsetzung des Soll-Zustands mit automatischer Drift-Korrektur auf allen Systemen.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Patching &amp; Lifecycle-Automatisierung</h3><p>Automatisiertes OS-Patching, Kernel-Updates und Lifecycle-Orchestrierung für Tausende Server.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Multi-Vendor-Netzwerkautomatisierung</h3><p>Automatisierte Konfiguration von Netzwerkgeräten verschiedener Hersteller: Cisco, Juniper, Nokia und weitere.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Automatisierung von Telco-Infrastruktur</h3><p>Automatisierung telco-spezifischer Systeme, einschließlich OSS/BSS-Integrationen und Service-Orchestrierung.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Compliance as Code</h3><p>Durchsetzung von CIS, STIG und eigenen Security Baselines mit automatischer Behebung und Audit-Reporting.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>Enterprise-IaC &amp; Konfigurationsmanagement</h3><ul>
+          <li>Automatisierte Plattform-Deployments statt manueller Runbooks</li>
+          <li>Umstieg von Ad-hoc-Skripten auf strukturierte Ansible-Rollen</li>
+          <li>Self-Service-Portal für Infrastruktur über den Automation Controller</li>
+          <li>Automatisierte Compliance-Durchsetzung mit geplanter Drift Detection</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Netzwerk- &amp; Telco-Automatisierung</h3><ul>
+          <li>Zentrales Konfigurationsmanagement für Multi-Vendor-Netzwerke</li>
+          <li>Event-Driven Ansible für Closed-Loop-Remediation im Netzwerk</li>
+          <li>Automatisierung von Telco-OSS/BSS-Workflows und Service Provisioning</li>
+          <li>ServiceNow-Integration für Automatisierung, ausgelöst aus dem ITSM</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>Expertise in Telco-Netzwerkautomatisierung</h3><p>Wir automatisieren Multi-Vendor-Telco-Netzwerke. Diese Komplexität meiden die meisten Infrastrukturpartner.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Die gesamte Infrastruktur im Blick</h3><p>Server, VMs, Container und Netzwerkgeräte: eine Automatisierungsplattform, ein Team, ein einheitlicher Ansatz.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Event-Driven &amp; Closed-Loop-Remediation</h3><p>Automatisierung, ausgelöst durch Monitoring-Events: Zabbix-Alerts können Ansible Playbooks starten, die Störungen automatisch beheben.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Integration ins Red Hat Ökosystem</h3><p>Die Ansible Automation Platform ist nativ in OpenShift, RHEL und den gesamten Red Hat Stack integriert, den wir liefern.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Automatisierung, die mit Ihrer Infrastruktur skaliert.</h2>
+      <p class="cta-body">Mit der Ansible Automation Platform betreiben Ihre Teams die Infrastruktur wiederholbar, auditierbar und skalierbar: vom einzelnen Playbook bis zur unternehmensweiten Automation Governance.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: OPENSHIFT
+     ================================================================ -->
+<div class="tab-panel" id="panel-openshift">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Red Hat OpenShift: vom Design bis zum Betrieb. Der gesamte Lifecycle unter einem Dach.</h1>
+      <p class="hero-intro">Die Installation von OpenShift ist erst der Anfang. Die meisten Unternehmen nennen Day-2-Themen als Herausforderung: Lücken in der Observability, Governance Drift und unvorhersehbare Kosten. TSP DATA begleitet OpenShift über den gesamten Lifecycle und liefert Ihre Container-Plattform vom Architekturdesign über das Deployment bis zum langfristigen Management und Day-2-Betrieb.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Der gesamte OpenShift-Lifecycle: von der Cluster-Architektur bis zu Day-2-Betrieb und Developer Experience.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Plattformarchitektur &amp; Deployment</h3><p>Design der Cluster-Topologie, Sizing, Netzwerk, Storage und Security-Konfiguration für Produktionsumgebungen.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Day-2-Betrieb &amp; Lifecycle</h3><p>Upgrade-Planung, Patch-Management, Health Monitoring der Cluster und Erstellung von Betriebs-Runbooks.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Monitoring &amp; Observability</h3><p>Konfiguration des kompletten OpenShift-Monitoring-Stacks mit eigenen Metriken, Dashboards und Alerting-Regeln.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Security Hardening &amp; Compliance</h3><p>Compliance-Hardening nach STIG, CIS, PCI-DSS und HIPAA mit Policy Enforcement und Audit-Reporting.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Anwendungsplattform &amp; Developer Experience</h3><p>Design von CI/CD-Pipelines, Self-Service-Portale für Entwickler und GitOps-Workflows auf OpenShift.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Beratung, Schulung &amp; Wissenstransfer</h3><p>Readiness Assessments, praxisnahe Workshops und Best-Practice-Audits, mit denen Sie internes Know-how aufbauen.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>Kubernetes-Einführung im Unternehmen</h3><ul>
+          <li>OpenShift aus einer Hand, vom Greenfield-Design bis zur Produktion</li>
+          <li>Schneller zur einsatzbereiten Plattform durch ein strukturiertes Vorgehen</li>
+          <li>Praxisnaher Wissenstransfer an interne Plattformteams</li>
+          <li>Design des Day-2-Betriebsmodells und Erstellung von Runbooks</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Cloud-native &amp; Hybrid</h3><ul>
+          <li>Assessment und Containerisierungsstrategie für bestehende Workloads</li>
+          <li>Multi-Cluster-Management und Policy Enforcement im großen Maßstab</li>
+          <li>Konsolidierung von VMs und Containern mit OpenShift Virtualization</li>
+          <li>Hybrid-Cloud-Architektur mit einheitlichen Betriebswerkzeugen</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>Partner für den gesamten Lifecycle</h3><p>Wir begleiten Sie von der Day-0-Architektur bis zum Day-2-Betrieb, ohne Übergabelücken zwischen Projekt- und Betriebsphase.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Day-2-Betrieb als Kernkompetenz</h3><p>Die meisten Partner konzentrieren sich auf das Deployment. Für uns ist Day-2 mit Upgrades, Drift und Incidents das eigentliche Produkt, das wir liefern.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Zertifizierte Red Hat Expertise</h3><p>Zertifizierte Architekten und Engineers mit Produktionserfahrung in OpenShift-Umgebungen bei Enterprise-Kunden und im Telco-Maßstab.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Herstellerunabhängige Observability</h3><p>Wir erweitern das OpenShift-Monitoring um Zabbix und Grafana, für Full-Stack-Transparenz über die Container-Ebene hinaus.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Konzentrieren Sie sich auf Ihre Anwendungen, um die Plattform kümmern wir uns.</h2>
+      <p class="cta-body">Eine gut betriebene OpenShift-Plattform bemerken Entwickler gar nicht. TSP DATA übernimmt die Komplexität des Day-2-Betriebs, damit sich Ihre Teams auf den Nutzen ihrer Anwendungen konzentrieren können.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================================================================
+     PANEL: VIRTUALIZATION
+     ================================================================ -->
+<div class="tab-panel" id="panel-virtualization">
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+      <h1>Ihre VMs. Ihre Regeln. Ohne Broadcom-Aufschlag.</h1>
+      <p class="hero-intro">Broadcom hat die Spielregeln geändert: Die VMware-Kosten steigen um 300–1500 %, unbefristete Lizenzen gibt es nicht mehr. Es gibt einen Ausweg. TSP DATA unterstützt mittelständische und große Unternehmen bei der Migration auf OpenShift Virtualization. Sie behalten Ihre bestehenden VM-Workloads, vereinheitlichen den Betrieb und öffnen den Weg zu moderner Cloud-native-Infrastruktur.</p>
+    </div>
+  </section>
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header"><h2>Kernkompetenzen</h2><p class="section-lead">Vom Assessment für den VMware-Ausstieg bis zur vollständigen Migration und zum gemeinsamen Betrieb von VMs und Containern.</p></div>
+      <div class="capabilities-grid">
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Assessment für den VMware-Ausstieg</h3><p>Analyse Ihrer aktuellen Umgebung, TCO-Vergleich und eine Migrations-Roadmap in Phasen mit Maßnahmen zur Risikominimierung.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Migration von VMware auf OpenShift</h3><p>Durchgängige VM-Migration mit dem Red Hat Migration Toolkit, minimaler Downtime und Validierung der Workloads.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Greenfield-OCP-Virtualisierung</h3><p>Design und Aufbau von OpenShift Virtualization auf der grünen Wiese für neue Infrastrukturprojekte.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Konsolidierung von VMs + Containern</h3><p>VM-Workloads und containerisierte Anwendungen gemeinsam auf einem Cluster, mit einer Plattform und einem Betriebsteam.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Day-2-Betrieb &amp; Lifecycle</h3><p>Laufender Betriebssupport, Monitoring-Integration, Patch-Management und Upgrade-Planung nach der Migration.</p></div>
+        <div class="capability-card"><div class="card-icon" aria-hidden="true"></div><h3>Beratung zur Modernisierung</h3><p>Wir identifizieren VM-Workloads, die sich für Container eignen. Pragmatische Modernisierung ohne erzwungene Neuentwicklung.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header"><h2>Anwendungsfälle</h2></div>
+      <div class="use-cases-grid">
+        <div class="use-case-col"><h3>VMware-Ausstieg &amp; Kostensenkung</h3><ul>
+          <li>Schnelle TCO-Analyse vor der nächsten VMware-Verlängerung</li>
+          <li>PoC-Migration unkritischer Workloads zur Validierung des Vorgehens</li>
+          <li>Migration in Phasen bei stabilem Produktionsbetrieb</li>
+          <li>Day-2-Übergabe an das interne Betriebsteam</li>
+        </ul></div>
+        <div class="use-case-col"><h3>Konsolidierung von VMs + Containern</h3><ul>
+          <li>Konsolidierungs-Assessment, das Potenzial für die Zusammenführung aufzeigt</li>
+          <li>VM-Migration parallel zu bestehenden containerisierten Workloads</li>
+          <li>Einheitliches Monitoring und Alerting für VMs und Container</li>
+          <li>Schrittweiser Modernisierungspfad von der VM zu Cloud-native</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header"><h2>Warum TSP DATA?</h2></div>
+      <div class="diff-list">
+        <div class="diff-item"><div class="diff-accent">01</div><div class="diff-text"><h3>OpenShift-first-Expertise</h3><p>OpenShift Virtualization läuft auf OpenShift. Mit unserer fundierten Plattformerfahrung migrieren Sie schneller und mit geringerem Risiko.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">02</div><div class="diff-text"><h3>Erfahrung auf Telco-Niveau</h3><p>Wir betreiben große, gemischte VM- und Container-Umgebungen produktiv. Telco-Komplexität ist für uns Alltag.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">03</div><div class="diff-text"><h3>Umsetzung aus einer Hand</h3><p>Vom ersten Assessment über die Migration bis zum langfristigen Day-2-Betrieb, mit einem Partner, der die volle Verantwortung trägt.</p></div></div>
+        <div class="diff-item"><div class="diff-accent">04</div><div class="diff-text"><h3>Pragmatische Modernisierung</h3><p>Wir migrieren, was sinnvoll ist, und containerisieren, was dafür bereit ist. Ohne erzwungene Neuentwicklung und ohne unnötiges Risiko.</p></div></div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+      <h2>Die Bedingungen haben sich geändert. Sie haben die Wahl.</h2>
+      <p class="cta-body">OpenShift Virtualization ist eine erprobte VMware-Alternative: Bestehende Workloads bleiben erhalten, und der Weg zu Cloud-native-Infrastruktur ist offen, ohne Broadcom-Aufschlag.</p>
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+      <div class="cta-contact-block"><span>+420 281 864 203</span><a href="https://www.tspdata.cz">www.tspdata.cz</a><a href="mailto:info@tspdata.cz">info@tspdata.cz</a></div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <div>
+      <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+        <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+        <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+        <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+        <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+        <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+        <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+        <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+        <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+        <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+      </svg>
+      <span class="footer-slogan">Success driven by data.</span>
+    </div>
+    <div class="footer-contact">
+      <a href="tel:+420281864203">+420 281 864 203</a>
+      <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const TABS = ['apm','devops','hashicorp','rh-ai','automation','openshift','virtualization'];
+
+  function switchTab(id, btn) {
+    TABS.forEach(t => {
+      document.getElementById('panel-' + t).classList.remove('active');
+    });
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    if (btn) btn.classList.add('active');
+    location.hash = id;
+    // Scroll tab button into view
+    if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  // Handle hash on load
+  const hash = location.hash.replace('#','');
+  if (TABS.includes(hash)) {
+    const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes("'" + hash + "'"));
+    switchTab(hash, btn);
+  }
+</script>
+
+</body>
+</html>

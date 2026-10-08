@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Hat Virtualization – VMware Exit &amp; OpenShift Virtualization | TSP DATA, a.s.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================================
+       TSP DATA Brand System – CSS Custom Properties
+       ========================================================= */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;        /* rounded = human side */
+      --radius-card: 6px;         /* card corners */
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+
+    /* =========================================================
+       Reset & Base
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-base);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--tsp-text);
+      background: var(--tsp-offwhite);
+    }
+
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* =========================================================
+       Typography Scale
+       ========================================================= */
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem;  font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p  { font-size: 1rem; line-height: 1.7; }
+
+    /* =========================================================
+       1. HEADER
+       ========================================================= */
+    .site-header {
+      background: var(--tsp-white);
+      border-bottom: 3px solid var(--tsp-red);
+      padding: 18px 24px;
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .site-header .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-header .logo-svg {
+      width: 102px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .site-header .doc-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tsp-white);
+      background: var(--tsp-red);
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    /* =========================================================
+       2. HERO
+       ========================================================= */
+    .hero {
+      background: var(--tsp-dark);
+      color: var(--tsp-white);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Geometric brand decoration – tech side (sharp/skewed) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: var(--tsp-blue);
+      opacity: 0.25;
+      transform: rotate(15deg) skewX(10deg);
+    }
+
+    /* Geometric brand decoration – human side (rounded) */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      right: 40px;
+      width: 160px;
+      height: 160px;
+      background: var(--tsp-teal);
+      opacity: 0.15;
+      border-radius: var(--radius-human);
+    }
+
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      color: var(--tsp-white);
+      margin-bottom: 20px;
+      max-width: 640px;
+    }
+
+    .hero .hero-intro {
+      font-size: 1.0625rem;
+      color: var(--tsp-light);
+      max-width: 580px;
+      margin-bottom: 0;
+    }
+
+    /* =========================================================
+       3. CAPABILITIES
+       ========================================================= */
+    .capabilities {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .section-header {
+      margin-bottom: 36px;
+    }
+
+    .section-header h2 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .section-header .section-lead {
+      color: var(--tsp-text-muted);
+      font-size: 0.9375rem;
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .capability-card {
+      background: var(--tsp-white);
+      border-top: 4px solid var(--tsp-red);
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+    }
+
+    .capability-card .card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--tsp-red);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      /* CSS-only icon placeholder – replace with inline SVG if needed */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .capability-card .card-icon::after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 3px;
+    }
+
+    .capability-card h3 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .capability-card p {
+      font-size: 0.875rem;
+      color: var(--tsp-text-muted);
+    }
+
+    /* =========================================================
+       4. USE CASES
+       ========================================================= */
+    .use-cases {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .use-case-col h3 {
+      color: var(--tsp-blue);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--tsp-light);
+    }
+
+    .use-case-col ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .use-case-col ul li {
+      font-size: 0.9375rem;
+      color: var(--tsp-text);
+      padding: 6px 0 6px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .use-case-col ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    /* =========================================================
+       5. DIFFERENTIATORS
+       ========================================================= */
+    .differentiators {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Teal accent band */
+    .differentiators::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--tsp-teal);
+    }
+
+    .differentiators .section-header h2 {
+      color: var(--tsp-white);
+    }
+
+    .differentiators .section-header .section-lead {
+      color: var(--tsp-light);
+    }
+
+    .diff-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .diff-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .diff-item .diff-accent {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--tsp-teal);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--tsp-dark);
+    }
+
+    .diff-item .diff-text h3 {
+      color: var(--tsp-white);
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .diff-item .diff-text p {
+      color: var(--tsp-light);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       6. TARGET AUDIENCE
+       ========================================================= */
+    .target-audience {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .target-audience .section-header h2 { color: var(--tsp-dark); }
+
+    .audience-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .audience-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--tsp-white);
+      border: 1.5px solid var(--tsp-light);
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tsp-dark);
+    }
+
+    .audience-badge .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tsp-teal);
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       RELATED SOLUTIONS
+       ========================================================= */
+    .related-solutions {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .related-solutions .section-header h2 { color: var(--tsp-dark); }
+
+    .related-link-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .related-link-list li {
+      font-size: 0.9375rem;
+      padding: 10px 0 10px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .related-link-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    .related-link-list li strong {
+      color: var(--tsp-dark);
+    }
+
+    .related-link-list li span {
+      color: var(--tsp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       7. CTA / CLOSING STATEMENT
+       ========================================================= */
+    .cta-section {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Rounded shape decoration */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      left: -80px;
+      bottom: -80px;
+      width: 240px;
+      height: 240px;
+      background: var(--tsp-red);
+      opacity: 0.12;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      background: var(--tsp-teal);
+      opacity: 0.1;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section .container { position: relative; z-index: 1; }
+
+    .cta-section .cta-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 16px;
+    }
+
+    .cta-section h2 {
+      color: var(--tsp-white);
+      margin-bottom: 16px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .cta-body {
+      color: var(--tsp-light);
+      font-size: 0.9375rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-contact-block {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--tsp-white);
+    }
+
+    .cta-contact-block a {
+      color: var(--tsp-teal);
+      font-weight: 600;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--tsp-red);
+      color: var(--tsp-white);
+      font-family: var(--font-base);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+      transition: background 0.15s;
+    }
+
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    /* =========================================================
+       8. FOOTER
+       ========================================================= */
+    .site-footer {
+      background: var(--tsp-offwhite);
+      border-top: 1px solid var(--tsp-light);
+      padding: 20px 24px;
+    }
+
+    .site-footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .site-footer .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-footer .footer-logo {
+      width: 64px;
+      height: auto;
+    }
+
+    .site-footer .footer-slogan {
+      font-size: 0.8rem;
+      color: var(--tsp-text-muted);
+      font-style: italic;
+    }
+
+    .site-footer .footer-contact {
+      font-size: 0.8125rem;
+      color: var(--tsp-text-muted);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .site-footer .footer-contact a {
+      color: var(--tsp-teal);
+    }
+
+    /* =========================================================
+       Print styles (A4 / letter)
+       ========================================================= */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, .hero, .capabilities, .use-cases,
+      .differentiators, .target-audience, .cta-section, .site-footer {
+        break-inside: avoid;
+      }
+      .hero::before, .hero::after,
+      .cta-section::before, .cta-section::after,
+      .differentiators::before { display: none; }
+      a { color: inherit; }
+      .cta-btn { border: 2px solid var(--tsp-red); background: none; color: var(--tsp-red); }
+      .container { max-width: 100%; padding: 0 12pt; }
+    }
+
+    /* =========================================================
+       Responsive – Mobile (max-width: 640px)
+       ========================================================= */
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+
+      .site-header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .capabilities-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .diff-list {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-contact-block {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .site-footer .container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .site-footer .footer-contact {
+        text-align: left;
+      }
+    }
+  </style>
+<style>.tspweb-back{position:fixed;left:12px;bottom:12px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;background:#20313A;color:#fff!important;font:600 14px/1 Inter,Arial,sans-serif;text-decoration:none!important;padding:12px 16px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:2px solid #E52A18}.tspweb-back:hover{background:#E52A18}@media print{.tspweb-back{display:none!important}}</style>
+</head>
+<body>
+<a class="tspweb-back" href="../?lang=en#virtualization">&larr; Back to overview</a>
+
+  <!-- =====================================================
+       1. HEADER
+       ===================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="logo-wrap">
+        <!-- TSP DATA logo – inline SVG (zaklad-barva) – DO NOT modify -->
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+      </div>
+      <span class="doc-label">OpenShift Virtualization</span>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. HERO
+       ===================================================== -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Solution Overview</p>
+
+      <h1>Your VMs. Your rules. Without the Broadcom tax.</h1>
+
+      <p class="hero-intro">Broadcom changed the game &ndash; VMware costs are rising 300-1500%, perpetual licenses are gone, and minimum core requirements punish smaller deployments. There is a way out. TSP DATA helps mid-size and large enterprises migrate to OpenShift Virtualization: keep your existing VM workloads, unify operations, and open the door to modern cloud-native infrastructure &ndash; with a partner who delivers OpenShift in production, not just in the lab.</p>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       3. CAPABILITIES
+       ===================================================== -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header">
+        <h2>Core Capabilities</h2>
+        <p class="section-lead">What we cover &ndash; from VMware exit assessment and workload migration to long-term platform operations on OpenShift Virtualization.</p>
+      </div>
+
+      <div class="capabilities-grid">
+
+        <!-- Capability Card 1 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>VMware Exit Assessment</h3>
+          <p>Analysis of your current VMware environment, workload inventory, TCO comparison (VMware vs. OpenShift Virtualization), migration roadmap, and risk assessment. Know the numbers before you commit.</p>
+        </div>
+
+        <!-- Capability Card 2 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>VMware &rarr; OpenShift Migration</h3>
+          <p>End-to-end migration using Red Hat Migration Toolkit for Virtualization (MTV). Warm and cold migration paths, network and storage mapping, post-migration validation, and downtime minimization.</p>
+        </div>
+
+        <!-- Capability Card 3 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Greenfield OCP Virtualization</h3>
+          <p>Design and deploy OpenShift Virtualization from scratch &ndash; for organizations starting fresh or consolidating multiple hypervisors into a single Kubernetes-native platform.</p>
+        </div>
+
+        <!-- Capability Card 4 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>VM + Container Consolidation</h3>
+          <p>Unify VM workloads and containerized applications on a single OpenShift cluster. One operations model, one monitoring stack, one security framework &ndash; eliminating dual-stack complexity.</p>
+        </div>
+
+        <!-- Capability Card 5 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Day-2 Operations &amp; Lifecycle</h3>
+          <p>Ongoing operational support, monitoring, patch management, upgrade paths, backup and DR integration (Cohesity, Commvault), and capacity planning. We stay with you after go-live.</p>
+        </div>
+
+        <!-- Capability Card 6 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Modernization Advisory</h3>
+          <p>Identify VM workloads suited for containerization over time. Build a realistic modernization roadmap: what stays as a VM, what moves to containers, what belongs in the cloud.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       4. USE CASES
+       ===================================================== -->
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <h2>Typical Use Cases</h2>
+        <p class="section-lead">From emergency VMware exit to strategic platform consolidation &ndash; scenarios where TSP DATA delivers measurable impact.</p>
+      </div>
+
+      <div class="use-cases-grid">
+
+        <!-- Use Case Column 1 -->
+        <div class="use-case-col">
+          <h3>VMware Exit &amp; Cost Recovery</h3>
+          <ul>
+            <li>Enterprise with 300+ VMs facing 3-5x cost increase after Broadcom acquisition, renewal in 8 months</li>
+            <li>Assessment (2 weeks) &rarr; Proof of Concept on 10-20 VMs (4 weeks) &rarr; Phased migration via MTV (2-4 months) &rarr; Day-2 handover</li>
+            <li>Result: typically 40&ndash;60% TCO savings vs. new VMware subscription, unified platform for VMs and future containers</li>
+          </ul>
+        </div>
+
+        <!-- Use Case Column 2 -->
+        <div class="use-case-col">
+          <h3>VM + Container Consolidation</h3>
+          <ul>
+            <li>Enterprise running VMware for legacy apps and OpenShift for cloud-native services &ndash; two stacks, two ops teams, two license costs</li>
+            <li>Consolidation assessment &rarr; VM migration into OpenShift Virtualization &rarr; Unified monitoring and operations &rarr; Team enablement</li>
+            <li>Result: single operations model, reduced complexity, single pane of glass for VMs and containers</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       5. DIFFERENTIATORS
+       ===================================================== -->
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why TSP DATA?</h2>
+        <p class="section-lead">OpenShift-first expertise and a pragmatic delivery model set us apart from generic integrators and single-vendor resellers.</p>
+      </div>
+
+      <div class="diff-list">
+
+        <!-- Differentiator 1 -->
+        <div class="diff-item">
+          <div class="diff-accent">01</div>
+          <div class="diff-text">
+            <h3>OpenShift-First Expertise</h3>
+            <p>OpenShift is our core platform &ndash; we deliver it for telco operators and enterprise customers. Virtualization is a natural extension of our practice, not an experiment bolted on to fill a portfolio gap.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 2 -->
+        <div class="diff-item">
+          <div class="diff-accent">02</div>
+          <div class="diff-text">
+            <h3>Telco-Grade Track Record</h3>
+            <p>Our references in telco environments (Oracle Unified Assurance, Zabbix monitoring, Ansible automation) prove our ability to deliver infrastructure with high availability and scale requirements. We bring that rigor to every virtualization engagement.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 3 -->
+        <div class="diff-item">
+          <div class="diff-accent">03</div>
+          <div class="diff-text">
+            <h3>End-to-End Delivery</h3>
+            <p>From the first TCO comparison through MTV-powered migration to long-term operational support and gradual modernization. One accountable partner for the entire journey &ndash; no handoff gaps, no lost context.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 4 -->
+        <div class="diff-item">
+          <div class="diff-accent">04</div>
+          <div class="diff-text">
+            <h3>Pragmatic Modernization</h3>
+            <p>We do not push "containerize everything." We pragmatically distinguish what stays as a VM (and that is fine), what gets containerized over time, and what belongs in the cloud. A realistic approach builds trust and reduces risk.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       6. TARGET AUDIENCE
+       ===================================================== -->
+  <section class="target-audience">
+    <div class="container">
+      <div class="section-header">
+        <h2>Who Is This For?</h2>
+        <p class="section-lead">Decision makers and technical leaders at mid-size and large enterprises (200+ VMs) facing the VMware pricing shift and evaluating sustainable alternatives.</p>
+      </div>
+
+      <div class="audience-badges">
+        <span class="audience-badge"><span class="badge-dot"></span>CTO / Head of IT</span>
+        <span class="audience-badge"><span class="badge-dot"></span>CIO / IT Director</span>
+        <span class="audience-badge"><span class="badge-dot"></span>Infrastructure Architect</span>
+        <span class="audience-badge"><span class="badge-dot"></span>Platform Engineer</span>
+        <span class="audience-badge"><span class="badge-dot"></span>VP of Infrastructure</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       RELATED SOLUTIONS
+       ===================================================== -->
+  <section class="related-solutions">
+    <div class="container">
+      <div class="section-header">
+        <h2>Related Solutions</h2>
+        <p class="section-lead">Explore complementary offerings from our portfolio.</p>
+      </div>
+      <ul class="related-link-list">
+        <li><strong>Red Hat OpenShift Services</strong> &ndash; <span>Full-lifecycle OpenShift platform delivery, the foundation for OpenShift Virtualization</span></li>
+        <li><strong>Red Hat Automation (Ansible)</strong> &ndash; <span>Automate migration workflows and Day-2 operations across your virtualized estate</span></li>
+        <li><strong>IT Monitoring (Zabbix)</strong> &ndash; <span>Your new virtualization stack needs full observability &ndash; end-to-end monitoring from Day 1</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       7. CTA / CLOSING STATEMENT
+       ===================================================== -->
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Let's Talk</p>
+
+      <h2>The conditions changed. You have a choice.</h2>
+
+      <p class="cta-body">Every month on legacy VMware pricing is money you could invest in a modern, unified platform. Start with a VMware Exit Assessment and see the numbers for yourself.</p>
+
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Schedule a Consultation</a>
+
+      <div class="cta-contact-block">
+        <span>+420 281 864 203</span>
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+        <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       8. FOOTER
+       ===================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <!-- TSP DATA logo – footer size – DO NOT modify SVG -->
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">Success driven by data.</span>
+      </div>
+      <div class="footer-contact">
+        TSP DATA, a.s. &nbsp;&middot;&nbsp; Tom&iacute;čkova 2144/1, Praha 4, 148 00<br />
+        <a href="tel:+420281864203">+420 281 864 203</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

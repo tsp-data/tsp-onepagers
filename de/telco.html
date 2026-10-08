@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telco-Monitoring &amp; Observability | TSP DATA, a.s.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================================
+       TSP DATA Brand System – CSS Custom Properties
+       ========================================================= */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;        /* rounded = human side */
+      --radius-card: 6px;         /* card corners */
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+
+    /* =========================================================
+       Reset & Base
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-base);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--tsp-text);
+      background: var(--tsp-offwhite);
+    }
+
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* =========================================================
+       Typography Scale
+       ========================================================= */
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem;  font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p  { font-size: 1rem; line-height: 1.7; }
+
+    /* =========================================================
+       1. HEADER
+       ========================================================= */
+    .site-header {
+      background: var(--tsp-white);
+      border-bottom: 3px solid var(--tsp-red);
+      padding: 18px 24px;
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .site-header .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-header .logo-svg {
+      width: 102px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .site-header .doc-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tsp-white);
+      background: var(--tsp-red);
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    /* =========================================================
+       2. HERO
+       ========================================================= */
+    .hero {
+      background: var(--tsp-dark);
+      color: var(--tsp-white);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Geometric brand decoration – tech side (sharp/skewed) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: var(--tsp-blue);
+      opacity: 0.25;
+      transform: rotate(15deg) skewX(10deg);
+    }
+
+    /* Geometric brand decoration – human side (rounded) */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      right: 40px;
+      width: 160px;
+      height: 160px;
+      background: var(--tsp-teal);
+      opacity: 0.15;
+      border-radius: var(--radius-human);
+    }
+
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      color: var(--tsp-white);
+      margin-bottom: 20px;
+      max-width: 640px;
+    }
+
+    .hero .hero-intro {
+      font-size: 1.0625rem;
+      color: var(--tsp-light);
+      max-width: 580px;
+      margin-bottom: 0;
+    }
+
+    /* =========================================================
+       3. CAPABILITIES
+       ========================================================= */
+    .capabilities {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .section-header {
+      margin-bottom: 36px;
+    }
+
+    .section-header h2 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .section-header .section-lead {
+      color: var(--tsp-text-muted);
+      font-size: 0.9375rem;
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .capability-card {
+      background: var(--tsp-white);
+      border-top: 4px solid var(--tsp-red);
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+    }
+
+    .capability-card .card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--tsp-red);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      /* CSS-only icon placeholder – replace with inline SVG if needed */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .capability-card .card-icon::after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 3px;
+    }
+
+    .capability-card h3 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .capability-card p {
+      font-size: 0.875rem;
+      color: var(--tsp-text-muted);
+    }
+
+    /* =========================================================
+       4. USE CASES
+       ========================================================= */
+    .use-cases {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .use-case-col h3 {
+      color: var(--tsp-blue);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--tsp-light);
+    }
+
+    .use-case-col ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .use-case-col ul li {
+      font-size: 0.9375rem;
+      color: var(--tsp-text);
+      padding: 6px 0 6px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .use-case-col ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    /* =========================================================
+       5. DIFFERENTIATORS
+       ========================================================= */
+    .differentiators {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Teal accent band */
+    .differentiators::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--tsp-teal);
+    }
+
+    .differentiators .section-header h2 {
+      color: var(--tsp-white);
+    }
+
+    .differentiators .section-header .section-lead {
+      color: var(--tsp-light);
+    }
+
+    .diff-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .diff-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .diff-item .diff-accent {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--tsp-teal);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--tsp-dark);
+    }
+
+    .diff-item .diff-text h3 {
+      color: var(--tsp-white);
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .diff-item .diff-text p {
+      color: var(--tsp-light);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       6. TARGET AUDIENCE
+       ========================================================= */
+    .target-audience {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .target-audience .section-header h2 { color: var(--tsp-dark); }
+
+    .audience-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .audience-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--tsp-white);
+      border: 1.5px solid var(--tsp-light);
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tsp-dark);
+    }
+
+    .audience-badge .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tsp-teal);
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       RELATED SOLUTIONS
+       ========================================================= */
+    .related-solutions {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .related-solutions .section-header h2 { color: var(--tsp-dark); }
+
+    .related-link-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .related-link-list li {
+      font-size: 0.9375rem;
+      padding: 10px 0 10px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .related-link-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    .related-link-list li strong {
+      color: var(--tsp-dark);
+    }
+
+    .related-link-list li span {
+      color: var(--tsp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       7. CTA / CLOSING STATEMENT
+       ========================================================= */
+    .cta-section {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Rounded shape decoration */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      left: -80px;
+      bottom: -80px;
+      width: 240px;
+      height: 240px;
+      background: var(--tsp-red);
+      opacity: 0.12;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      background: var(--tsp-teal);
+      opacity: 0.1;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section .container { position: relative; z-index: 1; }
+
+    .cta-section .cta-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 16px;
+    }
+
+    .cta-section h2 {
+      color: var(--tsp-white);
+      margin-bottom: 16px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .cta-body {
+      color: var(--tsp-light);
+      font-size: 0.9375rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-contact-block {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--tsp-white);
+    }
+
+    .cta-contact-block a {
+      color: var(--tsp-teal);
+      font-weight: 600;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--tsp-red);
+      color: var(--tsp-white);
+      font-family: var(--font-base);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+      transition: background 0.15s;
+    }
+
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    /* =========================================================
+       8. FOOTER
+       ========================================================= */
+    .site-footer {
+      background: var(--tsp-offwhite);
+      border-top: 1px solid var(--tsp-light);
+      padding: 20px 24px;
+    }
+
+    .site-footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .site-footer .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-footer .footer-logo {
+      width: 64px;
+      height: auto;
+    }
+
+    .site-footer .footer-slogan {
+      font-size: 0.8rem;
+      color: var(--tsp-text-muted);
+      font-style: italic;
+    }
+
+    .site-footer .footer-contact {
+      font-size: 0.8125rem;
+      color: var(--tsp-text-muted);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .site-footer .footer-contact a {
+      color: var(--tsp-teal);
+    }
+
+    /* =========================================================
+       Print styles (A4 / letter)
+       ========================================================= */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, .hero, .capabilities, .use-cases,
+      .differentiators, .target-audience, .related-solutions, .cta-section, .site-footer {
+        break-inside: avoid;
+      }
+      .hero::before, .hero::after,
+      .cta-section::before, .cta-section::after,
+      .differentiators::before { display: none; }
+      a { color: inherit; }
+      .cta-btn { border: 2px solid var(--tsp-red); background: none; color: var(--tsp-red); }
+      .container { max-width: 100%; padding: 0 12pt; }
+    }
+
+    /* =========================================================
+       Responsive – Mobile (max-width: 640px)
+       ========================================================= */
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+
+      .site-header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .capabilities-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .diff-list {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-contact-block {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .site-footer .container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .site-footer .footer-contact {
+        text-align: left;
+      }
+    }
+  </style>
+<style>.tspweb-back{position:fixed;left:12px;bottom:12px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;background:#20313A;color:#fff!important;font:600 14px/1 Inter,Arial,sans-serif;text-decoration:none!important;padding:12px 16px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:2px solid #E52A18}.tspweb-back:hover{background:#E52A18}@media print{.tspweb-back{display:none!important}}</style>
+</head>
+<body>
+<a class="tspweb-back" href="../?lang=de#telco">&larr; Zur Übersicht</a>
+
+  <!-- =====================================================
+       1. HEADER
+       ===================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="logo-wrap">
+        <!-- TSP DATA logo – inline SVG (zaklad-barva) – DO NOT modify -->
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+      </div>
+      <span class="doc-label">Telco-Monitoring &amp; Observability</span>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. HERO
+       ===================================================== -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Lösungsüberblick</p>
+
+      <h1>Durchgängige Transparenz über Netz und Services, von der Infrastruktur bis zum Kunden</h1>
+
+      <p class="hero-intro">Moderne Telco-Netze kombinieren Legacy-OSS, Multi-Vendor-NMS und neue Cloud-native Komponenten. Ohne einheitliche Sicht auf den Netzzustand und seine Auswirkungen auf die Services reagieren Sie spät und ohne Kontext auf Incidents. TSP DATA liefert eine Observability-Plattform, die technische Daten mit der Service- und Business-Ebene verbindet.</p>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       3. CAPABILITIES
+       ===================================================== -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header">
+        <h2>Kernkompetenzen</h2>
+        <p class="section-lead">Unser Leistungsumfang reicht von der Erfassung und Korrelation roher Netzwerk-Events bis zu Service Assurance auf Business-Ebene und proaktiver Kapazitätsplanung.</p>
+      </div>
+
+      <div class="capabilities-grid">
+
+        <!-- Capability Card 1 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Fault &amp; Performance Monitoring</h3>
+          <p>Echtzeit-Monitoring von Netz und Services mit Event-Korrelation und SLA-Tracking. Anomalien werden erkannt, bevor daraus Ausfälle mit Auswirkung auf Kunden werden.</p>
+        </div>
+
+        <!-- Capability Card 2 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Service Modeling (RFS/CFS)</h3>
+          <p>Technische Ressourcen werden über ein strukturiertes RFS/CFS-Modell den Business-Services zugeordnet. Abhängigkeiten und Topologie sind visualisiert, sodass Sie bei jeder Netzänderung genau sehen, welche Services betroffen sind.</p>
+        </div>
+
+        <!-- Capability Card 3 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Event-Korrelation &amp; Anreicherung</h3>
+          <p>Weniger Alert Fatigue durch intelligente Korrelation und Unterdrückung. Events werden mit Kontext aus der CMDB und externen Datenquellen angereichert. So haben NOC-Teams die Informationen, die sie für gezieltes Handeln brauchen.</p>
+        </div>
+
+        <!-- Capability Card 4 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>EMS/NMS-Integration</h3>
+          <p>Native Integration in Multi-Vendor-Umgebungen über APIs, eigens entwickelte Adapter und Datenpipelines. Bestehende Element- und Network-Management-Systeme werden angebunden, ohne sie komplett ersetzen zu müssen.</p>
+        </div>
+
+        <!-- Capability Card 5 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>NOC-Transformation</h3>
+          <p>Alle Event-Streams laufen in einem einheitlichen NOC-Dashboard zusammen. Wiederkehrende Aufgaben werden automatisiert und das ITSM angebunden, um die Mean Time to Resolution zu senken.</p>
+        </div>
+
+        <!-- Capability Card 6 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>SLA Assurance &amp; Reporting</h3>
+          <p>SLA-Dashboards in Echtzeit mit proaktiven Warnungen bei SLA-Verletzungen. Mit dem Reporting auf Business-Ebene verfolgen Service Delivery Manager und Management die Leistung gegenüber den vertraglichen Zusagen.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       4. USE CASES
+       ===================================================== -->
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <h2>Typische Anwendungsfälle</h2>
+        <p class="section-lead">Von der OSS-Modernisierung bis zur Operational Intelligence in Echtzeit: Szenarien, in denen TSP DATA messbare Ergebnisse liefert.</p>
+      </div>
+
+      <div class="use-cases-grid">
+
+        <!-- Use Case Column 1 -->
+        <div class="use-case-col">
+          <h3>OSS-Modernisierung</h3>
+          <ul>
+            <li>Migration von Legacy-OSS-Plattformen (Netcool, Watch4Net, HP NNMi) auf einen modernen, einheitlichen Observability-Stack</li>
+            <li>Einheitliches Monitoring über Multi-Vendor-Netze: Access, Transport, Core und Cloud Edge</li>
+            <li>Zentrales Event Management für Dutzende NMS-Systeme in einer operativen Sicht</li>
+          </ul>
+        </div>
+
+        <!-- Use Case Column 2 -->
+        <div class="use-case-col">
+          <h3>Operational Intelligence</h3>
+          <ul>
+            <li>Service Impact Analysis: automatische Ermittlung, wie sich eine Netzstörung auf die Kundenservices auswirkt</li>
+            <li>Echtzeit-Dashboards zum Service-Zustand für Management und NOC-Teams</li>
+            <li>Proaktive Erkennung von SLA-Verletzungen mit automatisierten Eskalations-Workflows</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       5. DIFFERENTIATORS
+       ===================================================== -->
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header">
+        <h2>Warum TSP DATA?</h2>
+        <p class="section-lead">Fundiertes Domänenwissen und ein herstellerunabhängiges Liefermodell unterscheiden uns von generalistischen Monitoring-Anbietern.</p>
+      </div>
+
+      <div class="diff-list">
+
+        <!-- Differentiator 1 -->
+        <div class="diff-item">
+          <div class="diff-accent">01</div>
+          <div class="diff-text">
+            <h3>Fundierte Telco-OSS-Expertise</h3>
+            <p>Wir kennen Netzarchitekturen, Protokolle und die Legacy-Systeme, die andere blind integrieren. Unsere Berater haben bei mehreren Netzbetreibern praktische Erfahrung mit der Komplexität echter OSS-Umgebungen gesammelt.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 2 -->
+        <div class="diff-item">
+          <div class="diff-accent">02</div>
+          <div class="diff-text">
+            <h3>Service Modeling als Kern</h3>
+            <p>CMDB, RFS/CFS-Ebene und Topologie-Mapping gehören bei uns von Anfang an zur Grundlage jeder Lösung. Damit bleibt der Service Impact immer nachvollziehbar, vom Netzelement bis zum Kundenvertrag.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 3 -->
+        <div class="diff-item">
+          <div class="diff-accent">03</div>
+          <div class="diff-text">
+            <h3>Herstellerunabhängige Expertise</h3>
+            <p>Wir beherrschen Zabbix, OCUA/Assure1 und Grafana Labs und wählen für jede Umgebung das passende Tool. Sie binden sich nicht an einen einzelnen Hersteller. Wir setzen die Plattform ein, die zu Ihren Anforderungen passt, unabhängig von unseren Vorlieben.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 4 -->
+        <div class="diff-item">
+          <div class="diff-accent">04</div>
+          <div class="diff-text">
+            <h3>Delivery + langfristiger Betrieb</h3>
+            <p>Vom Proof of Concept über die vollständige Implementierung bis zum laufenden NOC-Support, alles aus einer Hand. Ein verantwortlicher Partner senkt das Risiko bei Übergaben und hält das aufgebaute Wissen in Ihrem Projekt.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       6. TARGET AUDIENCE
+       ===================================================== -->
+  <section class="target-audience">
+    <div class="container">
+      <div class="section-header">
+        <h2>Für wen eignet sich die Lösung?</h2>
+        <p class="section-lead">Für Entscheider und technische Führungskräfte bei Netzbetreibern, die Zuverlässigkeit des Netzes, Servicequalität und OSS-Strategie verantworten.</p>
+      </div>
+
+      <div class="audience-badges">
+        <span class="audience-badge"><span class="badge-dot"></span>CTO / Leitung Netz</span>
+        <span class="audience-badge"><span class="badge-dot"></span>OSS-Architekt</span>
+        <span class="audience-badge"><span class="badge-dot"></span>NOC-Manager</span>
+        <span class="audience-badge"><span class="badge-dot"></span>Service Delivery Manager</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       RELATED SOLUTIONS
+       ===================================================== -->
+  <section class="related-solutions">
+    <div class="container">
+      <div class="section-header">
+        <h2>Ergänzende Lösungen</h2>
+        <p class="section-lead">Diese Angebote aus unserem Portfolio ergänzen die Lösung.</p>
+      </div>
+      <ul class="related-link-list">
+        <li><strong>Red Hat Automation (Ansible)</strong> &ndash; <span>Netzautomatisierung mit Ansible für Telco-Infrastruktur, vom Provisioning bis zur Fehlerbehebung</span></li>
+        <li><strong>Red Hat OpenShift Services</strong> &ndash; <span>Container-Plattform für Cloud-native Netzfunktionen und Telco-Workloads</span></li>
+        <li><strong>IT-Monitoring (Zabbix)</strong> &ndash; <span>Telco-Observability um Full-Stack-Monitoring der Infrastruktur über Ihre gesamte IT-Landschaft erweitern</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       7. CTA / CLOSING STATEMENT
+       ===================================================== -->
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Sprechen Sie uns an</p>
+
+      <h2>Transparenz, die Umsatz schützt.</h2>
+
+      <p class="cta-body">Jeder früh erkannte Ausfall schützt das Kundenerlebnis und Ihren Ruf. Verbinden Sie technische Daten mit der Service-Ebene und gewinnen Sie Erkenntnisse, auf die Sie Entscheidungen stützen können.</p>
+
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Demo vereinbaren</a>
+
+      <div class="cta-contact-block">
+        <span>+420 281 864 203</span>
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+        <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       8. FOOTER
+       ===================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <!-- TSP DATA logo – footer size – DO NOT modify SVG -->
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">Success driven by data.</span>
+      </div>
+      <div class="footer-contact">
+        TSP DATA, a.s. &nbsp;·&nbsp; Tomíčkova 2144/1, Praha 4, 148 00<br />
+        <a href="tel:+420281864203">+420 281 864 203</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

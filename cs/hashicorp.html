@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HashiCorp Vault &amp; Terraform | TSP DATA, a.s.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================================
+       TSP DATA Brand System – CSS Custom Properties
+       ========================================================= */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;        /* rounded = human side */
+      --radius-card: 6px;         /* card corners */
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+
+    /* =========================================================
+       Reset & Base
+       ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-base);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--tsp-text);
+      background: var(--tsp-offwhite);
+    }
+
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* =========================================================
+       Typography Scale
+       ========================================================= */
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem;  font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p  { font-size: 1rem; line-height: 1.7; }
+
+    /* =========================================================
+       1. HEADER
+       ========================================================= */
+    .site-header {
+      background: var(--tsp-white);
+      border-bottom: 3px solid var(--tsp-red);
+      padding: 18px 24px;
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .site-header .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-header .logo-svg {
+      width: 102px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .site-header .doc-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tsp-white);
+      background: var(--tsp-red);
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+
+    /* =========================================================
+       2. HERO
+       ========================================================= */
+    .hero {
+      background: var(--tsp-dark);
+      color: var(--tsp-white);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Geometric brand decoration – tech side (sharp/skewed) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: var(--tsp-blue);
+      opacity: 0.25;
+      transform: rotate(15deg) skewX(10deg);
+    }
+
+    /* Geometric brand decoration – human side (rounded) */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      right: 40px;
+      width: 160px;
+      height: 160px;
+      background: var(--tsp-teal);
+      opacity: 0.15;
+      border-radius: var(--radius-human);
+    }
+
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      color: var(--tsp-white);
+      margin-bottom: 20px;
+      max-width: 640px;
+    }
+
+    .hero .hero-intro {
+      font-size: 1.0625rem;
+      color: var(--tsp-light);
+      max-width: 580px;
+      margin-bottom: 0;
+    }
+
+    /* =========================================================
+       3. CAPABILITIES
+       ========================================================= */
+    .capabilities {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .section-header {
+      margin-bottom: 36px;
+    }
+
+    .section-header h2 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .section-header .section-lead {
+      color: var(--tsp-text-muted);
+      font-size: 0.9375rem;
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .capability-card {
+      background: var(--tsp-white);
+      border-top: 4px solid var(--tsp-red);
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+    }
+
+    .capability-card .card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--tsp-red);
+      border-radius: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .capability-card .card-icon::after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 3px;
+    }
+
+    .capability-card h3 {
+      color: var(--tsp-dark);
+      margin-bottom: 8px;
+    }
+
+    .capability-card p {
+      font-size: 0.875rem;
+      color: var(--tsp-text-muted);
+    }
+
+    /* =========================================================
+       4. USE CASES
+       ========================================================= */
+    .use-cases {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .use-case-col h3 {
+      color: var(--tsp-blue);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--tsp-light);
+    }
+
+    .use-case-col ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .use-case-col ul li {
+      font-size: 0.9375rem;
+      color: var(--tsp-text);
+      padding: 6px 0 6px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .use-case-col ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    /* =========================================================
+       5. DIFFERENTIATORS
+       ========================================================= */
+    .differentiators {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Teal accent band */
+    .differentiators::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--tsp-teal);
+    }
+
+    .differentiators .section-header h2 {
+      color: var(--tsp-white);
+    }
+
+    .differentiators .section-header .section-lead {
+      color: var(--tsp-light);
+    }
+
+    .diff-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .diff-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .diff-item .diff-accent {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--tsp-teal);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--tsp-dark);
+    }
+
+    .diff-item .diff-text h3 {
+      color: var(--tsp-white);
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .diff-item .diff-text p {
+      color: var(--tsp-light);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       6. TARGET AUDIENCE
+       ========================================================= */
+    .target-audience {
+      background: var(--tsp-offwhite);
+      padding: var(--section-pad);
+    }
+
+    .target-audience .section-header h2 { color: var(--tsp-dark); }
+
+    .audience-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .audience-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--tsp-white);
+      border: 1.5px solid var(--tsp-light);
+      border-radius: 24px;
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--tsp-dark);
+    }
+
+    .audience-badge .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--tsp-teal);
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       RELATED SOLUTIONS
+       ========================================================= */
+    .related-solutions {
+      background: var(--tsp-white);
+      padding: var(--section-pad);
+    }
+
+    .related-solutions .section-header h2 { color: var(--tsp-dark); }
+
+    .related-link-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .related-link-list li {
+      font-size: 0.9375rem;
+      padding: 10px 0 10px 18px;
+      position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+
+    .related-link-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 18px;
+      width: 8px;
+      height: 8px;
+      background: var(--tsp-teal);
+      border-radius: 50%;
+    }
+
+    .related-link-list li strong {
+      color: var(--tsp-dark);
+    }
+
+    .related-link-list li span {
+      color: var(--tsp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* =========================================================
+       7. CTA / CLOSING STATEMENT
+       ========================================================= */
+    .cta-section {
+      background: var(--tsp-dark);
+      padding: var(--section-pad);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Rounded shape decoration */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      left: -80px;
+      bottom: -80px;
+      width: 240px;
+      height: 240px;
+      background: var(--tsp-red);
+      opacity: 0.12;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      background: var(--tsp-teal);
+      opacity: 0.1;
+      border-radius: var(--radius-human);
+    }
+
+    .cta-section .container { position: relative; z-index: 1; }
+
+    .cta-section .cta-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--tsp-teal);
+      margin-bottom: 16px;
+    }
+
+    .cta-section h2 {
+      color: var(--tsp-white);
+      margin-bottom: 16px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .cta-body {
+      color: var(--tsp-light);
+      font-size: 0.9375rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-contact-block {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: var(--tsp-white);
+    }
+
+    .cta-contact-block a {
+      color: var(--tsp-teal);
+      font-weight: 600;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--tsp-red);
+      color: var(--tsp-white);
+      font-family: var(--font-base);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+      transition: background 0.15s;
+    }
+
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    /* =========================================================
+       8. FOOTER
+       ========================================================= */
+    .site-footer {
+      background: var(--tsp-offwhite);
+      border-top: 1px solid var(--tsp-light);
+      padding: 20px 24px;
+    }
+
+    .site-footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .site-footer .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-footer .footer-logo {
+      width: 64px;
+      height: auto;
+    }
+
+    .site-footer .footer-slogan {
+      font-size: 0.8rem;
+      color: var(--tsp-text-muted);
+      font-style: italic;
+    }
+
+    .site-footer .footer-contact {
+      font-size: 0.8125rem;
+      color: var(--tsp-text-muted);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .site-footer .footer-contact a {
+      color: var(--tsp-teal);
+    }
+
+    /* =========================================================
+       Print styles (A4 / letter)
+       ========================================================= */
+    @media print {
+      body { background: white; font-size: 11pt; }
+      .site-header, .hero, .capabilities, .use-cases,
+      .differentiators, .target-audience, .cta-section, .site-footer {
+        break-inside: avoid;
+      }
+      .hero::before, .hero::after,
+      .cta-section::before, .cta-section::after,
+      .differentiators::before { display: none; }
+      a { color: inherit; }
+      .cta-btn { border: 2px solid var(--tsp-red); background: none; color: var(--tsp-red); }
+      .container { max-width: 100%; padding: 0 12pt; }
+    }
+
+    /* =========================================================
+       Responsive – Mobile (max-width: 640px)
+       ========================================================= */
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+
+      .site-header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .capabilities-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .diff-list {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-contact-block {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .site-footer .container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .site-footer .footer-contact {
+        text-align: left;
+      }
+    }
+  </style>
+<style>.tspweb-back{position:fixed;left:12px;bottom:12px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;background:#20313A;color:#fff!important;font:600 14px/1 Inter,Arial,sans-serif;text-decoration:none!important;padding:12px 16px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:2px solid #E52A18}.tspweb-back:hover{background:#E52A18}@media print{.tspweb-back{display:none!important}}</style>
+</head>
+<body>
+<a class="tspweb-back" href="../?lang=cs#hashicorp">&larr; Zpět na přehled</a>
+
+  <!-- =====================================================
+       1. HEADER
+       ===================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="logo-wrap">
+        <!-- TSP DATA logo – inline SVG (zaklad-barva) – DO NOT modify -->
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+      </div>
+      <span class="doc-label">HashiCorp Vault &amp; Terraform</span>
+    </div>
+  </header>
+
+  <!-- =====================================================
+       2. HERO
+       ===================================================== -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">P&#345;ehled &#345;e&scaron;en&iacute;</p>
+
+      <h1>Secrets pod kontrolou. Infrastruktura jako k&oacute;d. Dod&aacute;no experty.</h1>
+
+      <p class="hero-intro">Modern&iacute; podnikov&aacute; infrastruktura vy&zcaron;aduje automatizovan&yacute; provisioning a centralizovan&yacute; secrets management. HashiCorp Vault a Terraform jsou oborov&yacute;m standardem &ndash; jejich spr&aacute;vn&eacute; nasazen&iacute; v&scaron;ak vy&zcaron;aduje hlubok&eacute; znalosti architektury, integrac&iacute; a podnikov&yacute;ch proces&#367;. TSP DATA dod&aacute;v&aacute; poradenstv&iacute;, implementaci a migraci nap&#345;&iacute;&#269; cel&yacute;m stackem HashiCorp.</p>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       3. CAPABILITIES
+       ===================================================== -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header">
+        <h2>Kl&iacute;&#269;ov&eacute; kompetence</h2>
+        <p class="section-lead">Co pokr&yacute;v&aacute;me &ndash; od secrets managementu a infrastructure-as-code po vynucov&aacute;n&iacute; politik a celopodnikovou adopci HashiCorp.</p>
+      </div>
+
+      <div class="capabilities-grid">
+
+        <!-- Capability Card 1 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Secrets Management (Vault)</h3>
+          <p>Nasazen&iacute; a konfigurace HashiCorp Vault pro centralizovan&yacute; secrets management &ndash; hesel, API kl&iacute;&#269;&#367;, token&#367; a certifik&aacute;t&#367;. Navrhujeme strategie secrets engine (KV, PKI, Transit, Database), nastavujeme dynamic secrets s automatickou rotac&iacute; a integrujeme s va&scaron;imi st&aacute;vaj&iacute;c&iacute;mi identity providery (LDAP, AD, OIDC).</p>
+        </div>
+
+        <!-- Capability Card 2 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Terraform &ndash; infrastruktura jako k&oacute;d</h3>
+          <p>Implementace Terraformu pro automatizovan&yacute; provisioning infrastruktury v on-premise i multicloud prost&#345;ed&iacute;ch. Navrhujeme knihovny modul&#367;, strategie spr&aacute;vy stavu (remote backend, state locking), integraci do CI/CD pipeline a zaveden&iacute; best practices pro t&yacute;movou spolupr&aacute;ci nad IaC k&oacute;dem.</p>
+        </div>
+
+        <!-- Capability Card 3 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Migrace z legacy n&aacute;stroj&#367;</h3>
+          <p>&#344;&iacute;zen&aacute; migrace ze star&scaron;&iacute;ch n&aacute;stroj&#367; na stack HashiCorp: p&#345;echod z manu&aacute;ln&iacute; secrets managementu (skripty, konfigura&#269;n&iacute; soubory, tabulky) do Vaultu, migrace z CloudFormation/ARM &scaron;ablon na Terraform a upgrade ze self-hosted Vault OSS na Vault Enterprise nebo HCP Vault &ndash; v&#269;etn&#283; assessmentu, roadmapy a paraleln&iacute;ho provozu.</p>
+        </div>
+
+        <!-- Capability Card 4 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Podnikov&aacute; architektura a design</h3>
+          <p>N&aacute;vrh referen&#269;n&iacute; architektury pro Vault a Terraform v podnikov&eacute;m prost&#345;ed&iacute;: HA clustery, disaster recovery, v&yacute;konnostn&iacute; replikace, strategie namespace (multi-tenancy) a s&iacute;&#357;ov&aacute; topologie. Pln&aacute; integrace do va&scaron;eho st&aacute;vaj&iacute;c&iacute;ho podnikov&eacute;ho stacku &ndash; Kubernetes/OpenShift, Ansible, Jenkins/GitLab CI, ServiceNow.</p>
+        </div>
+
+        <!-- Capability Card 5 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Compliance, audit a Policy-as-Code</h3>
+          <p>Implementace politik Sentinel/OPA pro Terraform a Vault, integrace audit log&#367; a SIEM a p&#345;&iacute;prava na compliance audity (NIS2, DORA, ISO 27001, SOC 2). Zav&aacute;d&iacute;me governance frameworky pro &#345;&iacute;zen&iacute; p&#345;&iacute;stup&#367; a change management nad infrastrukturou.</p>
+        </div>
+
+        <!-- Capability Card 6 -->
+        <div class="capability-card">
+          <div class="card-icon" aria-hidden="true"></div>
+          <h3>Integrace s podnikov&yacute;m stackem</h3>
+          <p>Propojen&iacute; Vaultu a Terraformu s va&scaron;imi st&aacute;vaj&iacute;c&iacute;mi platformami: secrets injection do Kubernetes (Vault Agent, CSI provider), Ansible Vault lookup plugin, CI/CD pipelines (GitLab, Jenkins, GitHub Actions), monitoring (Zabbix, Grafana) a ITSM (ServiceNow). End-to-end automatizace od provisioningu a&zcaron; po secrets delivery.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       4. USE CASES
+       ===================================================== -->
+  <section class="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <h2>Typick&eacute; sc&eacute;n&aacute;&#345;e nasazen&iacute;</h2>
+        <p class="section-lead">Od zero-trust secrets managementu po standardizaci IaC &ndash; sc&eacute;n&aacute;&#345;e, kde TSP DATA p&#345;in&aacute;&scaron;&iacute; m&#283;&#345;iteln&yacute; dopad.</p>
+      </div>
+
+      <div class="use-cases-grid">
+
+        <!-- Use Case Column 1 -->
+        <div class="use-case-col">
+          <h3>Zero Trust Secrets pro finan&#269;n&iacute; sektor</h3>
+          <ul>
+            <li>Assessment aktu&aacute;ln&iacute;ho stavu secrets managementu a eliminace hardcoded p&#345;&iacute;stupov&yacute;ch &uacute;daj&#367; v konfigura&#269;n&iacute;ch souborech</li>
+            <li>Nasazen&iacute; Vault HA clusteru s PKI engine pro intern&iacute; certifik&aacute;ty a Database engine pro dynamick&eacute; DB credentials</li>
+            <li>Migrace aplikaci po aplikaci s integrac&iacute; SIEM a pln&yacute;m audit trailem pro soulad s DORA</li>
+          </ul>
+        </div>
+
+        <!-- Use Case Column 2 -->
+        <div class="use-case-col">
+          <h3>Standardizace IaC v multicloud podniku</h3>
+          <ul>
+            <li>Assessment IaC vysp&#283;losti a n&aacute;vrh sd&iacute;len&eacute; knihovny Terraform modul&#367; (s&iacute;t&#283;, compute, security groups)</li>
+            <li>Implementace remote state backendu s CI/CD plan/apply workflow a Sentinel politikami pro &#345;&iacute;zen&iacute; n&aacute;klad&#367;</li>
+            <li>Onboarding t&yacute;m&#367; a detekce driftu &ndash; typicky a&zcaron; o 60 % rychlej&scaron;&iacute; provisioning s auditovatelnou zm&#283;nou infrastruktury</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       5. DIFFERENTIATORS
+       ===================================================== -->
+  <section class="differentiators">
+    <div class="container">
+      <div class="section-header">
+        <h2>Pro&#269; TSP DATA?</h2>
+        <p class="section-lead">Hlubok&aacute; expertiza v HashiCorp a vendorsky neutr&aacute;ln&iacute; konzulta&#269;n&iacute; model n&aacute;s odli&scaron;uj&iacute; od generick&yacute;ch syst&eacute;mov&yacute;ch integr&aacute;tor&#367;.</p>
+      </div>
+
+      <div class="diff-list">
+
+        <!-- Differentiator 1 -->
+        <div class="diff-item">
+          <div class="diff-accent">01</div>
+          <div class="diff-text">
+            <h3>Znalost cel&eacute;ho stacku HashiCorp</h3>
+            <p>Zat&iacute;mco v&#283;t&scaron;ina SI partner&#367; nab&iacute;z&iacute; pouze Terraform poradenstv&iacute;, my pokr&yacute;v&aacute;me cel&yacute; ekosyst&eacute;m HashiCorp &ndash; Vault, Terraform a integraci s Consul/Nomad tam, kde to d&aacute;v&aacute; smysl. Na&scaron;i konzultanti ch&aacute;pou interakce mezi produkty a navrhuj&iacute; &#345;e&scaron;en&iacute; jako celek, nikoli izolovan&#283;.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 2 -->
+        <div class="diff-item">
+          <div class="diff-accent">02</div>
+          <div class="diff-text">
+            <h3>DNA podnikov&eacute; infrastruktury</h3>
+            <p>Nejsme &#269;ist&#283; DevOps/cloudov&yacute; boutique. S des&iacute;tkami let zku&scaron;enost&iacute; v podnikov&eacute; infrastruktu&#345;e &ndash; Red Hat Linux, Ansible automatizace, OpenShift, Oracle Unified Assurance &ndash; rozum&iacute;me re&aacute;ln&yacute;m prost&#345;ed&iacute;m, kde Vault a Terraform mus&iacute; koexistovat s legacy syst&eacute;my, ITIL procesy a p&#345;&iacute;sn&yacute;m change managementem.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 3 -->
+        <div class="diff-item">
+          <div class="diff-accent">03</div>
+          <div class="diff-text">
+            <h3>Region&aacute;ln&iacute; bl&iacute;zkost (CZ/DACH)</h3>
+            <p>Z&aacute;kazn&iacute;k&#367;m v &#268;esku, Rakousku a regionu DACH nab&iacute;z&iacute;me poradenstv&iacute; v m&iacute;stn&iacute;ch jazyc&iacute;ch, osobn&iacute; workshopy a on-site delivery. Na rozd&iacute;l od glob&aacute;ln&iacute;ch SI nebo &#269;ist&#283; vzd&aacute;len&yacute;ch boutique firem jsme k dispozici pro pr&aacute;ci p&#345;&iacute;mo u v&aacute;s &ndash; s podnikovou kvalitou bez podnikov&eacute; re&zcaron;ie.</p>
+          </div>
+        </div>
+
+        <!-- Differentiator 4 -->
+        <div class="diff-item">
+          <div class="diff-accent">04</div>
+          <div class="diff-text">
+            <h3>&Zcaron;&aacute;dn&yacute; vendor lock-in</h3>
+            <p>Neprod&aacute;v&aacute;me managed services ani SaaS platformu. Dod&aacute;v&aacute;me znalosti, implementaci a mentoring &ndash; v&yacute;sledek je v&aacute;&scaron;. Pom&#367;&zcaron;eme v&aacute;m objektivn&#283; zvolit mezi Vault OSS vs. Enterprise vs. HCP Vault, mezi Terraformem a OpenTofu, a navrhneme &#345;e&scaron;en&iacute; optimalizovan&eacute; pro va&scaron;e pot&#345;eby, nikoli pro na&scaron;e opakovan&eacute; p&#345;&iacute;jmy.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       6. TARGET AUDIENCE
+       ===================================================== -->
+  <section class="target-audience">
+    <div class="container">
+      <div class="section-header">
+        <h2>Pro koho je toto &#345;e&scaron;en&iacute;?</h2>
+        <p class="section-lead">Rozhodovatel&eacute; a techni&#269;t&iacute; l&iacute;d&#345;i zodpov&#283;dn&iacute; za automatizaci infrastruktury, bezpe&#269;nostn&iacute; posturu a strategii secrets managementu.</p>
+      </div>
+
+      <div class="audience-badges">
+        <span class="audience-badge"><span class="badge-dot"></span>CTO / VP of Engineering</span>
+        <span class="audience-badge"><span class="badge-dot"></span>CISO / Vedouc&iacute; bezpe&#269;nosti</span>
+        <span class="audience-badge"><span class="badge-dot"></span>Vedouc&iacute; IT provozu / Platform Engineer</span>
+        <span class="audience-badge"><span class="badge-dot"></span>Enterprise architekt</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       RELATED SOLUTIONS
+       ===================================================== -->
+  <section class="related-solutions">
+    <div class="container">
+      <div class="section-header">
+        <h2>Souvisej&iacute;c&iacute; &#345;e&scaron;en&iacute;</h2>
+        <p class="section-lead">Prozkoumejte dopl&#328;kov&eacute; nab&iacute;dky z na&scaron;eho portfolia.</p>
+      </div>
+      <ul class="related-link-list">
+        <li><strong>Red Hat Automation (Ansible)</strong> &ndash; <span>Integrace Ansible Vault lookup pluginu, automatizace infrastruktury dopl&#328;uj&iacute;c&iacute; Terraform IaC</span></li>
+        <li><strong>DevOps &amp; GitOps transformace</strong> &ndash; <span>Secrets injection do CI/CD pipeline, GitOps-&#345;&iacute;zen&aacute; dodávka infrastruktury</span></li>
+        <li><strong>FinOps &amp; optimalizace cloudov&yacute;ch n&aacute;klad&#367;</strong> &ndash; <span>N&aacute;kladov&aacute; governance pro cloudov&eacute; zdroje spravovan&eacute; HashiCorp &ndash; viditelnost od infrastruktury po business</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       7. CTA / CLOSING STATEMENT
+       ===================================================== -->
+  <section class="cta-section">
+    <div class="container">
+      <p class="cta-eyebrow">Domluvme se</p>
+
+      <h2>Hesla pod kontrolou, infrastruktura v kódu – od jednoho týmu.</h2>
+
+      <p class="cta-body">Každý neřízený přístupový údaj je útočný vektor. Každý manuální krok provisioningu je drift, který čeká na příležitost. Pojďme to společně změnit.</p>
+
+      <a href="mailto:info@tspdata.cz" class="cta-btn">Domluvit konzultaci</a>
+
+      <div class="cta-contact-block">
+        <span>+420 281 864 203</span>
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+        <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       8. FOOTER
+       ===================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <!-- TSP DATA logo – footer size – DO NOT modify SVG -->
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">&Uacute;sp&#283;ch t&aacute;hnou data.</span>
+      </div>
+      <div class="footer-contact">
+        TSP DATA, a.s. &nbsp;&middot;&nbsp; Tom&iacute;&#269;kova 2144/1, Praha 4, 148 00<br />
+        <a href="tel:+420281864203">+420 281 864 203</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

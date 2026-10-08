@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSP DATA – Infrastructure Innovation Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-muted:    #5A6A73;
+      --font:         'Inter', Arial, sans-serif;
+      --max-width:    960px;
+      --radius:       6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); font-size: 15px; line-height: 1.6; color: var(--tsp-text); background: var(--tsp-offwhite); }
+    a { color: var(--tsp-teal); text-decoration: none; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    .site-header {
+      background: var(--tsp-white);
+      border-bottom: 3px solid var(--tsp-red);
+      padding: 13px 24px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .logo-svg { width: 88px; height: auto; flex-shrink: 0; }
+    .logo-divider { width: 1px; height: 28px; background: var(--tsp-light); flex-shrink: 0; }
+    .rh-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .rh-logo-svg { width: 24px; height: 24px; flex-shrink: 0; }
+    .rh-label { font-size: 0.68rem; font-weight: 600; color: var(--tsp-muted); letter-spacing: 0.04em; line-height: 1.2; }
+    .doc-label {
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-white);
+      background: var(--tsp-red); padding: 4px 10px; border-radius: 3px;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--tsp-dark); color: var(--tsp-white);
+      padding: 40px 24px 36px; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -40px; right: -60px;
+      width: 240px; height: 240px; background: var(--tsp-blue);
+      opacity: 0.25; transform: rotate(15deg) skewX(10deg);
+    }
+    .hero .container { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 8px;
+    }
+    .hero h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; color: var(--tsp-white); margin-bottom: 12px; max-width: 640px; }
+    .hero-intro { font-size: 0.9375rem; color: var(--tsp-light); max-width: 620px; }
+
+    /* SOLUTIONS GRID */
+    .solutions { padding: 40px 24px; background: var(--tsp-offwhite); }
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .sol-card {
+      background: var(--tsp-white);
+      border-top: 4px solid var(--tsp-red);
+      border-radius: var(--radius);
+      padding: 20px 18px 22px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .sol-card.rh-card { border-top-color: #EE0000; }
+    .sol-header { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+    .sol-icon {
+      width: 28px; height: 28px; background: var(--tsp-red);
+      border-radius: 6px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sol-icon.rh { background: #EE0000; }
+    .sol-icon svg { width: 14px; height: 14px; fill: rgba(255,255,255,0.85); }
+    .sol-card h3 { font-size: 0.9rem; font-weight: 700; color: var(--tsp-dark); line-height: 1.3; }
+    .sol-card .sol-sub { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 2px; }
+    .sol-card p { font-size: 0.8125rem; color: var(--tsp-muted); line-height: 1.55; }
+    .sol-card ul { list-style: none; margin-top: 4px; }
+    .sol-card ul li {
+      font-size: 0.775rem; color: var(--tsp-text); padding: 3px 0 3px 14px; position: relative;
+      border-bottom: 1px solid var(--tsp-offwhite);
+    }
+    .sol-card ul li:last-child { border-bottom: none; }
+    .sol-card ul li::before { content: ''; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; background: var(--tsp-red); border-radius: 50%; }
+    .sol-card.rh-card ul li::before { background: #EE0000; }
+
+    /* WHY */
+    .why { background: var(--tsp-white); padding: 36px 24px; }
+    .why h2 { font-size: 1.1rem; font-weight: 700; color: var(--tsp-dark); margin-bottom: 16px; }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .why-item { display: flex; flex-direction: column; gap: 5px; }
+    .why-num { font-size: 1.3rem; font-weight: 700; color: var(--tsp-red); line-height: 1; }
+    .why-item h4 { font-size: 0.8rem; font-weight: 700; color: var(--tsp-dark); }
+    .why-item p { font-size: 0.775rem; color: var(--tsp-muted); }
+
+    /* CTA */
+    .cta { background: var(--tsp-blue); color: var(--tsp-white); padding: 32px 24px; text-align: center; }
+    .cta-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 8px; }
+    .cta h2 { font-size: 1.25rem; font-weight: 700; color: var(--tsp-white); margin-bottom: 10px; }
+    .cta p { font-size: 0.875rem; color: var(--tsp-light); max-width: 520px; margin: 0 auto 20px; }
+    .cta-btn {
+      display: inline-block; background: var(--tsp-red); color: var(--tsp-white);
+      font-weight: 700; font-size: 0.85rem; padding: 10px 26px; border-radius: 4px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .cta-contact { margin-top: 16px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 0.8rem; color: var(--tsp-light); }
+    .cta-contact a { color: var(--tsp-teal); }
+
+    /* FOOTER */
+    .site-footer { background: var(--tsp-dark); padding: 18px 24px; }
+    .site-footer .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .footer-logo { width: 68px; height: auto; filter: brightness(0) invert(1); }
+    .footer-slogan { font-size: 0.75rem; color: var(--tsp-muted); font-style: italic; }
+    .footer-contact { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.78rem; }
+    .footer-contact a { color: var(--tsp-light); }
+
+    @media (max-width: 760px) {
+      .solutions-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 500px) {
+      .solutions-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media print {
+      .site-header { position: static; }
+      .solutions-grid { grid-template-columns: repeat(3, 1fr); }
+      .why-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+<style>.tspweb-back{position:fixed;left:12px;bottom:12px;z-index:2147483000;display:inline-flex;align-items:center;gap:6px;background:#20313A;color:#fff!important;font:600 14px/1 Inter,Arial,sans-serif;text-decoration:none!important;padding:12px 16px;border-radius:999px;box-shadow:0 2px 10px rgba(0,0,0,.3);border:2px solid #E52A18}.tspweb-back:hover{background:#E52A18}@media print{.tspweb-back{display:none!important}}</style>
+</head>
+<body>
+<a class="tspweb-back" href="../?lang=de">&larr; Zur Übersicht</a>
+
+<header class="site-header">
+  <div class="container">
+    <div class="logo-wrap">
+      <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+        <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+        <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+        <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+        <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+        <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+        <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+        <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+        <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+        <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+      </svg>
+      <span style="font-size:0.78rem;color:var(--tsp-muted);font-style:italic;">Success driven by data.</span>
+      <span class="logo-divider"></span>
+      <div class="rh-logo-wrap">
+        <svg class="rh-logo-svg" viewBox="0 -31 256 256" xmlns="http://www.w3.org/2000/svg" aria-label="Red Hat">
+          <path d="M170.758031,111.610687 C187.582343,111.610687 211.924474,108.140925 211.924474,88.1292728 C211.974775,86.5848226 211.834752,85.0400539 211.507565,83.5298204 L201.48829,40.009856 C199.175115,30.434388 197.144363,26.0904607 180.333499,17.6850288 C167.288269,11.014478 138.871184,0 130.465752,0 C122.638614,0 120.365785,10.0865183 111.032394,10.0865183 C102.048668,10.0865183 95.3781173,2.55525131 86.9726853,2.55525131 C78.9034707,2.55525131 73.6450325,8.05576597 69.5835277,19.3661152 C69.5835277,19.3661152 58.2731785,51.2664105 56.8207199,55.8927602 C56.5898643,56.7423115 56.4900906,57.6221338 56.5248487,58.5018063 C56.5248487,70.9014995 105.343597,111.556893 170.758031,111.556893 M214.506623,96.2522822 C216.833247,107.26676 216.833247,108.423348 216.833247,109.875806 C216.833247,128.703974 195.665007,139.153607 167.839665,139.153607 C104.953585,139.193953 49.8677466,102.344539 49.8677466,77.9889597 C49.8641113,74.5987697 50.555245,71.2437963 51.898499,68.1310691 C29.2778005,69.2607592 0,73.2953665 0,99.1437508 C0,141.48023 100.313787,193.661152 179.741757,193.661152 C240.63743,193.661152 255.995835,166.118232 255.995835,144.371699 C255.995835,127.264964 241.202275,107.845054 214.53352,96.2522822" fill="#EE0000"/>
+          <path d="M214.506623,96.2522822 C216.833247,107.26676 216.833247,108.423348 216.833247,109.875806 C216.833247,128.703974 195.665007,139.15364 167.839665,139.15364 C104.953585,139.193953 49.8677323,102.344539 49.8677323,77.9889597 C49.8641113,74.5987697 50.555245,71.2437963 51.898499,68.1310691 L56.8207199,55.946555 C56.5952566,56.7787916 56.4955298,57.6400686 56.5248487,58.5018063 C56.5248487,70.9014995 105.343597,111.556893 170.758031,111.556893 C187.582343,111.556893 211.924474,108.08713 211.924474,88.075478 C211.974775,86.5310279 211.834752,84.9862591 211.507565,83.4760257 L214.506623,96.2522822 Z" fill="#000000"/>
+        </svg>
+        <span class="rh-label">Red Hat<br>Partner</span>
+      </div>
+    </div>
+    <span class="doc-label">Infrastructure Innovation Team</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Lösungsüberblick</p>
+    <h1>Sieben Leistungsbereiche aus einer Hand. Langlebige Enterprise-Infrastruktur.</h1>
+    <p class="hero-intro">TSP DATA liefert den kompletten Infrastruktur- und Cloud-native-Stack für Teams, die ihre Plattformen modernisieren: von KI und Observability über DevOps und Secrets Management bis zum VMware-Ausstieg. Zertifizierter Red Hat Partner, im Produktivbetrieb bei Telcos im großen Maßstab erprobt.</p>
+  </div>
+</section>
+
+<section class="solutions">
+  <div class="container">
+    <div class="solutions-grid">
+
+      <!-- APM -->
+      <div class="sol-card">
+        <div class="sol-header">
+          <div class="sol-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h18v2H3V3zm0 4h12v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub">Observability</div>
+            <h3>Application Performance Monitoring</h3>
+          </div>
+        </div>
+        <p>Full-Stack Observability, die Metriken, Logs, Traces und User Experience in einem Gesamtbild zusammenführt. OpenTelemetry-first, bereit für Hybrid- und Multi-Cloud-Umgebungen.</p>
+        <ul>
+          <li>Distributed Tracing über Microservices hinweg</li>
+          <li>KI-gestützte Root Cause Analysis</li>
+          <li>SLO-Management und Error Budgets</li>
+        </ul>
+      </div>
+
+      <!-- DevOps -->
+      <div class="sol-card">
+        <div class="sol-header">
+          <div class="sol-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub">CI/CD &amp; GitOps</div>
+            <h3>DevOps-Transformation</h3>
+          </div>
+        </div>
+        <p>End-to-End-DevOps mit RHEL-first-Ansatz. Von der Pipeline-Architektur und der Einführung von GitOps bis zu Developer Experience und dem Tracking der DORA-Metriken.</p>
+        <ul>
+          <li>GitOps mit ArgoCD auf OpenShift</li>
+          <li>OpenShift Pipelines (Tekton)</li>
+          <li>Progressive Delivery, Blue-Green, Canary</li>
+        </ul>
+      </div>
+
+      <!-- HashiCorp -->
+      <div class="sol-card">
+        <div class="sol-header">
+          <div class="sol-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub">Secrets &amp; IaC</div>
+            <h3>HashiCorp Stack</h3>
+          </div>
+        </div>
+        <p>Vault für zentrales Secrets Management, Terraform für Infrastructure as Code. Enterprise-Architektur, HA-Cluster und Migration von Legacy-Tools.</p>
+        <ul>
+          <li>Dynamische Credentials und PKI mit Vault</li>
+          <li>Terraform IaC mit Policy Enforcement</li>
+          <li>Ablösung hartcodierter Secrets</li>
+        </ul>
+      </div>
+
+      <!-- Red Hat AI -->
+      <div class="sol-card rh-card">
+        <div class="sol-header">
+          <div class="sol-icon rh">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub" style="color:#EE0000;">Red Hat AI</div>
+            <h3>Enterprise-KI auf Ihrer Infrastruktur</h3>
+          </div>
+        </div>
+        <p>Produktionsreife KI on-prem oder hybrid mit Red Hat AI Enterprise. Model Serving, Fine-Tuning mit InstructLab, MLOps-Pipelines und GPU-Management.</p>
+        <ul>
+          <li>OpenShift AI: vLLM-Inferenz im großen Maßstab</li>
+          <li>Fine-Tuning mit InstructLab auf Ihren Daten</li>
+          <li>Edge-Inferenz mit RHEL AI</li>
+        </ul>
+      </div>
+
+      <!-- Automation -->
+      <div class="sol-card rh-card">
+        <div class="sol-header">
+          <div class="sol-icon rh">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 2v8h8l-9 12v-8H4L13 2z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub" style="color:#EE0000;">Red Hat Automation</div>
+            <h3>Infrastruktur-Automatisierung</h3>
+          </div>
+        </div>
+        <p>Ansible Automation Platform für IaC, Konfigurationsmanagement, Multi-Vendor-Netzwerkautomatisierung und Closed-Loop-Remediation, ausgelöst durch Monitoring-Events.</p>
+        <ul>
+          <li>Patching und Lifecycle-Automatisierung im großen Maßstab</li>
+          <li>Multi-Vendor-Netzwerkautomatisierung</li>
+          <li>Event-Driven Ansible für Self-Healing</li>
+        </ul>
+      </div>
+
+      <!-- OpenShift -->
+      <div class="sol-card rh-card">
+        <div class="sol-header">
+          <div class="sol-icon rh">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub" style="color:#EE0000;">Red Hat OpenShift</div>
+            <h3>OpenShift über den gesamten Lifecycle</h3>
+          </div>
+        </div>
+        <p>Von Cluster-Architektur und Deployment über Day-2-Betrieb und Security Hardening bis zur Developer Experience. Ein Partner mit voller Verantwortung.</p>
+        <ul>
+          <li>Plattformdesign, Deployment, Day-2-Betrieb</li>
+          <li>Security Hardening nach CIS/STIG</li>
+          <li>GitOps und Self-Service für Entwickler</li>
+        </ul>
+      </div>
+
+      <!-- Virtualization -->
+      <div class="sol-card rh-card">
+        <div class="sol-header">
+          <div class="sol-icon rh">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
+          </div>
+          <div>
+            <div class="sol-sub" style="color:#EE0000;">Red Hat Virtualization</div>
+            <h3>VMware-Ausstieg &amp; OpenShift Virt</h3>
+          </div>
+        </div>
+        <p>Strukturierte Migration von VMware auf OpenShift mit minimaler Downtime. Sie behalten Ihre VM-Workloads, vereinheitlichen den Betrieb und ebnen den Weg zu Cloud-native, ohne Broadcom-Aufschlag.</p>
+        <ul>
+          <li>TCO-Analyse und Migrations-Roadmap</li>
+          <li>VM-Migration mit Red Hat MTV</li>
+          <li>Einheitlicher Betrieb von VMs und Containern</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="container">
+    <h2>Warum TSP DATA?</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-num">01</div>
+        <h4>Zertifizierter Red Hat Partner</h4>
+        <p>Zertifizierte Architekten und Engineers für den gesamten Red Hat Stack: AI, OpenShift, Ansible und mehr.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-num">02</div>
+        <h4>Erfahrung im Telco-Maßstab</h4>
+        <p>Produktionserfahrung bei Telefonica, T-Mobile, Transport for London (TfL). Enterprise-Komplexität ist für uns Alltag.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-num">03</div>
+        <h4>Gesamter Lifecycle, ein Team</h4>
+        <p>Von Architekturdesign und PoC über das Deployment bis zum Day-2-Betrieb. Ohne Übergabelücken zwischen Projekt und Betrieb.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-num">04</div>
+        <h4>Kein Vendor Lock-in</h4>
+        <p>Offene Standards, Open-Source-Basis. Ihre Infrastruktur, Ihre Daten, Ihre Kontrolle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <p class="cta-eyebrow">Sprechen Sie uns an</p>
+    <h2>Wollen Sie Ihren Infrastruktur-Stack modernisieren?</h2>
+    <p>Von KI bis zum VMware-Ausstieg: ein Team für alle sieben Leistungsbereiche, mit voller Verantwortung. Gemeinsam finden wir den passenden Einstieg für Ihr Unternehmen.</p>
+    <a href="mailto:info@tspdata.cz" class="cta-btn">Kontakt aufnehmen</a>
+    <div class="cta-contact">
+      <span>+420 281 864 203</span>
+      <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div>
+      <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+        <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+        <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+        <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+        <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+        <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+        <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+        <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+        <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+        <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+      </svg>
+      <span class="footer-slogan">Success driven by data.</span>
+    </div>
+    <div class="footer-contact">
+      <a href="tel:+420281864203">+420 281 864 203</a>
+      <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      <a href="mailto:info@tspdata.cz">info@tspdata.cz</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
