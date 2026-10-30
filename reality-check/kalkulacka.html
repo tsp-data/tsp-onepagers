@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROI kalkulačka AI projektu | TSP DATA, a.s.</title>
+  <meta name="description" content="ROI kalkulačka jednoho AI projektu, která odděluje doložený přínos od odhadu. Čísla zůstávají ve vašem prohlížeči." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* TSP DATA Brand System, shodné s ostatními one-pagery */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;
+      --radius-card: 6px;
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font-base); font-size: 16px; line-height: 1.6; color: var(--tsp-text); background: var(--tsp-offwhite); overflow-x: hidden; }
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p { font-size: 1rem; line-height: 1.7; }
+
+    .site-header { background: var(--tsp-white); border-bottom: 3px solid var(--tsp-red); padding: 18px 24px; }
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-header .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .site-header .logo-svg { width: 102px; height: auto; flex-shrink: 0; }
+    .site-header .doc-label { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-white); background: var(--tsp-red); padding: 4px 10px; border-radius: 3px; }
+
+    .hero { background: var(--tsp-dark); color: var(--tsp-white); padding: var(--section-pad); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -40px; right: -60px; width: 280px; height: 280px; background: var(--tsp-blue); opacity: 0.25; transform: rotate(15deg) skewX(10deg); }
+    .hero::after { content: ''; position: absolute; bottom: -50px; right: 40px; width: 160px; height: 160px; background: var(--tsp-teal); opacity: 0.15; border-radius: var(--radius-human); }
+    .hero .container { position: relative; z-index: 1; }
+    .hero .hero-eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 12px; }
+    .hero h1 { color: var(--tsp-white); margin-bottom: 16px; max-width: 640px; }
+    .hero .hero-intro { font-size: 1.0625rem; color: var(--tsp-light); max-width: 620px; margin-bottom: 0; }
+    .hero .hero-intro + .hero-intro { margin-top: 10px; font-size: 0.9375rem; }
+
+    .section-header { margin-bottom: 24px; }
+    .section-header h2 { color: var(--tsp-dark); margin-bottom: 8px; }
+    .section-header .section-lead { color: var(--tsp-text-muted); font-size: 0.9375rem; }
+
+    .cta-btn { display: inline-block; background: var(--tsp-red); color: var(--tsp-white); font-family: var(--font-base); font-size: 0.9375rem; font-weight: 600; padding: 13px 32px; border-radius: 4px; border: 0; cursor: pointer; transition: background 0.15s; }
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    .site-footer { background: var(--tsp-offwhite); border-top: 1px solid var(--tsp-light); padding: 20px 24px; }
+    .site-footer .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .site-footer .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .site-footer .footer-logo { width: 64px; height: auto; }
+    .site-footer .footer-slogan { font-size: 0.8rem; color: var(--tsp-text-muted); font-style: italic; }
+    .site-footer .footer-contact { font-size: 0.8125rem; color: var(--tsp-text-muted); text-align: right; line-height: 1.8; }
+    .site-footer .footer-contact a { color: var(--tsp-teal); }
+
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+      .site-header { padding: 14px 16px; }
+      .site-header .container { padding: 0; }
+      .site-header .logo-wrap > span { display: none; }
+      .site-header .logo-svg { width: 84px; }
+      .site-header .doc-label { font-size: 0.68rem; }
+      .container { padding: 0 16px; }
+      .site-footer { padding: 20px 16px; }
+      .site-footer .container { flex-direction: column; align-items: flex-start; padding: 0; }
+      .site-footer .footer-contact { text-align: left; }
+    }
+
+
+    /* ---------- kalkulačka ---------- */
+    .hero.compact { padding: 40px 24px; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 56px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+    .btn { font-family: var(--font-base); font-size: 0.9rem; font-weight: 600; padding: 11px 18px; min-height: 44px; border-radius: 4px; cursor: pointer; border: 2px solid var(--tsp-dark); background: var(--tsp-white); color: var(--tsp-dark); }
+    .btn:hover { background: var(--tsp-dark); color: var(--tsp-white); }
+    .btn.primary { background: var(--tsp-red); border-color: var(--tsp-red); color: var(--tsp-white); }
+    .btn.primary:hover { background: #c4210f; border-color: #c4210f; }
+    .btn.small { min-height: 36px; padding: 6px 12px; font-size: 0.8125rem; }
+    .btn.ghost { border-color: var(--tsp-light); color: var(--tsp-text-muted); }
+    .chk { display: inline-flex; align-items: center; gap: 8px; font-size: 0.875rem; cursor: pointer; }
+    .chk input { width: 20px; height: 20px; accent-color: var(--tsp-teal); flex-shrink: 0; }
+    .banner { background: var(--tsp-dark); color: var(--tsp-white); border-left: 5px solid var(--tsp-teal); padding: 12px 16px; border-radius: var(--radius-card); margin-bottom: 16px; font-size: 0.9rem; }
+    details.legend, details.how { background: var(--tsp-white); border-radius: var(--radius-card); border: 1px solid var(--tsp-light); margin-bottom: 20px; }
+    details > summary { cursor: pointer; padding: 12px 16px; font-weight: 600; color: var(--tsp-dark); min-height: 44px; display: flex; align-items: center; }
+    details > summary::marker { color: var(--tsp-teal); }
+    details .dbody { padding: 0 16px 14px; font-size: 0.875rem; color: var(--tsp-text-muted); white-space: pre-line; }
+    details .dbody p { font-size: 0.875rem; margin-bottom: 8px; }
+
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 28px; align-items: start; }
+    .result { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; background: var(--tsp-white); border-top: 4px solid var(--tsp-red); border-radius: var(--radius-card); padding: 18px 18px 22px; scroll-margin-top: 60px; }
+    .sec { background: var(--tsp-white); border-top: 4px solid var(--tsp-red); border-radius: var(--radius-card); padding: 22px 22px 24px; margin-bottom: 20px; }
+    .sec > h2 { font-size: 1.25rem; color: var(--tsp-dark); margin-bottom: 6px; }
+    .sec > .lead { font-size: 0.9rem; color: var(--tsp-text-muted); margin-bottom: 16px; line-height: 1.55; }
+    .sec h3.branch { color: var(--tsp-blue); font-size: 1.05rem; margin: 22px 0 6px; padding-bottom: 6px; border-bottom: 2px solid var(--tsp-light); }
+    .branch-lead { font-size: 0.875rem; color: var(--tsp-text-muted); margin-bottom: 12px; line-height: 1.55; }
+    .rowbox { border: 1.5px solid var(--tsp-light); border-radius: var(--radius-card); padding: 14px 14px 6px; margin-bottom: 12px; background: #fafcfc; }
+    .rowbox .rowhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tsp-text-muted); }
+    details.sub { border: 1.5px solid var(--tsp-light); border-radius: var(--radius-card); margin-bottom: 12px; background: #fafcfc; }
+    details.sub > summary { color: var(--tsp-blue); font-size: 1rem; }
+    details.sub > .subbody { padding: 0 14px 8px; }
+
+    .fld { margin-bottom: 14px; min-width: 0; }
+    .fld > label, .fld > .lbl { display: block; font-size: 0.9rem; font-weight: 600; color: var(--tsp-dark); line-height: 1.35; }
+    .hint { font-size: 0.8rem; color: var(--tsp-text-muted); line-height: 1.45; margin: 2px 0 6px; }
+    .inrow { display: flex; align-items: center; gap: 8px; }
+    .inrow .unit { font-size: 0.85rem; color: var(--tsp-text-muted); white-space: nowrap; }
+    .fld input[type=text], .fld input[type=date], .fld select, .fld textarea {
+      width: 100%; min-width: 0; font-family: var(--font-base); font-size: 16px; color: var(--tsp-text);
+      background: var(--tsp-white); border: 1.5px solid var(--tsp-light); border-radius: 4px; padding: 9px 11px; min-height: 44px; }
+    .fld textarea { min-height: 78px; resize: vertical; }
+    .fld input:focus, .fld select:focus, .fld textarea:focus, .btn:focus-visible, .seg button:focus-visible, summary:focus-visible { outline: 3px solid var(--tsp-teal); outline-offset: 1px; border-color: var(--tsp-teal); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+    .note { font-size: 0.8rem; color: var(--tsp-blue); background: #e7f1f3; border-left: 3px solid var(--tsp-teal); padding: 6px 10px; margin: 4px 0 10px; border-radius: 3px; line-height: 1.45; }
+    .note.warn { color: #8a1409; background: #fdeceb; border-left-color: var(--tsp-red); }
+    .seg { display: inline-flex; border: 1.5px solid var(--tsp-dark); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+    .seg button { font-family: var(--font-base); font-size: 0.8125rem; font-weight: 600; padding: 7px 14px; min-height: 36px; border: 0; background: var(--tsp-white); color: var(--tsp-dark); cursor: pointer; }
+    .seg button + button { border-left: 1.5px solid var(--tsp-dark); }
+    .seg button[aria-pressed=true] { background: var(--tsp-dark); color: var(--tsp-white); }
+    .tagbox { margin: -4px 0 14px; }
+    .calc { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; background: var(--tsp-offwhite); border-radius: 4px; padding: 8px 12px; margin: 4px 0 12px; font-size: 0.9rem; }
+    .calc .cl { color: var(--tsp-text-muted); }
+    .calc .cv { font-weight: 700; color: var(--tsp-dark); }
+    .multi { display: grid; gap: 6px; }
+    .multi label { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; font-size: 0.9rem; }
+    .multi input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--tsp-teal); flex-shrink: 0; }
+    .addrow { margin: 4px 0 6px; }
+    [hidden] { display: none !important; }
+
+    /* štítky */
+    .pill { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 1px 8px; border-radius: 999px; line-height: 1.6; white-space: nowrap; vertical-align: middle; }
+    .pl-dol { background: var(--tsp-teal); color: var(--tsp-dark); }
+    .pl-spoc { background: var(--tsp-blue); color: var(--tsp-white); }
+    .pl-odh { background: var(--tsp-white); color: var(--tsp-dark); border: 1.5px dashed var(--tsp-dark); padding: 0 7px; }
+    .pl-bez { background: var(--tsp-light); color: var(--tsp-dark); }
+    .pl-chyb { background: var(--tsp-red); color: var(--tsp-white); }
+    .pl-scen { background: var(--tsp-dark); color: var(--tsp-white); font-size: 0.72rem; padding: 2px 10px; }
+    .st { display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 9px 2px 7px; border-radius: 999px; white-space: nowrap; }
+    .st svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .st-ok { background: var(--tsp-teal); color: var(--tsp-dark); }
+    .st-pozor { background: var(--tsp-white); color: var(--tsp-red); border: 1.5px solid var(--tsp-red); padding: 1px 8px 1px 6px; }
+    .st-chybi { background: var(--tsp-red); color: var(--tsp-white); }
+    .st-ne { background: var(--tsp-light); color: var(--tsp-dark); }
+
+    /* výsledek */
+    .result h2 { font-size: 1.25rem; color: var(--tsp-dark); margin-bottom: 10px; }
+    .result h3 { font-size: 0.95rem; color: var(--tsp-blue); margin: 18px 0 8px; }
+    .rt-row { border: 1.5px solid var(--tsp-light); border-radius: var(--radius-card); padding: 10px 12px; margin-bottom: 10px; }
+    .rt-head { margin-bottom: 8px; }
+    .rt-head .t { font-weight: 700; color: var(--tsp-dark); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .rt-head .s { font-size: 0.78rem; color: var(--tsp-text-muted); line-height: 1.35; }
+    .cells { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+    .cell .cl { font-size: 0.68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--tsp-text-muted); }
+    .cell .cv { font-size: 1.05rem; font-weight: 700; color: var(--tsp-dark); line-height: 1.3; overflow-wrap: anywhere; }
+    .cell .cs { font-size: 0.72rem; color: var(--tsp-text-muted); line-height: 1.35; }
+    .cell .pill { margin-top: 2px; }
+    .vet { background: var(--tsp-dark); color: var(--tsp-white); border-left: 5px solid var(--tsp-teal); border-radius: var(--radius-card); padding: 12px 14px; margin: 12px 0; font-size: 0.95rem; line-height: 1.5; }
+    .todo { margin: 0 0 6px; padding-left: 0; list-style: none; font-size: 0.85rem; }
+    .todo li { padding: 5px 0 5px 16px; position: relative; border-bottom: 1px solid var(--tsp-offwhite); line-height: 1.45; }
+    .todo li::before { content: ''; position: absolute; left: 0; top: 12px; width: 7px; height: 7px; background: var(--tsp-teal); border-radius: 50%; }
+    .guard { padding: 8px 0; border-bottom: 1px solid var(--tsp-offwhite); }
+    .guard .gq { font-size: 0.85rem; font-weight: 600; color: var(--tsp-dark); margin-bottom: 3px; }
+    .guard .gt { font-size: 0.82rem; color: var(--tsp-text-muted); margin-top: 3px; line-height: 1.45; }
+    .mimo { font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid var(--tsp-offwhite); line-height: 1.45; }
+    .mimo .mn { color: var(--tsp-text-muted); font-size: 0.78rem; }
+    .formbox { border: 1.5px solid var(--tsp-teal); border-radius: var(--radius-card); padding: 10px 12px; background: #f3fbfb; }
+    .formbox pre { font-family: var(--font-base); font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; line-height: 1.55; color: var(--tsp-dark); user-select: all; }
+    .formbox .btn { margin-top: 8px; }
+
+    /* plovoucí lišta, jen mobil */
+    .floatbar { display: none; position: sticky; top: 0; z-index: 30; background: var(--tsp-dark); color: var(--tsp-white); padding: 8px 16px; font-size: 0.82rem; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 3px solid var(--tsp-teal); }
+    .floatbar:hover { text-decoration: none; }
+    .floatbar b { color: var(--tsp-white); }
+    .floatbar .go { color: var(--tsp-teal); font-weight: 700; white-space: nowrap; }
+
+    .print-only { display: none; }
+
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .result { position: static; max-height: none; overflow: visible; }
+      .floatbar { display: flex; }
+      .wrap { padding: 16px 16px 40px; }
+    }
+    @media (max-width: 640px) {
+      .grid2 { grid-template-columns: 1fr; }
+      .sec { padding: 18px 14px 18px; }
+      .btn { flex: 1 1 auto; }
+      .toolbar .chk { flex-basis: 100%; }
+    }
+    @media (max-width: 380px) { .cells { grid-template-columns: 1fr; } }
+    @media (min-width: 1100px) { .cells { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    /* ---------- tisk: souhrn A4 ---------- */
+    @page { size: A4 portrait; margin: 11mm 12mm; }
+    @media print {
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      html, body { background: #fff; overflow: visible; }
+      body { font-size: 9pt; line-height: 1.35; }
+      .screen { display: none !important; }
+      .print-only { display: block; }
+      #print-rozpis { display: none; }
+      body.with-rozpis #print-rozpis { display: block; break-before: page; page-break-before: always; }
+      .ps h1 { font-size: 15pt; margin-bottom: 2pt; color: var(--tsp-dark); }
+      .ps .ps-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2.5pt solid var(--tsp-red); padding-bottom: 6pt; margin-bottom: 8pt; }
+      .ps .ps-head svg { width: 80pt; height: auto; }
+      .ps .ps-head .r { font-size: 8.5pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tsp-red); }
+      .ps .ps-sub { font-size: 8.5pt; color: var(--tsp-text-muted); margin-bottom: 6pt; }
+      .ps h3 { font-size: 9.5pt; color: var(--tsp-blue); margin: 8pt 0 3pt; }
+      .ps .vet { margin: 6pt 0; padding: 6pt 9pt; font-size: 9.5pt; }
+      .ps .rt-row { padding: 5pt 8pt; margin-bottom: 5pt; break-inside: avoid; }
+      .ps .rt-head { margin-bottom: 3pt; }
+      .ps .cells { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4pt 8pt; }
+      .ps .cell .cv { font-size: 10pt; }
+      .ps .cell .cs, .ps .rt-head .s { font-size: 7pt; }
+      .ps .cell .cl { font-size: 6.5pt; }
+      .ps .guard { padding: 3pt 0; break-inside: avoid; display: grid; grid-template-columns: 84pt 1fr; gap: 6pt; align-items: start; }
+      .ps .guard .gq { font-size: 8.5pt; margin: 0; }
+      .ps .guard .gt { font-size: 8pt; margin: 0; }
+      .ps .pill { font-size: 6.5pt; padding: 0 6pt; }
+      .ps .pl-odh { padding: 0 5pt; }
+      .ps .pl-scen { font-size: 6.5pt; padding: 0 7pt; }
+      .ps .st { font-size: 6.5pt; padding: 1pt 6pt 1pt 5pt; }
+      .ps .mimo .mn { font-size: 7.5pt; }
+      .ps .todo li { padding: 2pt 0 2pt 12pt; font-size: 8.5pt; }
+      .ps .todo li::before { top: 6pt; }
+      .ps .mimo { padding: 2pt 0; font-size: 8.5pt; }
+      .ps .formbox { padding: 5pt 8pt; margin-top: 3pt; break-inside: avoid; }
+      .ps .formbox pre { font-size: 8.5pt; line-height: 1.4; user-select: auto; }
+      .ps .ps-foot { margin-top: 8pt; padding-top: 5pt; border-top: 1pt solid var(--tsp-light); font-size: 7.5pt; color: var(--tsp-text-muted); }
+      .rp h1 { font-size: 14pt; color: var(--tsp-dark); margin-bottom: 6pt; }
+      .rp h3 { font-size: 10pt; color: var(--tsp-blue); margin: 10pt 0 4pt; }
+      .rp table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+      .rp th { text-align: left; background: var(--tsp-dark); color: #fff; padding: 3pt 5pt; font-size: 8pt; }
+      .rp td { padding: 3pt 5pt; border-bottom: .5pt solid var(--tsp-light); vertical-align: top; }
+      .rp td.am, .rp th.am { text-align: right; white-space: nowrap; }
+    }
+    .site-header .container, .hero .container, .site-footer .container { max-width: 1200px; }
+.tagbox .seg { margin-bottom: 8px; }
+    .fld > label.chk { display: flex; align-items: flex-start; gap: 8px; font-weight: 600; }
+    .rowhead .btn { flex: 0 0 auto; }
+
+  </style>
+</head>
+<body>
+  <header class="site-header screen">
+    <div class="container">
+      <div class="logo-wrap">
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span style="font-size:0.8rem;color:var(--tsp-text-muted);font-style:italic;">Success driven by data.</span>
+      </div>
+      <span class="doc-label">AI ROI Reality Check</span>
+    </div>
+  </header>
+
+  <a class="floatbar screen" id="floatbar" href="#vysledek" aria-label="Přejít na výsledek"></a>
+
+  <section class="hero compact screen">
+    <div class="container">
+      <p class="hero-eyebrow">AI ROI Reality Check</p>
+      <h1>ROI kalkulačka AI projektu</h1>
+      <p class="hero-intro">Spočítejte přínos a náklad jednoho AI projektu. U každé částky uveďte, čím ji doložíte. Výsledek ukáže dvě ROI: z doloženého přínosu a scénář, který zahrnuje i odhady.</p>
+      <p class="hero-intro">Čísla zůstávají ve vašem prohlížeči, nikam je neodesíláme. Řádky do formuláře výzvy najdete na konci výsledku.</p>
+    </div>
+  </section>
+
+  <main class="wrap screen">
+    <div class="toolbar">
+      <button type="button" class="btn" id="btn-sample">Načíst ukázkový příklad</button>
+      <button type="button" class="btn" id="btn-clear">Vymazat vše</button>
+      <button type="button" class="btn primary" id="btn-print">Vytisknout nebo uložit jako PDF</button>
+      <label class="chk"><input type="checkbox" id="rozpis" /> Přiložit rozpis položek</label>
+    </div>
+    <div class="banner" id="sampleBanner" hidden>Ukázkový příklad se smyšlenými čísly. Vlastní výpočet začnete tlačítkem Vymazat vše.</div>
+
+    <details class="legend">
+      <summary>Značky důkazu</summary>
+      <div class="dbody"><span class="pill pl-dol">doloženo</span> faktura, výkaz, smlouva, data ze systému, nebo potvrzení konkrétního člověka s datem.
+<span class="pill pl-spoc">spočítáno</span> výpočet z doložených vstupů, značku přidělí kalkulačka.
+<span class="pill pl-odh">odhad</span> odhad nebo scénář.
+<span class="pill pl-bez">bez čísla</span> zlepšení popsané slovy.
+<span class="pill pl-chyb">chybí</span> údaj chybí a nepočítá se jako nula.
+Složené číslo má značku nejslabšího vstupu.</div>
+    </details>
+
+    <div class="layout">
+      <div id="form"></div>
+      <aside class="result" id="vysledek" aria-live="polite" aria-label="Výsledek"></aside>
+    </div>
+  </main>
+
+  <footer class="site-footer screen">
+    <div class="container">
+      <div class="footer-brand">
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">Success driven by data.</span>
+      </div>
+      <div class="footer-contact">
+        TSP DATA, a.s. &nbsp;·&nbsp; Tomíčkova 2144/1, Praha 4, 148 00<br />
+        <a href="tel:+420281864203">+420 281 864 203</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.tspdata.cz">www.tspdata.cz</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="print-sum" class="print-only"></div>
+  <div id="print-rozpis" class="print-only"></div>
+
+  <script id="airoi-core">
+/* AIROI core: čistý výpočet bez DOM. Testuje se v node, v prohlížeči visí na window.AIROI. */
+(function (root) {
+  'use strict';
+
+  var HODIN_NA_UVAZEK_MESICNE = 160;
+  var NB = ' ';
+  var MINUS = '−';
+  var RANK = { 'doloženo': 0, 'spočítáno': 1, 'odhad': 2, 'bez čísla': 3, 'chybí': 4 };
+  var TAGS = ['doloženo', 'spočítáno', 'odhad', 'bez čísla', 'chybí'];
+
+  var OPT = {
+    zdroj: [
+      'Data ze systému z doby před AI (ERP, tickety, výkazy, faktury)',
+      'Tým nebo projekty bez AI ve stejném období (kontrolní skupina)',
+      'Nabídka dodavatele: co byste bez AI koupili',
+      'Odhad lidí',
+      'Baseline nemáme'
+    ],
+    vykaz: ['Ano, úplnost potvrdil(a)', 'Nevíme', 'Ne', 'Hodiny v kalkulaci nepoužíváme'],
+    bVznik: ['Nákup byl v rozpočtu, poptaný nebo objednaný (doloženo)', 'Předpoklad (odhad)'],
+    c2Dukaz: ['Schválené místo, které jste zrušili (doloženo)', 'Plán bez schválení (odhad)'],
+    c3Dukaz: [
+      'Rozhodnutí s dokladem: ukončená smlouva s agenturou, zrušené přesčasy (doloženo)',
+      'Srovnání mezd nebo faktur bez rozhodnutí (odhad)',
+      'Odhad'
+    ],
+    dUkazatel: [
+      'Lead time (jak dlouho případ trvá)', 'Případy na FTE', 'Podíl vrácených případů',
+      'Backlog (kolik práce čeká)', 'Jiný'
+    ],
+    dZdroj: ['Data ze systému (doloženo)', 'Odhad lidí (odhad)'],
+    rRozh: [
+      'Pokračujeme', 'Změnili jsme způsob použití', 'Omezili jsme výdaje', 'Začali jsme měřit',
+      'Ověřili jsme, že to děláme správně, a nic neměníme', 'Zatím jsme nerozhodli'
+    ],
+    rDoklad: [
+      'Zatím ničím, je to záměr',
+      'Změnilo se pravidlo nebo proces (třeba schvalování AI projektů)',
+      'Faktura nebo výpis (třeba nižší faktura za licence)',
+      'Měření (výkazy, tickety, data z nástroje)',
+      'Jinak (doplňte)'
+    ],
+    rKcTag: ['Doložená fakturou, výpisem nebo měřením', 'Odhad']
+  };
+
+  /* ---------- pomocné funkce ---------- */
+  function trim(s) { return String(s === null || s === undefined ? '' : s).trim(); }
+
+  function num(s) {
+    if (s === null || s === undefined) return null;
+    if (typeof s === 'number') return isFinite(s) ? s : null;
+    var t = String(s).replace(/[\s ]/g, '').replace(',', '.').replace(/−/g, '-');
+    if (t === '' || t === '-' || t === '+') return null;
+    var n = Number(t);
+    return isFinite(n) ? n : null;
+  }
+
+  function has(s) { return num(s) !== null; }
+
+  function parseDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trim(s));
+    if (!m) return null;
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function fmtDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trim(s));
+    if (!m) return trim(s);
+    return (+m[3]) + '. ' + (+m[2]) + '. ' + m[1];
+  }
+
+  function group(intStr) { return intStr.replace(/\B(?=(\d{3})+(?!\d))/g, NB); }
+
+  function fmtNum(n, dec) {
+    dec = dec || 0;
+    var f = Math.pow(10, dec);
+    var r = Math.round(Math.abs(n) * f) / f;
+    var neg = n < 0 && r !== 0;
+    var s = r.toFixed(dec).split('.');
+    var out = group(s[0]) + (s[1] ? ',' + s[1] : '');
+    return (neg ? MINUS : '') + out;
+  }
+
+  function fmtKc(n) { return fmtNum(n, 0) + NB + 'Kč'; }
+
+  function fmtRoi(x) {
+    var one = Math.round(Math.abs(x) * 10) / 10;
+    var pct = Math.round(Math.abs(x) * 100);
+    var neg = x < 0 && (one !== 0 || pct !== 0);
+    return (neg ? MINUS : '') + fmtNum(one, 1) + '×' + NB + '(' + (neg ? MINUS : '') + pct + NB + '%)';
+  }
+
+  function mesicu(n) {
+    var a = Math.abs(n);
+    if (a === 1) return 'měsíc';
+    if (a >= 2 && a <= 4) return 'měsíce';
+    return 'měsíců';
+  }
+
+  function effTag(t, d) { return (t === 'doloz' && trim(d)) ? 'doloženo' : 'odhad'; }
+
+  function combine(list) {
+    if (!list.length) return 'doloženo';
+    var w = 0;
+    list.forEach(function (t) { if (RANK[t] > w) w = RANK[t]; });
+    if (w === 0) return list.length === 1 ? 'doloženo' : 'spočítáno';
+    return TAGS[w];
+  }
+
+  function weakest(list) {
+    var w = 0;
+    list.forEach(function (t) { if (RANK[t] > w) w = RANK[t]; });
+    return TAGS[w];
+  }
+
+  function normTeam(s) { return trim(s).toLowerCase().replace(/\s+/g, ' '); }
+
+  function blankRow(kind) {
+    if (kind === 'A') return { popis: '', pred: '', po: '', t: 'odhad', d: '' };
+    if (kind === 'B') return { popis: '', cena: '', cena_t: 'odhad', cena_d: '', vznik: OPT.bVznik[1], vznik_d: '', hod: '', hod_t: 'odhad', hod_d: '', tym: '', vbaseline: '' };
+    return { ukazatel: '', jiny: '', jednotka: '', pred: '', po: '', zdroj: OPT.dZdroj[1], zdroj_d: '', kpred: '', kpo: '' };
+  }
+
+  function emptyState(today) {
+    return {
+      p_typ: '', p_ai_od: '', p_do: today || '', M: '', p_sazba: '', p_sazba_t: 'odhad', p_sazba_d: '',
+      b_zdroj: '', b_od: '', b_do: '', b_hod_bez: '', b_hod_s: '', b_hod_s_t: 'odhad', b_hod_s_d: '',
+      b_vykaz: '', b_vykaz_kdo: '', b_vykaz_kdy: '',
+      A: [{ popis: '', pred: '', po: '', t: 'odhad', d: '' }],
+      B: [{ popis: '', cena: '', cena_t: 'odhad', cena_d: '', vznik: OPT.bVznik[1], vznik_d: '', hod: '', hod_t: 'odhad', hod_d: '', tym: '', vbaseline: '' }],
+      c1_hod: '', c1_cena: '', c1_cena_t: 'odhad', c1_cena_d: '', c1_tym: '',
+      c2_fte: '', c2_naklad: '', c2_naklad_t: 'odhad', c2_naklad_d: '', c2_mesicu: '', c2_dukaz: OPT.c2Dukaz[1], c2_dukaz_d: '', c2_tym: '',
+      c3_popis: '', c3_pred: '', c3_po: '', c3_dukaz: OPT.c3Dukaz[2], c3_dukaz_d: '', c3_tym: '',
+      potvrzeni: false,
+      D: [blankRow('D')], d_slovy: '',
+      s_hod: '', s_kc: '', s_kdo: '', s_kdy: '',
+      n1_ks: '', n1_cena: '', n1_t: 'odhad', n1_d: '',
+      n1_tokeny: '', n1_tokeny_t: 'odhad', n1_tokeny_d: '',
+      n1_jine: '', n1_jine_t: 'odhad', n1_jine_d: '',
+      n2_kc: '', n2_kc_t: 'odhad', n2_kc_d: '', n2_hod: '', n2_hod_t: 'odhad', n2_hod_d: '',
+      n3_lidi: '', n3_hod: '', n3_t: 'odhad', n3_d: '', n3_kc: '', n3_kc_t: 'odhad', n3_kc_d: '',
+      n4_hod: '', n4_hod_t: 'odhad', n4_hod_d: '', n4_kc: '', n4_kc_t: 'odhad', n4_kc_d: '',
+      n5_hod: '', n5_hod_t: 'odhad', n5_hod_d: '',
+      r_rozh: '', r_co: '', r_doklad: [], r_kc: '', r_kc_tag: '',
+      rozpis: false, sample: false
+    };
+  }
+
+  function sampleState(today) {
+    var S = emptyState(today);
+    S.p_typ = 'AI asistent pro celou firmu';
+    S.p_ai_od = '2026-05-01'; S.p_do = '2026-10-31'; S.M = '6';
+    S.p_sazba = '500'; S.p_sazba_t = 'doloz'; S.p_sazba_d = 'mzdové náklady a režie z účetnictví 2025';
+    S.b_zdroj = OPT.zdroj[0]; S.b_od = '2025-05-01'; S.b_do = '2026-04-30';
+    S.b_vykaz = OPT.vykaz[3];
+    S.A = [{ popis: 'Subdodávka překladů', pred: '20000', po: '0', t: 'doloz', d: 'faktury za duben a říjen, výpověď smlouvy k 30. 4. 2026' }];
+    S.B = [{ popis: 'Externí rešerše trhu', cena: '80000', cena_t: 'doloz', cena_d: 'nabídka dodavatele z března 2026',
+      vznik: OPT.bVznik[1], vznik_d: '', hod: '40', hod_t: 'odhad', hod_d: '', tym: 'marketing', vbaseline: '' }];
+    S.c2_fte = '1'; S.c2_naklad = '60000'; S.c2_naklad_t = 'doloz'; S.c2_naklad_d = 'mzdový výměr podobné pozice';
+    S.c2_mesicu = '6'; S.c2_dukaz = OPT.c2Dukaz[1]; S.c2_tym = 'zákaznická podpora';
+    S.c3_popis = 'Přesčasy v účtárně'; S.c3_pred = '25000'; S.c3_po = '15000'; S.c3_dukaz = OPT.c3Dukaz[1]; S.c3_tym = 'účtárna';
+    S.potvrzeni = true;
+    S.D = [{ ukazatel: OPT.dUkazatel[0], jiny: '', jednotka: 'h', pred: '48', po: '24', zdroj: OPT.dZdroj[0], zdroj_d: 'export z ticketového systému', kpred: '', kpo: '' }];
+    S.s_hod = '0'; S.s_kc = '0'; S.s_kdo = 'vedoucí zákaznické podpory'; S.s_kdy = '2026-11-03';
+    S.n1_ks = '100'; S.n1_cena = '500'; S.n1_t = 'doloz'; S.n1_d = 'faktury za květen až říjen';
+    S.n1_tokeny = '0'; S.n1_jine = '0';
+    S.n2_kc = '30000'; S.n2_kc_t = 'doloz'; S.n2_kc_d = 'faktura dodavatele'; S.n2_hod = '0';
+    S.n3_lidi = '100'; S.n3_hod = '1'; S.n3_t = 'doloz'; S.n3_d = 'prezenční listina'; S.n3_kc = '0';
+    S.n4_hod = '10'; S.n4_hod_t = 'doloz'; S.n4_hod_d = 'záznamy v kalendáři'; S.n4_kc = '0';
+    S.n5_hod = '5'; S.n5_hod_t = 'doloz'; S.n5_hod_d = 'výkaz správce licencí';
+    S.r_rozh = OPT.rRozh[2];
+    S.r_co = 'Zrušili jsme 30 licencí, které nikdo 60 dní nepoužil. Nový AI projekt musí mít před schválením finanční přínos, baseline a plán ověření.';
+    S.r_doklad = [OPT.rDoklad[1], OPT.rDoklad[2]];
+    S.r_kc = '15000'; S.r_kc_tag = OPT.rKcTag[0];
+    S.sample = true;
+    return S;
+  }
+
+  /* ---------- hlavní výpočet ---------- */
+  function compute(S) {
+    var noDoc = [];
+    function flag(name) { if (noDoc.indexOf(name) < 0) noDoc.push(name); }
+
+    var d1 = parseDate(S.p_ai_od), d2 = parseDate(S.p_do);
+    var Mauto = null;
+    if (d1 && d2) Mauto = Math.max(1, Math.round(((d2 - d1) / 864e5 + 1) / 30.4375));
+    var Mm = num(S.M);
+    var M = (Mm !== null && Mm > 0) ? Mm : Mauto;
+
+    var saz = { v: num(S.p_sazba), tag: effTag(S.p_sazba_t, S.p_sazba_d), t: S.p_sazba_t, d: trim(S.p_sazba_d) };
+    function useSaz() {
+      if (saz.t === 'doloz' && !saz.d) flag('Plná sazba za hodinu');
+      return saz.tag;
+    }
+    function inp(obj, id, tkey, label) {
+      var t = obj[tkey + '_t'], d = obj[tkey + '_d'];
+      return { v: num(obj[id]), tag: effTag(t, d), t: t, d: trim(d), label: label };
+    }
+    function useInp(i) {
+      if (i.t === 'doloz' && !i.d) flag(i.label);
+      return i.tag;
+    }
+    function nz(i) { return i.v !== null && i.v !== 0; }
+
+    var items = [];
+    function item(o) { items.push(o); return o; }
+    function miss(it, note) { it.value = null; it.tag = 'chybí'; it.note = note || ''; return it; }
+
+    /* --- větev A --- */
+    (S.A || []).forEach(function (row, i) {
+      if (!(trim(row.popis) || has(row.pred) || has(row.po))) return;
+      var name = trim(row.popis) || ('Větev A, řádek ' + (i + 1));
+      var it = item({ key: 'A' + (i + 1), branch: 'A', name: name, section: 'Zrušené nebo snížené výdaje', doklad: trim(row.d), team: '' });
+      var pred = num(row.pred), po = num(row.po);
+      if (pred === null || po === null) return miss(it, 'Vyplňte výdaj před AI i teď.');
+      if (M === null) return miss(it, 'Chybí počet měsíců.');
+      it.value = (pred - po) * M;
+      if (row.t === 'doloz' && !trim(row.d) && (pred !== 0 || po !== 0)) flag(name);
+      it.tag = effTag(row.t, row.d) === 'doloženo' ? 'spočítáno' : 'odhad';
+    });
+
+    /* --- větev B --- */
+    (S.B || []).forEach(function (row, i) {
+      if (!(trim(row.popis) || has(row.cena) || has(row.hod) || trim(row.tym))) return;
+      var name = trim(row.popis) || ('Ušetřený nákup, řádek ' + (i + 1));
+      var it = item({ key: 'B' + (i + 1), branch: 'B', name: name, section: 'Ušetřený nákup', team: trim(row.tym), vbaseline: row.vbaseline === 'ano' });
+      var cena = inp(row, 'cena', 'cena', name), hod = inp(row, 'hod', 'hod', name);
+      var docs = [];
+      if (trim(row.cena_d)) docs.push(trim(row.cena_d));
+      if (trim(row.vznik_d)) docs.push(trim(row.vznik_d));
+      if (trim(row.hod_d)) docs.push(trim(row.hod_d));
+      it.doklad = docs.join('; ');
+      if (cena.v === null || hod.v === null) return miss(it, 'Vyplňte cenu nákupu i vlastní práci (případně 0).');
+      if (hod.v !== 0 && saz.v === null) return miss(it, 'Chybí plná sazba za hodinu.');
+      var tags = [];
+      if (nz(cena)) tags.push(useInp(cena));
+      var vznikDol = row.vznik === OPT.bVznik[0];
+      if (vznikDol && !trim(row.vznik_d)) flag(name);
+      tags.push(vznikDol && trim(row.vznik_d) ? 'doloženo' : 'odhad');
+      if (nz(hod)) { tags.push(useInp(hod)); tags.push(useSaz()); }
+      it.value = cena.v - hod.v * (saz.v || 0);
+      var bt = combine(tags);
+      it.tag = bt === 'doloženo' ? 'spočítáno' : bt;
+    });
+
+    /* --- baseline hodiny --- */
+    var vykaz = S.b_vykaz;
+    var hoursFilled = has(S.b_hod_bez) || has(S.b_hod_s);
+    var uvolneno = { value: null, tag: 'chybí' };
+    if (has(S.b_hod_bez) && has(S.b_hod_s) && vykaz !== OPT.vykaz[2]) {
+      uvolneno = { value: num(S.b_hod_bez) - num(S.b_hod_s), tag: 'odhad' };
+    }
+
+    /* --- větev C1 --- */
+    var c1 = null;
+    if (has(S.c1_hod) || has(S.c1_cena) || trim(S.c1_tym)) {
+      c1 = item({ key: 'C1', branch: 'C', name: 'Prodaný čas', section: 'Prodaný čas', team: trim(S.c1_tym), doklad: trim(S.c1_cena_d) });
+      var c1c = inp(S, 'c1_cena', 'c1_cena', 'Prodejní cena hodiny');
+      var c1h = num(S.c1_hod);
+      c1.notes = [];
+      if (uvolneno.value === null) {
+        miss(c1, 'Bez hodin baseline nejde říct, které hodiny uvolnila AI.');
+      } else if (c1h === null || c1c.v === null || saz.v === null) {
+        miss(c1, 'Vyplňte hodiny, prodejní cenu hodiny a plnou sazbu.');
+      } else {
+        var marze = c1c.v - saz.v;
+        c1.marze = marze;
+        c1.value = c1h * marze;
+        c1.tag = 'odhad';
+        if (marze <= 0) c1.notes.push('Marže je nulová nebo záporná.');
+        if (c1h > uvolneno.value) c1.notes.push('Prodaných hodin je víc, než se uvolnilo.');
+        if (c1h !== 0) { useInp(c1c); useSaz(); }
+      }
+      c1.margin = (c1c.v !== null && saz.v !== null) ? c1c.v - saz.v : null;
+    }
+
+    /* --- větev C2 --- */
+    var c2 = null, c2hod = 0;
+    if (has(S.c2_fte) || has(S.c2_naklad) || trim(S.c2_tym)) {
+      c2 = item({ key: 'C2', branch: 'C', name: 'Nenabraný člověk', section: 'Nenabraný člověk', team: trim(S.c2_tym) });
+      var fte = num(S.c2_fte), nak = inp(S, 'c2_naklad', 'c2_naklad', 'Nenabraný člověk');
+      var mes = has(S.c2_mesicu) ? num(S.c2_mesicu) : M;
+      c2.doklad = [trim(S.c2_naklad_d), trim(S.c2_dukaz_d)].filter(Boolean).join('; ');
+      if (fte === null || nak.v === null) miss(c2, 'Vyplňte úvazky a měsíční náklad.');
+      else if (mes === null) miss(c2, 'Chybí počet měsíců.');
+      else {
+        c2.value = fte * nak.v * mes;
+        c2hod = fte * HODIN_NA_UVAZEK_MESICNE * mes;
+        var tg = [];
+        if (nak.v !== 0) tg.push(useInp(nak));
+        var dukDol = S.c2_dukaz === OPT.c2Dukaz[0];
+        if (dukDol && !trim(S.c2_dukaz_d)) flag('Nenabraný člověk');
+        tg.push(dukDol && trim(S.c2_dukaz_d) ? 'doloženo' : 'odhad');
+        var cc = combine(tg);
+        c2.tag = cc === 'doloženo' ? 'spočítáno' : cc;
+      }
+    }
+
+    /* --- větev C3 --- */
+    var c3 = null;
+    if (trim(S.c3_popis) || has(S.c3_pred) || has(S.c3_po) || trim(S.c3_tym)) {
+      c3 = item({ key: 'C3', branch: 'C', name: trim(S.c3_popis) || 'Přesčasy, agentura, brigády', section: 'Přesčasy, agentura, brigády', team: trim(S.c3_tym), doklad: trim(S.c3_dukaz_d) });
+      var p3 = num(S.c3_pred), o3 = num(S.c3_po);
+      if (p3 === null || o3 === null) miss(c3, 'Vyplňte výdaj před AI i teď.');
+      else if (M === null) miss(c3, 'Chybí počet měsíců.');
+      else {
+        c3.value = (p3 - o3) * M;
+        var c3dol = S.c3_dukaz === OPT.c3Dukaz[0];
+        if (c3dol && !trim(S.c3_dukaz_d) && (p3 !== 0 || o3 !== 0)) flag(c3.name);
+        c3.tag = (c3dol && trim(S.c3_dukaz_d)) ? 'spočítáno' : 'odhad';
+      }
+    }
+
+    /* --- větev D --- */
+    var D = [];
+    (S.D || []).forEach(function (row) {
+      if (!(trim(row.jednotka) || has(row.pred) || has(row.po) || row.ukazatel || has(row.kpred) || has(row.kpo))) return;
+      var nm = row.ukazatel === 'Jiný' ? (trim(row.jiny) || 'Jiný ukazatel') : (row.ukazatel || 'Ukazatel');
+      var o = { name: nm, jednotka: trim(row.jednotka), pred: num(row.pred), po: num(row.po), notes: [], zdroj: row.zdroj, doklad: trim(row.zdroj_d) };
+      var kg = has(row.kpred) && has(row.kpo);
+      o.kontrola = kg;
+      if (o.pred === null || o.po === null) { o.tag = 'chybí'; o.efekt = null; D.push(o); return; }
+      o.efekt = kg ? (o.po - o.pred) - (num(row.kpo) - num(row.kpred)) : o.po - o.pred;
+      var sysDol = row.zdroj === OPT.dZdroj[0] && trim(row.zdroj_d);
+      o.tag = (kg && sysDol) ? 'spočítáno' : 'odhad';
+      if (!kg) o.notes.push('Bez kontrolní skupiny mohlo změnu způsobit i něco jiného.');
+      D.push(o);
+    });
+
+    /* --- škoda --- */
+    var skoda = { value: null, tag: 'chybí' };
+    (function () {
+      var sh = num(S.s_hod), sk = num(S.s_kc);
+      if (sh === null && sk === null) return;
+      var h = sh || 0, k = sk || 0;
+      if (h > 0 && saz.v === null) { skoda.note = 'Chybí plná sazba za hodinu.'; return; }
+      skoda.value = h * (saz.v || 0) + k;
+      var potvrzeno = trim(S.s_kdo) && trim(S.s_kdy);
+      if (!potvrzeno) skoda.tag = 'odhad';
+      else if (h > 0 && effTag(S.p_sazba_t, S.p_sazba_d) !== 'doloženo') skoda.tag = 'odhad';
+      else skoda.tag = 'doloženo';
+      if (h > 0) useSaz();
+    })();
+
+    /* --- náklad --- */
+    var N = [];
+    function nItem(key, name, o) { o.key = key; o.name = name; N.push(o); return o; }
+    (function () {
+      var ks = inp(S, 'n1_ks', 'n1', 'Provoz AI'), ce = inp(S, 'n1_cena', 'n1', 'Provoz AI');
+      var tk = inp(S, 'n1_tokeny', 'n1_tokeny', 'Provoz AI'), ji = inp(S, 'n1_jine', 'n1_jine', 'Provoz AI');
+      var o = nItem('N1', 'Provoz AI', {});
+      o.doklad = [S.n1_d, S.n1_tokeny_d, S.n1_jine_d].map(trim).filter(Boolean).join('; ');
+      if (ks.v === null && ce.v === null && tk.v === null && ji.v === null) return miss(o);
+      var prod = (ks.v || 0) * (ce.v || 0);
+      if (prod !== 0 && M === null) return miss(o, 'Chybí počet měsíců.');
+      o.value = prod * (M || 0) + (tk.v || 0) + (ji.v || 0);
+      var tg = [];
+      if (prod !== 0) { tg.push(useInp(ks)); tg.push(useInp(ce)); }
+      if (nz(tk)) tg.push(useInp(tk));
+      if (nz(ji)) tg.push(useInp(ji));
+      o.tag = combine(tg);
+    })();
+    (function () {
+      var kc = inp(S, 'n2_kc', 'n2_kc', 'Zavedení'), hod = inp(S, 'n2_hod', 'n2_hod', 'Zavedení');
+      var o = nItem('N2', 'Zavedení', { doklad: [S.n2_kc_d, S.n2_hod_d].map(trim).filter(Boolean).join('; ') });
+      if (kc.v === null || hod.v === null) return miss(o);
+      if (hod.v !== 0 && saz.v === null) return miss(o, 'Chybí plná sazba za hodinu.');
+      o.value = kc.v + hod.v * (saz.v || 0);
+      var tg = [];
+      if (nz(kc)) tg.push(useInp(kc));
+      if (nz(hod)) { tg.push(useInp(hod)); tg.push(useSaz()); }
+      o.tag = combine(tg);
+    })();
+    (function () {
+      var li = inp(S, 'n3_lidi', 'n3', 'Školení'), ho = inp(S, 'n3_hod', 'n3', 'Školení'), kc = inp(S, 'n3_kc', 'n3_kc', 'Školení');
+      var o = nItem('N3', 'Školení', { doklad: [S.n3_d, S.n3_kc_d].map(trim).filter(Boolean).join('; ') });
+      if (li.v === null || ho.v === null || kc.v === null) return miss(o);
+      var cas = li.v * ho.v;
+      if (cas !== 0 && saz.v === null) return miss(o, 'Chybí plná sazba za hodinu.');
+      o.value = cas * (saz.v || 0) + kc.v;
+      var tg = [];
+      if (cas !== 0) { tg.push(useInp(li)); tg.push(useInp(ho)); tg.push(useSaz()); }
+      if (nz(kc)) tg.push(useInp(kc));
+      o.tag = combine(tg);
+    })();
+    (function () {
+      var hod = inp(S, 'n4_hod', 'n4_hod', 'Měření'), kc = inp(S, 'n4_kc', 'n4_kc', 'Měření');
+      var o = nItem('N4', 'Měření', { doklad: [S.n4_hod_d, S.n4_kc_d].map(trim).filter(Boolean).join('; ') });
+      if (hod.v === null || kc.v === null) return miss(o);
+      if (hod.v !== 0 && saz.v === null) return miss(o, 'Chybí plná sazba za hodinu.');
+      o.value = hod.v * (saz.v || 0) + kc.v;
+      var tg = [];
+      if (nz(hod)) { tg.push(useInp(hod)); tg.push(useSaz()); }
+      if (nz(kc)) tg.push(useInp(kc));
+      o.tag = combine(tg);
+    })();
+    (function () {
+      var hod = inp(S, 'n5_hod', 'n5_hod', 'Čas lidí');
+      var o = nItem('N5', 'Čas lidí', { doklad: trim(S.n5_hod_d) });
+      if (hod.v === null) return miss(o);
+      if (hod.v !== 0 && (saz.v === null || M === null)) return miss(o, saz.v === null ? 'Chybí plná sazba za hodinu.' : 'Chybí počet měsíců.');
+      o.value = hod.v * (M || 0) * (saz.v || 0);
+      var tg = [];
+      if (nz(hod)) { tg.push(useInp(hod)); tg.push(useSaz()); }
+      o.tag = combine(tg);
+    })();
+
+    var Ntotal = 0, nMissing = [], nOdhad = 0;
+    N.forEach(function (n) {
+      if (n.tag === 'chybí') nMissing.push(n.name);
+      else { Ntotal += n.value; if (n.tag === 'odhad') nOdhad += n.value; }
+    });
+    var nTag = weakest(N.map(function (n) { return n.tag; }));
+
+    /* --- přínosy --- */
+    var Pdol = 0, Pscen = 0, dolCount = 0, scenCount = 0;
+    var largest = null;
+    items.forEach(function (it) {
+      if (it.tag === 'chybí' || it.value === null) return;
+      var okDol = (it.tag === 'doloženo' || it.tag === 'spočítáno') && it.branch !== 'C1' && it.key !== 'C1';
+      if (okDol) { Pdol += it.value; dolCount++; }
+      if (it.tag === 'doloženo' || it.tag === 'spočítáno' || it.tag === 'odhad') { Pscen += it.value; scenCount++; }
+      if (it.tag === 'odhad' && it.value > 0 && (!largest || it.value > largest.value)) largest = it;
+    });
+    var sk = (skoda.value !== null) ? skoda.value : 0;
+    Pdol -= sk; Pscen -= sk;
+    var hasOdhad = items.some(function (it) { return it.tag === 'odhad'; });
+
+    /* --- tabulka --- */
+    var skReason = null;
+    if (skoda.tag === 'chybí') skReason = 'Chybí odpověď na škodu z chyb AI.';
+    var rows = {};
+    function row(P, dolRow) {
+      var r = { P: P, N: Ntotal, diff: null, roi: null, diffReason: '', roiReason: '' };
+      var blocked = null;
+      if (skoda.tag === 'chybí') blocked = 'Chybí odpověď na škodu z chyb AI.';
+      else if (dolRow && skoda.tag === 'odhad') blocked = 'Škoda není potvrzená.';
+      if (blocked) { r.diffReason = r.roiReason = blocked; return r; }
+      r.diff = P - Ntotal;
+      if (Ntotal === 0) { r.roiReason = 'Náklad je nula.'; return r; }
+      r.roi = (P - Ntotal) / Ntotal;
+      return r;
+    }
+    rows.dol = row(Pdol, true);
+    rows.scen = row(Pscen, false);
+    var pTagDol = dolCount ? 'spočítáno' : null;
+    rows.dol.pTag = pTagDol;
+    rows.dol.nTag = nTag;
+    rows.dol.diffTag = weakest([pTagDol || 'doloženo', nTag]);
+    rows.dol.nOdhad = nOdhad;
+    rows.dol.nMissing = nMissing;
+    rows.scen.nOdhad = nOdhad;
+    rows.scen.nMissing = nMissing;
+    rows.scen.noOdhad = !hasOdhad;
+    rows.dol.empty = dolCount === 0;
+
+    /* --- věta --- */
+    var baselineChybi = !S.b_zdroj || S.b_zdroj === OPT.zdroj[4];
+    var diffDol = Pdol - Ntotal, diffScen = Pscen - Ntotal;
+    var vet;
+    var odhadTxt = largest ? ('největší odhad je ' + largest.name + ' (' + fmtKc(largest.value) + ')') : '';
+    if (skoda.tag === 'chybí') {
+      vet = 'ROI zatím nevydáváme. Chybí odpověď, jestli vznikla škoda z chyb AI, napište ji i tehdy, když je nula.';
+    } else if (Pdol <= 0 && baselineChybi) {
+      vet = 'Přínos zatím nedoložen, chybí baseline.';
+    } else if (Pdol <= 0 && Pscen > 0) {
+      vet = 'Přínos zatím nedoložen. Scénář počítá s přínosem ' + fmtKc(Pscen) + (odhadTxt ? ', ' + odhadTxt : '') + '.';
+    } else if (Pdol <= 0) {
+      vet = 'Přínos zatím nedoložen a ani scénář s přínosem v korunách nepočítá.';
+    } else if (diffDol >= 0) {
+      vet = 'Doložený přínos pokrývá náklad, rozdíl je ' + fmtKc(diffDol) + ' za ' + (M === null ? '?' : fmtNum(M, M % 1 ? 1 : 0) + NB + mesicu(M)) + '.';
+    } else {
+      var pct = Ntotal === 0 ? 0 : Math.round(Pdol / Ntotal * 100);
+      vet = 'Doložený přínos pokrývá ' + pct + NB + '% nákladu.';
+      if (largest) vet += ' Scénář počítá s rozdílem ' + fmtKc(diffScen) + ', ' + odhadTxt + '.';
+    }
+
+    /* --- dvojí započtení --- */
+    var drows = items.filter(function (it) { return ['B', 'C'].indexOf(it.branch) >= 0 && it.team !== undefined; });
+    // vyplněné řádky B, C1, C2, C3 (item už vzniká jen u vyplněného řádku)
+    var dReasons = [];
+    for (var i = 0; i < drows.length; i++) {
+      for (var j = i + 1; j < drows.length; j++) {
+        var a = normTeam(drows[i].team), b = normTeam(drows[j].team);
+        if (a && a === b) dReasons.push(drows[i].name + ' a ' + drows[j].name + ' jsou ze stejného týmu.');
+      }
+    }
+    if ((c1 || c2) && uvolneno.value !== null && ((c1 && c1.tag !== 'chybí' ? (num(S.c1_hod) || 0) : 0) + c2hod) > uvolneno.value) {
+      dReasons.push('V přínosu je víc hodin, než se uvolnilo.');
+    }
+    (S.B || []).forEach(function (row2) {
+      if (row2.vbaseline === 'ano' && c1) dReasons.push('Hodiny z nákupu ' + (trim(row2.popis) || 'bez názvu') + ' jsou i v baseline.');
+    });
+    var anyVbase = (S.B || []).some(function (r2) { return r2.vbaseline === 'ano'; });
+    var needConfirm = drows.length >= 2 && !S.potvrzeni;
+    if (needConfirm) dReasons.push('Potvrďte, že se hodiny nepřekrývají.');
+
+    /* --- pojistky --- */
+    var guards = [];
+    var zdrojTxt = S.b_zdroj;
+    var gb;
+    var baselineProblems = [];
+    if (baselineChybi) gb = { stav: 'chybí', text: 'Chybí baseline.' };
+    else {
+      if (S.b_zdroj === OPT.zdroj[3]) baselineProblems.push('Baseline je z odhadu lidí.');
+      var bdo = parseDate(S.b_do), bod = parseDate(S.b_od);
+      if (!bdo || !bod || !d1) baselineProblems.push('Chybí období baseline nebo datum zahájení AI.');
+      else if (bdo.getTime() >= d1.getTime()) baselineProblems.push('Baseline zasahuje do doby, kdy už se AI používala.');
+      if (baselineProblems.length) gb = { stav: 'pozor', text: baselineProblems.join(' ') };
+      else gb = { stav: 'v pořádku', text: zdrojTxt + ', ' + fmtDate(S.b_od) + ' až ' + fmtDate(S.b_do) + ', AI od ' + fmtDate(S.p_ai_od) + '.' };
+    }
+    guards.push({ q: 'Z čeho je baseline a od kdy se AI používá?', stav: gb.stav, text: gb.text });
+
+    var cRows = [c1, c2, c3].filter(Boolean);
+    var g2;
+    if (!cRows.length) g2 = { stav: 'netýká se', text: 'S uvolněným časem v penězích nepočítáte.' };
+    else if (c1 && uvolneno.value === null) g2 = { stav: 'chybí', text: 'Bez hodin baseline nejde říct, které hodiny uvolnila AI.' };
+    else {
+      var weakC = cRows.filter(function (x) { return x.tag === 'odhad' || x.tag === 'chybí'; });
+      if (weakC.length) g2 = { stav: 'pozor', text: 'Uvolněný čas je v penězích jen jako odhad: ' + weakC.map(function (x) { return x.name; }).join(', ') + '.' };
+      else g2 = { stav: 'v pořádku', text: 'Doloženo: ' + cRows.map(function (x) { return x.name; }).join(', ') + '.' };
+    }
+    guards.push({ q: 'Jak se uvolněný čas proměnil v peníze?', stav: g2.stav, text: g2.text });
+
+    var g3 = nMissing.length
+      ? { stav: 'chybí', text: 'V nákladu chybí: ' + nMissing.join(', ') + '.' }
+      : { stav: 'v pořádku', text: 'Provoz, zavedení, školení, měření i čas lidí.' };
+    guards.push({ q: 'Je v nákladu všechno, včetně zavedení a školení?', stav: g3.stav, text: g3.text });
+
+    var g4;
+    if (drows.length <= 1 && !anyVbase) g4 = { stav: 'netýká se', text: 'Překryv hodin nehrozí, vyplněný je nejvýš jeden řádek.' };
+    else if (dReasons.length) g4 = { stav: 'pozor', text: 'Možné dvojí započtení: ' + dReasons.join(' ') };
+    else g4 = { stav: 'v pořádku', text: 'Každá hodina je jen v jednom řádku.' };
+    guards.push({ q: 'Není něco započtené dvakrát?', stav: g4.stav, text: g4.text });
+
+    var vykazOk = !hoursFilled || vykaz === OPT.vykaz[3] || (vykaz === OPT.vykaz[0] && trim(S.b_vykaz_kdo) && trim(S.b_vykaz_kdy));
+    var vykazNeuplny = hoursFilled && vykaz === OPT.vykaz[2];
+    var g5;
+    if (skoda.tag === 'chybí') g5 = { stav: 'chybí', text: 'Chybí odpověď na škodu z chyb AI.' };
+    else if (vykazNeuplny) g5 = { stav: 'chybí', text: 'Výkaz není úplný, uvolněné hodiny nepočítáme.' };
+    else {
+      var pr = [];
+      if (skoda.tag === 'odhad') pr.push('Škoda není potvrzená konkrétním člověkem a datem.');
+      if (!vykazOk) pr.push('Úplnost výkazu není potvrzená.');
+      if (pr.length) g5 = { stav: 'pozor', text: pr.join(' ') };
+      else {
+        var who = trim(S.s_kdo) ? ', potvrdil(a) ' + trim(S.s_kdo) + ' ' + fmtDate(S.s_kdy) : '';
+        g5 = { stav: 'v pořádku', text: 'Škoda ' + fmtNum(skoda.value, 0) + NB + 'Kč' + who + '.' };
+      }
+    }
+    guards.push({ q: 'Vznikla škoda z chyb AI a je výkaz úplný?', stav: g5.stav, text: g5.text });
+
+    /* --- co doplnit --- */
+    var todo = [];
+    if (baselineChybi) todo.push('Chybí baseline.');
+    if (S.b_zdroj === OPT.zdroj[3]) todo.push('Baseline je z odhadu lidí.');
+    if (!baselineChybi && d1 && parseDate(S.b_do) && parseDate(S.b_do).getTime() >= d1.getTime()) todo.push('Baseline zasahuje do doby, kdy už se AI používala.');
+    if (hoursFilled && !vykazOk && !vykazNeuplny) todo.push('Úplnost výkazu není potvrzená.');
+    if (nMissing.length) todo.push('V nákladu chybí: ' + nMissing.join(', ') + '. Chybějící náklad ROI zvyšuje.');
+    if (skoda.tag === 'odhad') todo.push('Škoda z chyb AI není potvrzená.');
+    if (dReasons.length) todo.push('Možné dvojí započtení: ' + dReasons.join(' '));
+    if (noDoc.length) todo.push('Bez dokladu počítáme jako odhad: ' + noDoc.join(', ') + '.');
+
+    /* --- přínos mimo koruny --- */
+    var mimo = [];
+    D.forEach(function (o) {
+      if (o.efekt === null) return;
+      var u = o.jednotka ? NB + o.jednotka : '';
+      mimo.push({
+        text: o.name + ': ' + fmtNum(o.pred, 2).replace(/,00$/, '') + ' → ' + fmtNum(o.po, 2).replace(/,00$/, '') + u +
+          ', změna ' + fmtNum(o.efekt, 2).replace(/,00$/, '') + u + (o.kontrola ? ' (po odečtení kontrolní skupiny)' : ''),
+        tag: o.tag, notes: o.notes
+      });
+    });
+
+    /* --- do formuláře --- */
+    var kc = num(S.r_kc);
+    var form = [
+      'Rozhodnutí: ' + (trim(S.r_rozh) || '–'),
+      'Co jste udělali jinak: ' + (trim(S.r_co) || '–'),
+      'Doklad: ' + ((S.r_doklad && S.r_doklad.length) ? S.r_doklad.join('; ') : '–'),
+      'Finanční dopad: ' + (kc !== null ? fmtNum(kc, 0) + NB + 'Kč měsíčně (' + (trim(S.r_kc_tag) || 'bez označení') + ')' : 'nevím'),
+      'Výsledek kalkulace: ' + vet
+    ];
+
+    return {
+      M: M, Mauto: Mauto, items: items, D: D, N: N, Ntotal: Ntotal, nTag: nTag, nMissing: nMissing,
+      skoda: skoda, Pdol: Pdol, Pscen: Pscen, dolCount: dolCount, rows: rows, vet: vet, guards: guards,
+      todo: todo, mimo: mimo, form: form, noDoc: noDoc, uvolneno: uvolneno, largest: largest,
+      c2hod: c2hod, dReasons: dReasons, needConfirm: needConfirm, driveRows: drows.length
+    };
+  }
+
+  var API = {
+    compute: compute, emptyState: emptyState, blankRow: blankRow, sampleState: sampleState, OPT: OPT,
+    fmtNum: fmtNum, fmtKc: fmtKc, fmtRoi: fmtRoi, fmtDate: fmtDate, num: num, has: has, trim: trim,
+    parseDate: parseDate, mesicu: mesicu, TAGS: TAGS, RANK: RANK, NB: NB, MINUS: MINUS,
+    HODIN_NA_UVAZEK_MESICNE: HODIN_NA_UVAZEK_MESICNE
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+  else root.AIROI = API;
+})(typeof window !== 'undefined' ? window : this);
+
+  </script>
+  <script id="airoi-ui">
+(function () {
+  'use strict';
+  var A = window.AIROI, OPT = A.OPT, NB = A.NB;
+  var KEY = 'airoi_kalkulacka_v1';
+  var CALC_URL = 'https://tsp-data.github.io/tsp-onepagers/reality-check/kalkulacka.html';
+  var MAX = { A: 5, B: 3, D: 3 };
+  var S, R;
+  var uid = 0;
+  var reg = {};
+  var formEl = document.getElementById('form');
+
+  /* ---------- stav a localStorage ---------- */
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function load() {
+    var base = A.emptyState(today());
+    try {
+      var j = localStorage.getItem(KEY);
+      if (!j) return base;
+      var o = JSON.parse(j);
+      if (!o || typeof o !== 'object') return base;
+      Object.keys(base).forEach(function (k) {
+        if (!(k in o)) return;
+        if (Array.isArray(base[k])) { if (Array.isArray(o[k])) base[k] = o[k]; }
+        else if (typeof base[k] === typeof o[k]) base[k] = o[k];
+      });
+      ['A', 'B', 'D'].forEach(function (k) {
+        base[k] = base[k].filter(function (x) { return x && typeof x === 'object'; });
+        var fresh = A.blankRow(k);
+        base[k] = base[k].map(function (x) { var y = {}; Object.keys(fresh).forEach(function (f) { y[f] = (typeof x[f] === typeof fresh[f]) ? x[f] : fresh[f]; }); return y; });
+        if (!base[k].length) base[k] = [A.blankRow(k)];
+      });
+      return base;
+    } catch (e) { return base; }
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* bez localStorage jedeme dál */ } }
+
+  function getp(path) {
+    var p = path.split('.'), o = S;
+    for (var i = 0; i < p.length; i++) { if (o === undefined || o === null) return ''; o = o[p[i]]; }
+    return o === undefined ? '' : o;
+  }
+  function setp(path, v) {
+    var p = path.split('.'), o = S;
+    for (var i = 0; i < p.length - 1; i++) o = o[p[i]];
+    o[p[p.length - 1]] = v;
+  }
+
+  /* ---------- DOM pomocníci ---------- */
+  function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function h(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'class') e.className = attrs[k];
+      else if (k === 'html') e.innerHTML = attrs[k];
+      else if (k === 'text') e.textContent = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) e.appendChild(c); });
+    return e;
+  }
+  function onUpd(group, fn) { (reg[group] = reg[group] || []).push(fn); }
+  function clearGroup(g) { reg[g] = []; }
+
+  var CLS = { 'doloženo': 'pl-dol', 'spočítáno': 'pl-spoc', 'odhad': 'pl-odh', 'bez čísla': 'pl-bez', 'chybí': 'pl-chyb' };
+  function pill(tag) { return '<span class="pill ' + (CLS[tag] || 'pl-bez') + '">' + esc(tag) + '</span>'; }
+
+  var ICON = {
+    ok: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.6 2.6L10 3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    pozor: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5L11 10.5H1z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 5v2.6" stroke="currentColor" stroke-width="1.6"/></svg>',
+    chybi: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+    ne: '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6h7" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+  };
+  function stBadge(stav) {
+    var m = { 'v pořádku': ['st-ok', 'ok'], 'pozor': ['st-pozor', 'pozor'], 'chybí': ['st-chybi', 'chybi'], 'netýká se': ['st-ne', 'ne'] }[stav] || ['st-ne', 'ne'];
+    return '<span class="st ' + m[0] + '">' + ICON[m[1]] + esc(stav) + '</span>';
+  }
+
+  /* ---------- pole ---------- */
+  function fieldWrap(label, hint, control, opts) {
+    var id = 'f' + (++uid);
+    var w = h('div', { class: 'fld' });
+    var lab = h('label', { for: id, text: label });
+    w.appendChild(lab);
+    if (hint) w.appendChild(h('p', { class: 'hint', id: id + 'h', text: hint }));
+    control.id = id;
+    if (hint) control.setAttribute('aria-describedby', id + 'h');
+    var row = h('div', { class: 'inrow' }, [control]);
+    if (opts && opts.unit) row.appendChild(h('span', { class: 'unit', text: opts.unit }));
+    w.appendChild(row);
+    return w;
+  }
+  function inputEl(path, o) {
+    o = o || {};
+    var e;
+    if (o.kind === 'area') e = h('textarea', { rows: '3' });
+    else if (o.kind === 'select') {
+      e = h('select');
+      e.appendChild(h('option', { value: '', text: o.blank || 'Vyberte' }));
+      o.opts.forEach(function (x) { e.appendChild(h('option', { value: x, text: x })); });
+    } else {
+      e = h('input', { type: o.kind === 'date' ? 'date' : 'text' });
+      if (o.kind === 'num') { e.setAttribute('inputmode', 'decimal'); e.setAttribute('autocomplete', 'off'); }
+      if (o.kind !== 'date') e.setAttribute('autocomplete', 'off');
+    }
+    e.setAttribute('data-k', path);
+    e.value = getp(path);
+    if (o.ph) e.setAttribute('placeholder', o.ph);
+    return e;
+  }
+  function F(path, label, hint, o) {
+    o = o || {};
+    var e = inputEl(path, o);
+    var w = fieldWrap(label, hint, e, o);
+    return w;
+  }
+  function showWhen(el, group, fn) { onUpd(group, function () { el.hidden = !fn(); }); return el; }
+
+  function SelDoc(group, path, label, hint, opts, docPath, docIdx, o) {
+    var f = F(path, label, hint, { kind: 'select', opts: opts, blank: (o && o.blank) });
+    var dok = F(docPath, 'Doklad', 'Faktura, výkaz, smlouva, data ze systému, nebo kdo to potvrdil a kdy.');
+    var frag = h('div'); frag.appendChild(f); frag.appendChild(dok);
+    onUpd(group, function () { dok.hidden = getp(path) !== opts[docIdx]; });
+    return frag;
+  }
+  function calcOut(group, label, fn) {
+    var box = h('div', { class: 'calc' });
+    var note = h('p', { class: 'note', hidden: 'hidden' });
+    var out = h('div');
+    out.appendChild(box); out.appendChild(note);
+    onUpd(group, function () {
+      var r = fn();
+      box.innerHTML = '<span class="cl">' + esc(label) + '</span><span class="cv">' + esc(r.text) + '</span>' + (r.tag ? pill(r.tag) : '');
+      if (r.note) { note.textContent = r.note; note.hidden = false; } else note.hidden = true;
+    });
+    return out;
+  }
+  function itemOut(group, key, label) {
+    return calcOut(group, label, function () {
+      var it = R.items.filter(function (x) { return x.key === key; })[0];
+      if (!it) return { text: '–', tag: 'chybí' };
+      var notes = [];
+      if (it.tag === 'chybí' && it.note) notes.push(it.note);
+      if (it.notes) notes = notes.concat(it.notes);
+      return { text: it.value === null ? '–' : A.fmtKc(it.value), tag: it.tag, note: notes.join(' ') };
+    });
+  }
+  function nOut(group, key, label) {
+    return calcOut(group, label, function () {
+      var it = R.N.filter(function (x) { return x.key === key; })[0];
+      return { text: it.value === null ? '–' : A.fmtKc(it.value), tag: it.tag, note: it.tag === 'chybí' ? (it.note || 'Prázdná položka se počítá jako chybějící. Když náklad nevznikl, napište 0.') : '' };
+    });
+  }
+  function sec(title, lead) {
+    var s = h('section', { class: 'sec' });
+    s.appendChild(h('h2', { text: title }));
+    if (lead) s.appendChild(h('p', { class: 'lead', text: lead }));
+    return s;
+  }
+  function addBtn(kind, rebuild) {
+    var b = h('button', { type: 'button', class: 'btn small addrow', text: 'Přidat řádek' });
+    b.addEventListener('click', function () {
+      if (S[kind].length >= MAX[kind]) return;
+      S[kind].push(A.blankRow(kind)); rebuild(); update();
+    });
+    onUpd(kind, function () { b.hidden = S[kind].length >= MAX[kind]; });
+    return b;
+  }
+  function rowHead(title, kind, i, rebuild) {
+    var head = h('div', { class: 'rowhead' });
+    head.appendChild(h('span', { text: title + ' ' + (i + 1) }));
+    var rm = h('button', { type: 'button', class: 'btn small ghost', text: 'Odebrat' });
+    rm.addEventListener('click', function () {
+      S[kind].splice(i, 1);
+      if (!S[kind].length) S[kind].push(A.blankRow(kind));
+      rebuild(); update();
+    });
+    head.appendChild(rm);
+    return head;
+  }
+
+  /* ---------- sestavení formuláře ---------- */
+  function buildA(holder) {
+    clearGroup('A'); holder.innerHTML = '';
+    S.A.forEach(function (row, i) {
+      var p = 'A.' + i + '.';
+      var box = h('div', { class: 'rowbox' });
+      box.appendChild(rowHead('Řádek', 'A', i, function () { buildA(holder); }));
+      box.appendChild(F(p + 'popis', 'Co odpadlo nebo kleslo', 'Třeba subdodávka překladů nebo licence nástroje na přepis porad.'));
+      var g = h('div', { class: 'grid2' });
+      g.appendChild(F(p + 'pred', 'Výdaj před AI', 'Měsíční částka z faktur před zavedením AI.', { kind: 'num', unit: 'Kč/měsíc' }));
+      g.appendChild(F(p + 'po', 'Výdaj teď', 'Měsíční částka z posledních faktur, když výdaj odpadl, napište 0.', { kind: 'num', unit: 'Kč/měsíc' }));
+      box.appendChild(g);
+      box.appendChild(h('p', { class: 'hint', text: 'Čím to doložíte: faktury před a po, výpověď smlouvy. Jedna značka platí pro obě částky.' }));
+      box.appendChild(tagBlockKeys('A', p + 't', p + 'd', [p + 'pred', p + 'po']));
+      box.appendChild(itemOut('A', 'A' + (i + 1), 'Přínos za období'));
+      holder.appendChild(box);
+    });
+    holder.appendChild(addBtn('A', function () { buildA(holder); }));
+  }
+  function buildB(holder) {
+    clearGroup('B'); holder.innerHTML = '';
+    S.B.forEach(function (row, i) {
+      var p = 'B.' + i + '.';
+      var box = h('div', { class: 'rowbox' });
+      box.appendChild(rowHead('Řádek', 'B', i, function () { buildB(holder); }));
+      box.appendChild(F(p + 'popis', 'Co jste nemuseli koupit', 'Třeba externí rešerše trhu nebo analýza procesu.'));
+      box.appendChild(tagged('B', p, 'cena', 'Cena nákupu', 'Z nabídky nebo poptávky u dodavatele.', 'Kč'));
+      box.appendChild(SelDoc('B', p + 'vznik', 'Proč víte, že byste to koupili', 'Bez dokladu o plánovaném nákupu je celý řádek odhad.', OPT.bVznik, p + 'vznik_d', 0, { blank: 'Vyberte' }));
+      box.appendChild(tagged('B', p, 'hod', 'Vlastní práce na tom', 'Hodiny, které na tom odpracovali vaši lidé, když žádné, napište 0.', 'h'));
+      box.appendChild(F(p + 'tym', 'Tým nebo činnost', 'Kdo práci udělal, slouží ke kontrole dvojího započtení.'));
+      var chk = h('label', { class: 'chk' }, [h('input', { type: 'checkbox', 'data-k': p + 'vbaseline', 'data-yes': 'ano' }), h('span', { text: 'Jsou tyhle hodiny i v hodinách baseline?' })]);
+      chk.firstChild.checked = getp(p + 'vbaseline') === 'ano';
+      var hw = h('div', { class: 'fld' }, [chk, h('p', { class: 'hint', text: 'Když ano, odečtěte je z baseline, jinak je přínos dvakrát.' })]);
+      box.appendChild(hw);
+      box.appendChild(itemOut('B', 'B' + (i + 1), 'Přínos'));
+      holder.appendChild(box);
+    });
+    holder.appendChild(addBtn('B', function () { buildB(holder); }));
+  }
+  function tagged(group, p, id, label, hint, unit) {
+    var frag = h('div');
+    frag.appendChild(F(p + id, label, hint, { kind: 'num', unit: unit }));
+    frag.appendChild(tagBlockKeys(group, p + id + '_t', p + id + '_d', [p + id]));
+    return frag;
+  }
+  function tagBlockKeys(group, tkey, dkey, valuePaths) {
+    var box = h('div', { class: 'tagbox' });
+    var seg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Značka důkazu' });
+    var bD = h('button', { type: 'button', 'data-tog': tkey, 'data-v': 'doloz', text: 'doloženo' });
+    var bO = h('button', { type: 'button', 'data-tog': tkey, 'data-v': 'odhad', text: 'odhad' });
+    seg.appendChild(bD); seg.appendChild(bO); box.appendChild(seg);
+    var dok = F(dkey, 'Doklad', 'Faktura, výkaz, smlouva, data ze systému, nebo kdo to potvrdil a kdy.');
+    box.appendChild(dok);
+    var warn = h('p', { class: 'note warn', text: 'Bez dokladu počítáme jako odhad.' });
+    box.appendChild(warn);
+    onUpd(group, function () {
+      var t = getp(tkey) === 'doloz';
+      bD.setAttribute('aria-pressed', t ? 'true' : 'false');
+      bO.setAttribute('aria-pressed', t ? 'false' : 'true');
+      dok.hidden = !t;
+      var nonzero = valuePaths.some(function (q) { var n = A.num(getp(q)); return n !== null && n !== 0; });
+      warn.hidden = !(t && !A.trim(getp(dkey)) && nonzero);
+    });
+    return box;
+  }
+  /* zkratka pro pole se značkou na ploché úrovni stavu */
+  function TF(group, id, label, hint, unit, tp) {
+    var frag = h('div');
+    frag.appendChild(F(id, label, hint, { kind: 'num', unit: unit }));
+    frag.appendChild(tagBlockKeys(group, (tp || id) + '_t', (tp || id) + '_d', [id]));
+    return frag;
+  }
+  function NF(id, label, hint, unit) { return F(id, label, hint, { kind: 'num', unit: unit }); }
+
+  function buildD(holder) {
+    clearGroup('D'); holder.innerHTML = '';
+    S.D.forEach(function (row, i) {
+      var p = 'D.' + i + '.';
+      var box = h('div', { class: 'rowbox' });
+      box.appendChild(rowHead('Ukazatel', 'D', i, function () { buildD(holder); }));
+      box.appendChild(F(p + 'ukazatel', 'Ukazatel', 'Vyberte, co měříte.', { kind: 'select', opts: OPT.dUkazatel }));
+      var jiny = F(p + 'jiny', 'Název ukazatele', '');
+      showWhen(jiny, 'D', function () { return getp(p + 'ukazatel') === 'Jiný'; });
+      box.appendChild(jiny);
+      box.appendChild(F(p + 'jednotka', 'Jednotka', 'Třeba dny, kusy nebo procenta.'));
+      var g = h('div', { class: 'grid2' });
+      g.appendChild(F(p + 'pred', 'Hodnota před AI', 'Z období baseline.', { kind: 'num' }));
+      g.appendChild(F(p + 'po', 'Hodnota teď', 'Ze stejného zdroje jako hodnota před.', { kind: 'num' }));
+      box.appendChild(g);
+      box.appendChild(SelDoc('D', p + 'zdroj', 'Odkud čísla jsou', 'Data ze systému mají časová razítka, odhad lidí ne.', OPT.dZdroj, p + 'zdroj_d', 0, { blank: 'Vyberte' }));
+      var g2 = h('div', { class: 'grid2' });
+      g2.appendChild(F(p + 'kpred', 'Kontrolní skupina před', 'Stejný ukazatel u týmu, který AI zatím nepoužívá, nepovinné.', { kind: 'num' }));
+      g2.appendChild(F(p + 'kpo', 'Kontrolní skupina teď', 'Stejný ukazatel u týmu, který AI zatím nepoužívá, nepovinné.', { kind: 'num' }));
+      box.appendChild(g2);
+      box.appendChild(calcOut('D', 'Změna', function () {
+        var o = R.D[i];
+        if (!o || o.efekt === null) return { text: '–', tag: 'chybí' };
+        var u = o.jednotka ? NB + o.jednotka : '';
+        return { text: A.fmtNum(o.efekt, 2).replace(/,00$/, '') + u, tag: o.tag, note: o.notes.join(' ') };
+      }));
+      holder.appendChild(box);
+    });
+    holder.appendChild(addBtn('D', function () { buildD(holder); }));
+  }
+
+  function buildForm() {
+    reg = {}; uid = 0;
+    formEl.innerHTML = '';
+    var G = 'static';
+
+    /* 1 Projekt */
+    var s1 = sec('1 Projekt');
+    s1.appendChild(F('p_typ', 'Typ AI projektu', 'Napište typ projektu bez názvu firmy, třeba AI asistent pro celou firmu.'));
+    var g = h('div', { class: 'grid2' });
+    g.appendChild(F('p_ai_od', 'Od kdy se AI používá', 'Den, od kterého lidé s nástrojem opravdu pracují.', { kind: 'date' }));
+    g.appendChild(F('p_do', 'Hodnotíme do', 'Poslední den, za který máte faktury nebo data.', { kind: 'date' }));
+    s1.appendChild(g);
+    var mf = F('M', 'Počet měsíců', 'Kalkulačka ho spočítá z dat, upravit ho můžete ručně.', { kind: 'num', unit: 'měsíce' });
+    onUpd(G, function () { mf.querySelector('input').setAttribute('placeholder', R.Mauto !== null ? String(R.Mauto) : 'z dat'); });
+    s1.appendChild(mf);
+    s1.appendChild(TF(G, 'p_sazba', 'Plná sazba za hodinu práce', 'Kolik vás stojí hodina člověka včetně odvodů a režie.', 'Kč/h'));
+    formEl.appendChild(s1);
+
+    /* 2 Baseline */
+    var s2 = sec('2 Výchozí stav (baseline)', 'Baseline je odhad, kolik by stejná práce stála bez AI. Změřit se nedá, dá se opřít o data z doby před AI. Hodiny vyplňte, jen když chcete počítat s prodaným uvolněným časem.');
+    s2.appendChild(F('b_zdroj', 'Z čeho je baseline', 'Vyberte, o co se opírá srovnání před a po.', { kind: 'select', opts: OPT.zdroj }));
+    var nl = h('p', { class: 'note', text: 'Ve studiích z přednášky lidé úsporu času odhadli výš, než kolik se naměřilo.' });
+    showWhen(nl, G, function () { return S.b_zdroj === OPT.zdroj[3]; });
+    s2.appendChild(nl);
+    var gb = h('div', { class: 'grid2' });
+    gb.appendChild(F('b_od', 'Období baseline od', 'Ideálně 12 měsíců, které skončily před zavedením AI.', { kind: 'date' }));
+    gb.appendChild(F('b_do', 'Období baseline do', 'Ideálně 12 měsíců, které skončily před zavedením AI.', { kind: 'date' }));
+    s2.appendChild(gb);
+    s2.appendChild(NF('b_hod_bez', 'Hodiny bez AI za hodnocené období', 'Kolik hodin by stejná práce trvala bez AI, bez schůzek a workshopů. Značka nejvýš odhad.', 'h'));
+    s2.appendChild(TF(G, 'b_hod_s', 'Hodiny s AI za hodnocené období', 'Skutečně odpracované hodiny z výkazu, bez schůzek a workshopů.', 'h'));
+    s2.appendChild(calcOut(G, 'Uvolněné hodiny', function () {
+      var u = R.uvolneno;
+      var note = '';
+      if (S.b_vykaz === OPT.vykaz[2]) note = 'Neúplný výkaz vypadá jako zrychlení, uvolněné hodiny proto nepočítáme.';
+      return { text: u.value === null ? '–' : A.fmtNum(u.value, 2).replace(/,00$/, '') + NB + 'h', tag: u.value === null ? 'chybí' : 'odhad', note: note };
+    }));
+    s2.appendChild(F('b_vykaz', 'Je výkaz úplný?', 'Chybějící výkaz vypadá v datech stejně jako zrychlení.', { kind: 'select', opts: OPT.vykaz }));
+    var gk = h('div', { class: 'grid2' });
+    gk.appendChild(F('b_vykaz_kdo', 'Kdo', 'Funkce stačí, třeba vedoucí týmu.'));
+    gk.appendChild(F('b_vykaz_kdy', 'Kdy', 'Datum potvrzení.', { kind: 'date' }));
+    showWhen(gk, G, function () { return S.b_vykaz === OPT.vykaz[0]; });
+    s2.appendChild(gk);
+    formEl.appendChild(s2);
+
+    /* 3 Přínos */
+    var s3 = sec('3 Přínos', 'Přínos se počítá ve čtyřech větvích. Do korun patří jen to, co změnilo peněžní tok: výdaj, který odpadl, nákup, který nebyl potřeba, a uvolněný čas, který se prodal nebo ušetřil výdaj za lidi. Ostatní zlepšení zapište ve větvi D v jednotkách procesu.');
+    s3.appendChild(h('h3', { class: 'branch', text: 'Větev A: Zrušené nebo snížené výdaje' }));
+    s3.appendChild(h('p', { class: 'branch-lead', text: 'Výdaje, které díky AI odpadly nebo klesly: licence nástroje, který AI nahradila, nákupy, subdodávky, penále. Úsporu na samotné AI sem nepište, patří do nákladu.' }));
+    var hA = h('div'); s3.appendChild(hA); buildA(hA);
+
+    s3.appendChild(h('h3', { class: 'branch', text: 'Větev B: Ušetřený nákup' }));
+    s3.appendChild(h('p', { class: 'branch-lead', text: 'Nákup, který jste nemuseli udělat, protože práci zvládli vaši lidé s AI. Od ceny se odečte vlastní práce.' }));
+    var hB = h('div'); s3.appendChild(hB); buildB(hB);
+
+    s3.appendChild(h('h3', { class: 'branch', text: 'Větev C: Uvolněný čas převedený na peníze' }));
+    s3.appendChild(h('p', { class: 'branch-lead', text: 'Uvolněný čas vydělá, jen když se prodal, nebo když díky němu odpadl výdaj za lidi. Mzdy lidí, které platíte s AI i bez ní, do přínosu nepočítejte.' }));
+
+    var c1 = h('details', { class: 'sub', open: 'open' }, [h('summary', { text: 'C1 Prodaný čas' })]);
+    var c1b = h('div', { class: 'subbody' });
+    c1b.appendChild(h('p', { class: 'branch-lead', text: 'Jen pro firmy, které práci prodávají po hodinách nebo dnech. Prodaný čas se oceňuje marží, plná sazba obsahuje i mzdu, kterou platíte tak jako tak.' }));
+    c1b.appendChild(NF('c1_hod', 'Uvolněné hodiny prodané navíc', 'Hodiny vyfakturované na jiné práci, nejvýš tolik, kolik se uvolnilo.', 'h'));
+    c1b.appendChild(TF(G, 'c1_cena', 'Prodejní cena hodiny', 'Za kolik hodinu prodáváte zákazníkům.', 'Kč/h'));
+    c1b.appendChild(calcOut(G, 'Marže za hodinu', function () {
+      var it = R.items.filter(function (x) { return x.key === 'C1'; })[0];
+      var m = it ? it.margin : null;
+      return { text: m === null || m === undefined ? '–' : A.fmtKc(m) + '/h', note: (m !== null && m !== undefined && m <= 0) ? 'Marže je nulová nebo záporná.' : '' };
+    }));
+    c1b.appendChild(F('c1_tym', 'Tým nebo činnost', 'Kdo uvolněný čas prodal, slouží ke kontrole dvojího započtení.'));
+    c1b.appendChild(itemOut(G, 'C1', 'Přínos'));
+    c1.appendChild(c1b); s3.appendChild(c1);
+
+    var c2 = h('details', { class: 'sub', open: 'open' }, [h('summary', { text: 'C2 Nenabraný člověk' })]);
+    var c2b = h('div', { class: 'subbody' });
+    c2b.appendChild(NF('c2_fte', 'Úvazky, které jste díky AI nenabrali', 'Plánovaná místa, která jste kvůli AI neobsadili.', 'FTE'));
+    c2b.appendChild(TF(G, 'c2_naklad', 'Měsíční náklad na úvazek', 'Mzda s odvody.', 'Kč/měsíc'));
+    var cm = F('c2_mesicu', 'Kolik měsíců by člověk v hodnoceném období pracoval', 'Od plánovaného nástupu do konce hodnoceného období.', { kind: 'num', unit: 'měsíce' });
+    onUpd(G, function () { cm.querySelector('input').setAttribute('placeholder', R.M !== null ? String(R.M) : ''); });
+    c2b.appendChild(cm);
+    c2b.appendChild(SelDoc(G, 'c2_dukaz', 'Čím to doložíte', 'Plán bez schválení je předpoklad.', OPT.c2Dukaz, 'c2_dukaz_d', 0, { blank: 'Vyberte' }));
+    c2b.appendChild(F('c2_tym', 'Tým nebo činnost', 'Kam měl člověk nastoupit, slouží ke kontrole dvojího započtení.'));
+    c2b.appendChild(itemOut(G, 'C2', 'Přínos'));
+    c2.appendChild(c2b); s3.appendChild(c2);
+
+    var c3 = h('details', { class: 'sub', open: 'open' }, [h('summary', { text: 'C3 Přesčasy, agentura, brigády' })]);
+    var c3b = h('div', { class: 'subbody' });
+    c3b.appendChild(F('c3_popis', 'Co kleslo', 'Třeba přesčasy v účtárně nebo agenturní pracovníci v sezóně.'));
+    var g3 = h('div', { class: 'grid2' });
+    g3.appendChild(F('c3_pred', 'Měsíčně před AI', 'Průměr za období baseline.', { kind: 'num', unit: 'Kč/měsíc' }));
+    g3.appendChild(F('c3_po', 'Měsíčně teď', 'Průměr za hodnocené období.', { kind: 'num', unit: 'Kč/měsíc' }));
+    c3b.appendChild(g3);
+    c3b.appendChild(SelDoc(G, 'c3_dukaz', 'Čím to doložíte', 'Pokles bez rozhodnutí může mít i jiný důvod, třeba sezónu.', OPT.c3Dukaz, 'c3_dukaz_d', 0, { blank: 'Vyberte' }));
+    c3b.appendChild(F('c3_tym', 'Tým nebo činnost', 'Kde výdaj klesl, slouží ke kontrole dvojího započtení.'));
+    c3b.appendChild(itemOut(G, 'C3', 'Přínos'));
+    c3.appendChild(c3b); s3.appendChild(c3);
+
+    var cf = h('label', { class: 'chk' }, [h('input', { type: 'checkbox', 'data-k': 'potvrzeni', 'data-bool': '1' }), h('span', { text: 'Žádnou hodinu ani korunu nepočítám ve dvou řádcích.' })]);
+    cf.firstChild.checked = !!S.potvrzeni;
+    var cfw = h('div', { class: 'fld' }, [cf]);
+    showWhen(cfw, G, function () { return R.driveRows >= 2; });
+    s3.appendChild(cfw);
+
+    s3.appendChild(h('h3', { class: 'branch', text: 'Větev D: Přínos mimo koruny' }));
+    s3.appendChild(h('p', { class: 'branch-lead', text: 'Zlepšení, které nezměnilo peněžní tok, zapište v jednotkách procesu. Do korun ho nepřevádějte, do ROI nevstupuje.' }));
+    var hD = h('div'); s3.appendChild(hD); buildD(hD);
+    s3.appendChild(F('d_slovy', 'Co se zlepšilo a číslo k tomu nemáte', 'Jednou dvěma větami.', { kind: 'area' }));
+    s3.appendChild(h('p', { class: 'hint', html: pill('bez čísla') + ' Do ROI nevstupuje.' }));
+    formEl.appendChild(s3);
+
+    /* 4 Škoda */
+    var s4 = sec('4 Škoda z chyb AI', 'Reklamace, opravy a zahozená práce kvůli chybám AI. Odpověď je potřeba i tehdy, když je nula, a potvrzuje ji konkrétní člověk.');
+    var g4 = h('div', { class: 'grid2' });
+    g4.appendChild(NF('s_hod', 'Hodiny oprav', 'Čas na opravy a přepracování výstupů AI.', 'h'));
+    g4.appendChild(NF('s_kc', 'Další škoda v penězích', 'Reklamace, slevy, penále.', 'Kč'));
+    s4.appendChild(g4);
+    var g4b = h('div', { class: 'grid2' });
+    g4b.appendChild(F('s_kdo', 'Kdo to potvrdil', 'Funkce stačí, třeba vedoucí podpory.'));
+    g4b.appendChild(F('s_kdy', 'Kdy', 'Datum potvrzení.', { kind: 'date' }));
+    s4.appendChild(g4b);
+    s4.appendChild(calcOut(G, 'Škoda celkem', function () {
+      var k = R.skoda;
+      return { text: k.value === null ? '–' : A.fmtKc(k.value), tag: k.tag, note: k.tag === 'chybí' ? (k.note || 'Vyplňte hodiny nebo škodu v penězích, i nulu.') : '' };
+    }));
+    formEl.appendChild(s4);
+
+    /* 5 Náklad */
+    var s5 = sec('5 Náklad', 'Celý náklad projektu za hodnocené období, jednorázové položky celé. Prázdná položka se počítá jako chybějící. Když náklad nevznikl, napište 0.');
+    var g5 = h('div', { class: 'grid2' });
+    g5.appendChild(NF('n1_ks', 'Počet licencí', 'Všechny placené licence, kolik se jich opravdu používá, ukáže administrace nástroje.', 'ks'));
+    g5.appendChild(NF('n1_cena', 'Cena licence', 'Cena za licenci a měsíc bez DPH.', 'Kč/měsíc'));
+    s5.appendChild(g5);
+    s5.appendChild(tagBlockKeys(G, 'n1_t', 'n1_d', ['n1_ks', 'n1_cena']));
+    s5.appendChild(TF(G, 'n1_tokeny', 'Tokeny a API za období', 'Z faktur nebo z konzole dodavatele.', 'Kč'));
+    s5.appendChild(TF(G, 'n1_jine', 'Další provoz za období', 'Hosting, integrace, další nástroje.', 'Kč'));
+    s5.appendChild(nOut(G, 'N1', 'Provoz AI'));
+    s5.appendChild(TF(G, 'n2_kc', 'Zavedení od dodavatele', 'Integrace a nastavení, celá částka.', 'Kč'));
+    s5.appendChild(TF(G, 'n2_hod', 'Vlastní čas na zavedení', 'Hodiny vašich lidí na přípravě a nasazení.', 'h'));
+    s5.appendChild(nOut(G, 'N2', 'Zavedení'));
+    var g6 = h('div', { class: 'grid2' });
+    g6.appendChild(NF('n3_lidi', 'Kolik lidí prošlo školením', 'Všichni, kdo školení absolvovali.', 'lidé'));
+    g6.appendChild(NF('n3_hod', 'Hodin školení na člověka', 'Včetně času na samostudium, když byl povinný.', 'h'));
+    s5.appendChild(g6);
+    s5.appendChild(tagBlockKeys(G, 'n3_t', 'n3_d', ['n3_lidi', 'n3_hod']));
+    s5.appendChild(TF(G, 'n3_kc', 'Externí školení a materiály', 'Faktury za lektory, kurzy a materiály.', 'Kč'));
+    s5.appendChild(nOut(G, 'N3', 'Školení'));
+    s5.appendChild(TF(G, 'n4_hod', 'Čas na měření', 'Sběr dat, vyhodnocení a vyplnění této kalkulačky.', 'h'));
+    s5.appendChild(TF(G, 'n4_kc', 'Nástroje na měření', 'Licence nebo služby, které jste kvůli měření pořídili.', 'Kč'));
+    s5.appendChild(nOut(G, 'N4', 'Měření'));
+    s5.appendChild(TF(G, 'n5_hod', 'Čas lidí na provoz', 'Správa licencí, podpora uživatelů a kontrola výstupů AI, opravy chyb patří do škody.', 'h/měsíc'));
+    s5.appendChild(nOut(G, 'N5', 'Čas lidí'));
+    s5.appendChild(calcOut(G, 'Náklad celkem', function () {
+      return { text: A.fmtKc(R.Ntotal), tag: R.nTag, note: R.nMissing.length ? 'Chybí: ' + R.nMissing.join(', ') + '.' : '' };
+    }));
+    formEl.appendChild(s5);
+
+    /* 6 Rozhodnutí */
+    var s6 = sec('6 Rozhodnutí za 30 dní', 'Tyhle řádky za 30 dní opíšete do formuláře výzvy. Odkaz na něj vám přijde v připomínce.');
+    s6.appendChild(F('r_rozh', 'Jaké rozhodnutí jste udělali?', 'Vyberte jedno.', { kind: 'select', opts: OPT.rRozh }));
+    s6.appendChild(F('r_co', 'Co jste skutečně udělali jinak?', 'Stručně a bez jmen firem, lidí a dodavatelů, když nic, napište „nic“.', { kind: 'area' }));
+    var md = h('div', { class: 'fld' });
+    md.appendChild(h('span', { class: 'lbl', text: 'Čím to můžete doložit?' }));
+    md.appendChild(h('p', { class: 'hint', text: 'Jen typ důkazu, dokumenty nikam neposíláte.' }));
+    var mm = h('div', { class: 'multi' });
+    OPT.rDoklad.forEach(function (t) {
+      var inp = h('input', { type: 'checkbox', 'data-multi': 'r_doklad', value: t });
+      inp.checked = (S.r_doklad || []).indexOf(t) >= 0;
+      mm.appendChild(h('label', {}, [inp, h('span', { text: t })]));
+    });
+    md.appendChild(mm); s6.appendChild(md);
+    s6.appendChild(NF('r_kc', 'Znáte finanční dopad? Kolik korun měsíčně?', 'Úspora kladně, dodatečný náklad záporně, když nevíte, nechte prázdné.', 'Kč/měsíc'));
+    var kt = F('r_kc_tag', 'Je ta částka doložená, nebo odhad?', 'Ukáže se jen při vyplněné částce.', { kind: 'select', opts: OPT.rKcTag });
+    showWhen(kt, G, function () { return A.has(S.r_kc); });
+    s6.appendChild(kt);
+    formEl.appendChild(s6);
+  }
+
+  /* ---------- vykreslení výsledku ---------- */
+  function cell(label, val, tag, subs) {
+    return '<div class="cell"><div class="cl">' + esc(label) + '</div><div class="cv">' + val + '</div>' +
+      (tag ? '<div>' + pill(tag) + '</div>' : '') +
+      (subs || []).filter(Boolean).map(function (s) { return '<div class="cs">' + esc(s) + '</div>'; }).join('') + '</div>';
+  }
+  function resultTable() {
+    var d = R.rows.dol, s = R.rows.scen;
+    var dolSubN = [];
+    if (d.nOdhad > 0) dolSubN.push('z toho odhad ' + A.fmtKc(d.nOdhad));
+    if (d.nMissing.length) dolSubN.push('chybí: ' + d.nMissing.join(', '));
+    var h1 = '<div class="rt-row"><div class="rt-head"><div class="t">Z doloženého přínosu</div><div class="s">Doložené položky proti celému nákladu</div></div><div class="cells">' +
+      cell('Přínos', A.fmtKc(R.Pdol), d.empty ? null : 'spočítáno', d.empty ? ['nic doloženého'] : []) +
+      cell('Náklad', A.fmtKc(R.Ntotal), R.nTag, dolSubN) +
+      cell('Rozdíl', d.diff === null ? '–' : A.fmtKc(d.diff), d.diff === null ? null : d.diffTag, d.diff === null ? [d.diffReason] : []) +
+      cell('ROI', d.roi === null ? '–' : esc(A.fmtRoi(d.roi)), d.roi === null ? null : d.diffTag, d.roi === null ? [d.roiReason] : []) +
+      '</div></div>';
+    var sSub = s.noOdhad ? '<div class="s">Všechny položky jsou doložené, oba řádky vycházejí stejně.</div>' : '';
+    var h2 = '<div class="rt-row"><div class="rt-head"><div class="t">Scénář <span class="pill pl-scen">scénář</span></div><div class="s">Všechny položky včetně odhadů proti celému nákladu</div>' + sSub + '</div><div class="cells">' +
+      cell('Přínos', A.fmtKc(R.Pscen), null, []) +
+      cell('Náklad', A.fmtKc(R.Ntotal), null, []) +
+      cell('Rozdíl', s.diff === null ? '–' : A.fmtKc(s.diff), null, s.diff === null ? [s.diffReason] : []) +
+      cell('ROI', s.roi === null ? '–' : esc(A.fmtRoi(s.roi)), null, s.roi === null ? [s.roiReason] : []) +
+      '</div></div>';
+    return h1 + h2;
+  }
+  function vetHtml() { return '<div class="vet">' + esc(R.vet) + '</div>'; }
+  function todoHtml() {
+    if (!R.todo.length) return '';
+    return '<h3>Co doplnit nebo ověřit</h3><ul class="todo">' + R.todo.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+  }
+  function guardsHtml() {
+    return '<h3>Pět otázek, než uvěříte ROI</h3>' + R.guards.map(function (g) {
+      return '<div class="guard"><div class="gq">' + esc(g.q) + '</div><div>' + stBadge(g.stav) + '</div><div class="gt">' + esc(g.text) + '</div></div>';
+    }).join('');
+  }
+  function guardsPrint() {
+    return '<h3>Pět otázek, než uvěříte ROI</h3>' + R.guards.map(function (g) {
+      return '<div class="guard"><div>' + stBadge(g.stav) + '</div><div><div class="gq">' + esc(g.q) + '</div><div class="gt">' + esc(g.text) + '</div></div></div>';
+    }).join('');
+  }
+  function mimoHtml(trunc) {
+    var out = '';
+    if (R.mimo.length) {
+      out += R.mimo.map(function (m) {
+        return '<div class="mimo">' + esc(m.text) + ' ' + pill(m.tag) + (m.notes.length ? '<div class="mn">' + esc(m.notes.join(' ')) + '</div>' : '') + '</div>';
+      }).join('');
+    }
+    var sl = A.trim(S.d_slovy);
+    if (sl) {
+      if (trunc && sl.length > 300) sl = sl.slice(0, 300) + '…';
+      out += '<div class="mimo">' + esc(sl) + ' ' + pill('bez čísla') + '</div>';
+    }
+    return out ? '<h3>Přínos mimo koruny</h3>' + out : '';
+  }
+  function formLines(trunc) {
+    var lines = R.form.slice();
+    if (trunc && lines[1].length > 300 + 'Co jste udělali jinak: '.length) lines[1] = lines[1].slice(0, 300 + 'Co jste udělali jinak: '.length) + '…';
+    return lines;
+  }
+  function formHtml(withBtn, trunc) {
+    return '<h3>Do formuláře za 30 dní</h3><div class="formbox"><pre id="' + (withBtn ? 'formtext' : 'formtext-p') + '">' + esc(formLines(trunc).join('\n')) + '</pre>' +
+      (withBtn ? '<button type="button" class="btn small" id="copybtn">Zkopírovat</button> <span id="copystat" class="hint" role="status"></span>' : '') + '</div>';
+  }
+
+  function renderResult() {
+    var el = document.getElementById('vysledek');
+    var keepOpen = el.querySelector('details.how') ? el.querySelector('details.how').open : false;
+    el.innerHTML = '<h2>Výsledek</h2>' + resultTable() + vetHtml() + todoHtml() + guardsHtml() + mimoHtml(false) + formHtml(true, false) +
+      '<details class="how" style="margin-top:16px"><summary>Jak kalkulačka počítá</summary><div class="dbody">' + HOW + '</div></details>';
+    if (keepOpen) el.querySelector('details.how').open = true;
+    var cb = document.getElementById('copybtn');
+    if (cb) cb.addEventListener('click', copyForm);
+  }
+  var HOW = esc('ROI = (přínos − náklad) ÷ náklad. Náklad je v obou řádcích celý, i s odhady. Vynechaný náklad by ROI zvýšil.\n' +
+    'Složené číslo má značku nejslabšího vstupu. Baseline je vždycky odhad, proto je odhadem i prodaný čas, který z ní vychází.\n' +
+    'Prodaný čas se oceňuje marží: prodejní cena hodiny minus plná sazba. Mzdy lidí platíte s AI i bez ní.\n' +
+    'Škoda z chyb AI se odečítá od přínosu. Bez odpovědi na ni ROI nevydáváme, ani když je škoda nulová.\n' +
+    'Kalkulačka vychází z metodiky, podle které měříme přínos AI na vlastních zakázkách v TSP DATA.');
+
+  function copyForm() {
+    var txt = R.form.join('\n');
+    var stat = document.getElementById('copystat');
+    function fail() {
+      var pre = document.getElementById('formtext');
+      try { var rg = document.createRange(); rg.selectNodeContents(pre); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(rg); } catch (e) { /* nic */ }
+      if (stat) stat.textContent = 'Kopírování se nepovedlo, text je označený, zkopírujte ho ručně.';
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { if (stat) stat.textContent = 'Zkopírováno.'; }, fail);
+      } else fail();
+    } catch (e) { fail(); }
+  }
+
+  function renderFloat() {
+    var d = R.rows.dol, s = R.rows.scen;
+    document.getElementById('floatbar').innerHTML =
+      '<span>Z doloženého <b>' + (d.roi === null ? '–' : esc(A.fmtRoi(d.roi))) + '</b> · Scénář <b>' + (s.roi === null ? '–' : esc(A.fmtRoi(s.roi))) + '</b></span><span class="go">Výsledek ↓</span>';
+  }
+
+  /* ---------- tisk ---------- */
+  var LOGO_HTML = (document.querySelector('.site-header .logo-svg') || { outerHTML: '' }).outerHTML;
+  function niceDate(iso) { return iso ? A.fmtDate(iso) : '–'; }
+  function renderPrint() {
+    var typ = A.trim(S.p_typ) || 'Projekt bez názvu';
+    var t = new Date();
+    var created = t.getDate() + '. ' + (t.getMonth() + 1) + '. ' + t.getFullYear();
+    var M = R.M;
+    var sub = 'AI od ' + niceDate(S.p_ai_od) + ', hodnoceno do ' + niceDate(S.p_do) + (M !== null ? ' (' + A.fmtNum(M, M % 1 ? 1 : 0) + NB + A.mesicu(M) + ')' : '') + '. Vytvořeno ' + created + '.';
+    document.getElementById('print-sum').innerHTML = '<div class="ps">' +
+      '<div class="ps-head">' + LOGO_HTML + '<div class="r">AI ROI Reality Check · souhrn projektu</div></div>' +
+      '<h1>' + esc(typ) + '</h1><div class="ps-sub">' + esc(sub) + '</div>' +
+      vetHtml() + resultTable() + todoHtml() + guardsPrint() + mimoHtml(true) + formHtml(false, true) +
+      '<div class="ps-foot">Spočítáno v ROI kalkulačce TSP DATA, ' + esc(CALC_URL) + '. Výpočet proběhl ve vašem prohlížeči.</div></div>';
+
+    function line(name, val, tag, doklad) {
+      return '<tr><td>' + esc(name) + '</td><td class="am">' + (val === null ? '–' : esc(A.fmtKc(val))) + '</td><td>' + pill(tag) + '</td><td>' + esc(doklad || '') + '</td></tr>';
+    }
+    var rows = R.items.map(function (it) { return line(it.name, it.value, it.tag, it.doklad); }).join('');
+    if (R.skoda.value !== null || R.skoda.tag === 'chybí') {
+      rows += line('Škoda z chyb AI', R.skoda.value === null ? null : -R.skoda.value, R.skoda.tag, [A.trim(S.s_kdo), S.s_kdy ? A.fmtDate(S.s_kdy) : ''].filter(Boolean).join(', '));
+    }
+    var nrows = R.N.map(function (n) { return line(n.name, n.value, n.tag, n.doklad); }).join('');
+    var head = '<thead><tr><th>Položka</th><th class="am">Částka</th><th>Značka</th><th>Doklad</th></tr></thead>';
+    document.getElementById('print-rozpis').innerHTML = '<div class="rp"><h1>Rozpis položek</h1>' +
+      '<h3>Přínos</h3><table>' + head + '<tbody>' + (rows || '<tr><td colspan="4">Žádné položky.</td></tr>') + '</tbody></table>' +
+      '<h3>Náklad</h3><table>' + head + '<tbody>' + nrows + '</tbody></table></div>';
+  }
+
+  /* ---------- hlavní smyčka ---------- */
+  function update() {
+    R = A.compute(S);
+    Object.keys(reg).forEach(function (g) { reg[g].forEach(function (fn) { fn(); }); });
+    renderResult(); renderFloat(); renderPrint();
+    document.getElementById('sampleBanner').hidden = !S.sample;
+    document.body.classList.toggle('with-rozpis', !!S.rozpis);
+    document.getElementById('rozpis').checked = !!S.rozpis;
+    save();
+  }
+
+  formEl.addEventListener('input', function (e) {
+    var t = e.target;
+    var k = t.getAttribute && t.getAttribute('data-k');
+    if (t.getAttribute && t.getAttribute('data-multi')) {
+      var vals = [];
+      formEl.querySelectorAll('input[data-multi="r_doklad"]').forEach(function (c) { if (c.checked) vals.push(c.value); });
+      S.r_doklad = vals; update(); return;
+    }
+    if (!k) return;
+    if (t.type === 'checkbox') {
+      if (t.getAttribute('data-yes')) setp(k, t.checked ? t.getAttribute('data-yes') : '');
+      else setp(k, t.checked);
+    } else setp(k, t.value);
+    update();
+  });
+  formEl.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[data-tog]') : null;
+    if (!b) return;
+    setp(b.getAttribute('data-tog'), b.getAttribute('data-v'));
+    update();
+  });
+
+  document.getElementById('btn-sample').addEventListener('click', function () {
+    S = A.sampleState(today()); buildForm(); update();
+    document.getElementById('sampleBanner').scrollIntoView({ block: 'nearest' });
+  });
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    var yes = true;
+    try { yes = window.confirm('Opravdu vymazat všechna pole?'); } catch (e) { yes = true; }
+    if (!yes) return;
+    S = A.emptyState(today()); buildForm(); update();
+  });
+  document.getElementById('btn-print').addEventListener('click', function () { window.print(); });
+  document.getElementById('rozpis').addEventListener('change', function (e) { S.rozpis = e.target.checked; update(); });
+
+  S = load();
+  buildForm();
+  update();
+  window.__airoi = { get state() { return S; }, get result() { return R; } };
+})();
+
+  </script>
+</body>
+</html>

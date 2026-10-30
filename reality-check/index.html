@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI ROI Reality Check | TSP DATA, a.s.</title>
+  <meta name="description" content="Výzva k přednášce ROI umělé inteligence na MAIDAY Brno: jedno rozhodnutí o AI za 30 dní." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* TSP DATA Brand System, shodné s ostatními one-pagery */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;
+      --radius-card: 6px;
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font-base); font-size: 16px; line-height: 1.6; color: var(--tsp-text); background: var(--tsp-offwhite); overflow-x: hidden; }
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p { font-size: 1rem; line-height: 1.7; }
+
+    .site-header { background: var(--tsp-white); border-bottom: 3px solid var(--tsp-red); padding: 18px 24px; }
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-header .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .site-header .logo-svg { width: 102px; height: auto; flex-shrink: 0; }
+    .site-header .doc-label { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-white); background: var(--tsp-red); padding: 4px 10px; border-radius: 3px; }
+
+    .hero { background: var(--tsp-dark); color: var(--tsp-white); padding: var(--section-pad); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -40px; right: -60px; width: 280px; height: 280px; background: var(--tsp-blue); opacity: 0.25; transform: rotate(15deg) skewX(10deg); }
+    .hero::after { content: ''; position: absolute; bottom: -50px; right: 40px; width: 160px; height: 160px; background: var(--tsp-teal); opacity: 0.15; border-radius: var(--radius-human); }
+    .hero .container { position: relative; z-index: 1; }
+    .hero .hero-eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 12px; }
+    .hero h1 { color: var(--tsp-white); margin-bottom: 16px; max-width: 640px; }
+    .hero .hero-intro { font-size: 1.0625rem; color: var(--tsp-light); max-width: 620px; margin-bottom: 0; }
+    .hero .hero-intro + .hero-intro { margin-top: 10px; font-size: 0.9375rem; }
+
+    .section-header { margin-bottom: 24px; }
+    .section-header h2 { color: var(--tsp-dark); margin-bottom: 8px; }
+    .section-header .section-lead { color: var(--tsp-text-muted); font-size: 0.9375rem; }
+
+    .cta-btn { display: inline-block; background: var(--tsp-red); color: var(--tsp-white); font-family: var(--font-base); font-size: 0.9375rem; font-weight: 600; padding: 13px 32px; border-radius: 4px; border: 0; cursor: pointer; transition: background 0.15s; }
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    .site-footer { background: var(--tsp-offwhite); border-top: 1px solid var(--tsp-light); padding: 20px 24px; }
+    .site-footer .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .site-footer .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .site-footer .footer-logo { width: 64px; height: auto; }
+    .site-footer .footer-slogan { font-size: 0.8rem; color: var(--tsp-text-muted); font-style: italic; }
+    .site-footer .footer-contact { font-size: 0.8125rem; color: var(--tsp-text-muted); text-align: right; line-height: 1.8; }
+    .site-footer .footer-contact a { color: var(--tsp-teal); }
+
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+      .site-header { padding: 14px 16px; }
+      .site-header .container { padding: 0; }
+      .site-header .logo-wrap > span { display: none; }
+      .site-header .logo-svg { width: 84px; }
+      .site-header .doc-label { font-size: 0.68rem; }
+      .container { padding: 0 16px; }
+      .site-footer { padding: 20px 16px; }
+      .site-footer .container { flex-direction: column; align-items: flex-start; padding: 0; }
+      .site-footer .footer-contact { text-align: left; }
+    }
+
+    .hero .hero-sub { font-size: 1.25rem; font-weight: 600; color: var(--tsp-white); max-width: 640px; margin-bottom: 0; }
+    .block { padding: 40px 24px; }
+    .block.white { background: var(--tsp-white); }
+    .block .container { max-width: 760px; }
+    .block h2 { color: var(--tsp-dark); margin-bottom: 14px; }
+    .block p + p { margin-top: 12px; }
+    .steps { display: grid; gap: 0; }
+    .step { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--tsp-light); }
+    .step:last-child { border-bottom: 0; }
+    .step b { color: var(--tsp-dark); }
+    .form-intro { color: var(--tsp-text-muted); margin-bottom: 14px; font-size: 0.9375rem; }
+    .form-frame { width: 100%; border: 1.5px solid var(--tsp-light); border-radius: var(--radius-card); background: var(--tsp-white); display: block; height: 1100px; }
+    .form-placeholder { border: 2px dashed var(--tsp-teal); border-radius: var(--radius-card); background: #f3fbfb; padding: 40px 20px; text-align: center; color: var(--tsp-blue); font-weight: 600; font-size: 1.125rem; }
+    .form-placeholder small { display: block; font-weight: 400; font-size: 0.85rem; color: var(--tsp-text-muted); margin-top: 6px; }
+    .form-soon { font-weight: 600; color: var(--tsp-blue); font-size: 1.0625rem; }
+    .form-fallback { font-size: 0.85rem; color: var(--tsp-text-muted); margin-top: 10px; overflow-wrap: anywhere; }
+    .after { border-top: 4px solid var(--tsp-teal); }
+    .links { list-style: none; padding: 0; margin: 10px 0 0; }
+    .links li { padding: 10px 0; border-bottom: 1px solid var(--tsp-offwhite); overflow-wrap: anywhere; font-size: 0.9375rem; }
+    .links li span { display: block; color: var(--tsp-text-muted); font-size: 0.875rem; }
+    .links li b { color: var(--tsp-dark); }
+    .after h3 { margin: 22px 0 4px; color: var(--tsp-blue); }
+    .todo-ph { background: #fff4d6; border-radius: 3px; padding: 0 4px; font-weight: 600; color: var(--tsp-dark); }
+    .data p { font-size: 0.9375rem; }
+    .site-footer .legal { font-size: 0.8125rem; color: var(--tsp-text-muted); }
+    .guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 4px; }
+    .guide a { display: block; background: var(--tsp-white); border: 1.5px solid var(--tsp-light); border-top: 4px solid var(--tsp-teal); border-radius: var(--radius-card); padding: 14px 16px; color: var(--tsp-text-muted); font-size: 0.875rem; line-height: 1.5; min-height: 44px; }
+    .guide a b { display: block; color: var(--tsp-blue); font-size: 1rem; margin-bottom: 2px; }
+    .guide a:hover { text-decoration: none; border-color: var(--tsp-teal); }
+    .block.tight { padding-top: 28px; padding-bottom: 28px; }
+    @media (max-width: 640px) {
+      .guide { grid-template-columns: 1fr; }
+      .block { padding: 30px 16px; }
+      .step { grid-template-columns: 1fr; gap: 2px; }
+      .form-frame { height: 1300px; }
+      .hero .hero-sub { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo-wrap">
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span style="font-size:0.8rem;color:var(--tsp-text-muted);font-style:italic;">Success driven by data.</span>
+      </div>
+      <span class="doc-label">MAIDAY Brno</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">MAIDAY Brno · 5. 11. 2026</p>
+      <h1>AI ROI Reality Check</h1>
+      <p class="hero-sub">Jedno rozhodnutí o AI za 30 dní</p>
+    </div>
+  </section>
+
+  <section class="block white">
+    <div class="container">
+      <p>Vyberte jeden AI projekt, spočítejte jeho náklad a do 30 dní rozhodněte: pokračovat, změnit způsob použití, omezit výdaje, nebo začít měřit. Platí i „ověřili jsme, že to děláme správně, a nic neměníme“.</p>
+      <p>Nulový výsledek se počítá stejně jako úspěch. Kdyby se počítaly jen úspěchy, souhrn výzvy by byl zkreslený.</p>
+    </div>
+  </section>
+
+  <section class="block tight" id="z-prednasky">
+    <div class="container">
+      <h2>Z přednášky</h2>
+      <nav class="guide" aria-label="Z přednášky">
+        <a href="checklist.html"><b>Checklist pěti otázek</b>k tisku, na 15 minut</a>
+        <a href="cisla.html"><b>Čísla z přednášky</b>výpočet ROI na naší zakázce a náklad přednášky</a>
+        <a href="kalkulacka.html"><b>ROI kalkulačka</b>oddělí doložený přínos od odhadu</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Jak výzva probíhá</h2>
+      <div class="steps">
+        <div class="step"><b>Dnes</b><span>vyplníte krátký formulář a hned pod ním najdete ROI kalkulačku a checklist pěti otázek.</span></div>
+        <div class="step"><b>Do 30 dní</b><span>u vybraného projektu uděláte jedno rozhodnutí.</span></div>
+        <div class="step"><b>Za 30 dní</b><span>přijde vám e-mail s připomínkou a druhou částí formuláře. Napíšete, co jste rozhodli a čím to doložíte.</span></div>
+        <div class="step"><b>Po vyhodnocení</b><span>pošleme vám výsledky výzvy i s metodikou a jednu stránku o vašem projektu.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block white" id="formular">
+    <div class="container">
+      <h2>Přihláška do výzvy</h2>
+      <p class="form-intro" id="form-intro">Vyplnění zabere asi dvě minuty.</p>
+      <div id="form-slot"></div>
+      <noscript><p class="form-fallback">Formulář se bez JavaScriptu nevloží. Otevřete ho přímo přes odkaz níže.</p></noscript>
+      <p class="form-fallback" id="form-fallback">Formulář se nenačetl? Otevřete ho přímo: <span id="form-direct"></span></p>
+    </div>
+  </section>
+
+  <section class="block after" id="po-odeslani">
+    <div class="container">
+      <h2>Po odeslání formuláře</h2>
+      <p>Díky, jste ve výzvě. Kalkulačku, checklist a čísla z přednášky si otevřete tady, e-mailem je neposíláme.</p>
+      <ul class="links">
+        <li><b>ROI kalkulačka</b>, oddělí doložený přínos od odhadu:<span><a href="kalkulacka.html">https://tsp-data.github.io/tsp-onepagers/reality-check/kalkulacka.html</a></span></li>
+        <li><b>Checklist pěti otázek</b> k tisku:<span><a href="checklist.html">https://tsp-data.github.io/tsp-onepagers/reality-check/checklist.html</a></span></li>
+        <li><b>Čísla z přednášky:</b><span><a href="cisla.html">https://tsp-data.github.io/tsp-onepagers/reality-check/cisla.html</a></span></li>
+      </ul>
+      <p style="margin-top:14px">Za 30 dní vám pošleme e-mail s připomínkou a odkazem na druhou část formuláře.</p>
+      <h3>Čím se v TSP DATA zabýváme</h3>
+      <ul class="links">
+        <li><b>Portfolio:</b> <a href="https://tsp-data.github.io/tsp-onepagers/?lang=cs">https://tsp-data.github.io/tsp-onepagers/?lang=cs</a></li>
+        <li><b>FinOps a řízení IT nákladů:</b> <a href="https://tsp-data.github.io/tsp-onepagers/cs/finops.html">https://tsp-data.github.io/tsp-onepagers/cs/finops.html</a></li>
+        <li><b>Monitoring IT infrastruktury:</b> <a href="https://tsp-data.github.io/tsp-onepagers/cs/monitoring.html">https://tsp-data.github.io/tsp-onepagers/cs/monitoring.html</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block white data">
+    <div class="container">
+      <h2>Jak naložíme s vašimi údaji</h2>
+      <p>Správce osobních údajů je TSP DATA, a. s., IČO 26224712. Formulář běží v Microsoft Forms v prostředí TSP DATA.</p>
+      <p>E-mail použijeme jen k připomínce za 30 dní a k zaslání výsledků výzvy.</p>
+      <p>Odpovědi zpracujeme souhrnně. Ve výsledcích výzvy nebudou jména firem ani lidí.</p>
+      <p>ROI kalkulačka počítá ve vašem prohlížeči. Čísla, která do ní zadáte, nikam neodesíláme.</p>
+      <p>Údaje uchováme do 31. 3. 2027.</p>
+      <p>Dotazy a žádosti o výmaz údajů: <a href="mailto:tomas.nekolny@tspdata.cz">tomas.nekolny@tspdata.cz</a></p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">Success driven by data.</span>
+      </div>
+      <div class="footer-contact legal">
+        TSP DATA, a. s. · <a href="https://tsp-data.github.io/tsp-onepagers/?lang=cs">https://tsp-data.github.io/tsp-onepagers/?lang=cs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Microsoft Forms: sem vložte adresu z Forms (Shromáždit odpovědi, Vložit, atribut src v iframe).
+       Prázdná hodnota = místo formuláře jen řádek "Přihláška do výzvy se otevře v den přednášky". */
+    var FORMS_EMBED_URL = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=TG34UjKvTkCcfVhPnKUHMXCXZy2xYUVJjz56SZRfxXVUMjFXSTE2MkVRMldQOUVUMlNIVTNXTFVZMy4u&embed=true";
+    /* Přímý odkaz na formulář pro případ, že se iframe nenačte. Prázdný = zástupný text. */
+    var FORMS_DIRECT_URL = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=TG34UjKvTkCcfVhPnKUHMXCXZy2xYUVJjz56SZRfxXVUMjFXSTE2MkVRMldQOUVUMlNIVTNXTFVZMy4u";
+
+    (function () {
+      var slot = document.getElementById('form-slot');
+      var direct = document.getElementById('form-direct');
+      var intro = document.getElementById('form-intro');
+      var fb = document.getElementById('form-fallback');
+      if (FORMS_EMBED_URL) {
+        var f = document.createElement('iframe');
+        f.className = 'form-frame';
+        f.src = FORMS_EMBED_URL;
+        f.title = 'Přihláška do výzvy AI ROI Reality Check';
+        f.setAttribute('loading', 'lazy');
+        f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        slot.appendChild(f);
+        if (FORMS_DIRECT_URL) {
+          var a = document.createElement('a');
+          a.href = FORMS_DIRECT_URL; a.textContent = FORMS_DIRECT_URL;
+          direct.appendChild(a);
+        } else {
+          var s = document.createElement('span');
+          s.className = 'todo-ph'; s.textContent = '[odkaz na formulář: doplní Tom]';
+          direct.appendChild(s);
+        }
+      } else {
+        /* Forms ještě není: jen jeden řádek, žádný iframe, žádný text nad formulářem ani řádek "Formulář se nenačetl?" */
+        intro.style.display = 'none';
+        fb.style.display = 'none';
+        var ph = document.createElement('p');
+        ph.className = 'form-soon';
+        ph.textContent = 'Přihláška do výzvy se otevře v den přednášky, 5. 11. 2026.';
+        slot.appendChild(ph);
+      }
+    })();
+  </script>
+</body>
+</html>

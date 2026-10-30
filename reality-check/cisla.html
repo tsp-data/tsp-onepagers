@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Čísla z přednášky, AI ROI Reality Check | TSP DATA, a.s.</title>
+  <meta name="description" content="ROI umělé inteligence na naší analytické zakázce a náklad přednášky ROI umělé inteligence, MAIDAY Brno 5. 11. 2026." />
+  <meta name="robots" content="noindex" />
+  <!--
+    PO PŘEDNÁŠCE se přepisuje na JEDNOM místě: objekt PO_PREDNASCE níže (lide, minuty, radek).
+    Publikum, náklad celkem, počet zrušených výdajů a jejich skloňování se dopočítají samy.
+    Po vyhodnocení výzvy (30 dní) se přepíše PO_VYHODNOCENI.
+    Statické hodnoty v textu (komentáře po_prednasce) jsou záloha pro prohlížeč bez JavaScriptu a odpovídají odhadu 200 lidí, 25 min.
+  -->
+  <script>
+    var PO_PREDNASCE = {
+      lide: 200,          /* skutečný počet lidí v sále */
+      minuty: 25,         /* naměřený čas v minutách, včetně dotazů */
+      radek: null         /* null = věta s odhadem; po přednášce např. "Naměřeno: 240 lidí a 27 minut včetně dotazů." */
+    };
+    var PO_VYHODNOCENI = {
+      roi: "Zatím jen náklad a hypotéza."   /* přepsat až po vyhodnocení výzvy */
+    };
+    var NAKLAD_PRIPRAVA_CESTA = 21786;      /* 3 428 + 5 258 + 1 700 + 11 400 Kč */
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* TSP DATA Brand System, shodné s ostatními one-pagery */
+    :root {
+      --tsp-red:      #E52A18;
+      --tsp-dark:     #20313A;
+      --tsp-blue:     #00415C;
+      --tsp-teal:     #00B0AB;
+      --tsp-light:    #D1DFDF;
+      --tsp-offwhite: #ECEBEC;
+      --tsp-white:    #FFFFFF;
+      --tsp-text:     #1A1A1A;
+      --tsp-text-muted: #5A6A73;
+      --font-base: 'Inter', Arial, sans-serif;
+      --radius-human: 15%;
+      --radius-card: 6px;
+      --max-width: 960px;
+      --section-pad: 56px 24px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font-base); font-size: 16px; line-height: 1.6; color: var(--tsp-text); background: var(--tsp-offwhite); overflow-x: hidden; }
+    a { color: var(--tsp-teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
+    h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; }
+    p { font-size: 1rem; line-height: 1.7; }
+
+    .site-header { background: var(--tsp-white); border-bottom: 3px solid var(--tsp-red); padding: 18px 24px; }
+    .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .site-header .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .site-header .logo-svg { width: 102px; height: auto; flex-shrink: 0; }
+    .site-header .doc-label { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tsp-white); background: var(--tsp-red); padding: 4px 10px; border-radius: 3px; }
+
+    .hero { background: var(--tsp-dark); color: var(--tsp-white); padding: var(--section-pad); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -40px; right: -60px; width: 280px; height: 280px; background: var(--tsp-blue); opacity: 0.25; transform: rotate(15deg) skewX(10deg); }
+    .hero::after { content: ''; position: absolute; bottom: -50px; right: 40px; width: 160px; height: 160px; background: var(--tsp-teal); opacity: 0.15; border-radius: var(--radius-human); }
+    .hero .container { position: relative; z-index: 1; }
+    .hero .hero-eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tsp-teal); margin-bottom: 12px; }
+    .hero h1 { color: var(--tsp-white); margin-bottom: 16px; max-width: 640px; }
+    .hero .hero-intro { font-size: 1.0625rem; color: var(--tsp-light); max-width: 620px; margin-bottom: 0; }
+    .hero .hero-intro + .hero-intro { margin-top: 10px; font-size: 0.9375rem; }
+
+    .section-header { margin-bottom: 24px; }
+    .section-header h2 { color: var(--tsp-dark); margin-bottom: 8px; }
+    .section-header .section-lead { color: var(--tsp-text-muted); font-size: 0.9375rem; }
+
+    .cta-btn { display: inline-block; background: var(--tsp-red); color: var(--tsp-white); font-family: var(--font-base); font-size: 0.9375rem; font-weight: 600; padding: 13px 32px; border-radius: 4px; border: 0; cursor: pointer; transition: background 0.15s; }
+    .cta-btn:hover { background: #c4210f; text-decoration: none; }
+
+    .site-footer { background: var(--tsp-offwhite); border-top: 1px solid var(--tsp-light); padding: 20px 24px; }
+    .site-footer .container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .site-footer .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .site-footer .footer-logo { width: 64px; height: auto; }
+    .site-footer .footer-slogan { font-size: 0.8rem; color: var(--tsp-text-muted); font-style: italic; }
+    .site-footer .footer-contact { font-size: 0.8125rem; color: var(--tsp-text-muted); text-align: right; line-height: 1.8; }
+    .site-footer .footer-contact a { color: var(--tsp-teal); }
+
+    @media (max-width: 640px) {
+      :root { --section-pad: 36px 16px; }
+      h1 { font-size: 1.625rem; }
+      h2 { font-size: 1.25rem; }
+      .site-header { padding: 14px 16px; }
+      .site-header .container { padding: 0; }
+      .site-header .logo-wrap > span { display: none; }
+      .site-header .logo-svg { width: 84px; }
+      .site-header .doc-label { font-size: 0.68rem; }
+      .container { padding: 0 16px; }
+      .site-footer { padding: 20px 16px; }
+      .site-footer .container { flex-direction: column; align-items: flex-start; padding: 0; }
+      .site-footer .footer-contact { text-align: left; }
+    }
+
+    .hero .hero-sub { font-size: 1.25rem; font-weight: 600; color: var(--tsp-white); max-width: 640px; margin-bottom: 0; }
+    .block { padding: 40px 24px; }
+    .block.white { background: var(--tsp-white); }
+    .block .container { max-width: 760px; }
+    .block h2 { color: var(--tsp-dark); margin-bottom: 14px; }
+    .block p + p { margin-top: 12px; }
+
+    /* Stránka Čísla z přednášky */
+    .hero .hero-sub { font-size: 1.25rem; font-weight: 600; color: var(--tsp-white); max-width: 640px; margin-bottom: 0; }
+    .block { padding: 40px 24px; }
+    .block.white { background: var(--tsp-white); }
+    .block .container { max-width: 800px; }
+    .block h2 { color: var(--tsp-dark); margin-bottom: 14px; }
+    .block p + p { margin-top: 12px; }
+    .muted { color: var(--tsp-text-muted); font-size: 0.9375rem; }
+    .est { display: inline-block; font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size: 0.72rem; font-weight: 400; letter-spacing: .04em; color: var(--tsp-text-muted); border: 1px solid #b5bfc4; border-radius: 3px; padding: 0 6px; margin-left: 8px; vertical-align: middle; line-height: 1.6; white-space: nowrap; }
+    .est.doc { color: var(--tsp-teal); border-color: var(--tsp-teal); }
+    td .est, .tile .est, .legend .est { margin-left: 0; }
+    .amt, .mono { font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; }
+    .legend { display: grid; gap: 0; margin-top: 6px; }
+    .legend div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--tsp-light); align-items: baseline; }
+    .legend div:last-child { border-bottom: 0; }
+    .note-teal { color: var(--tsp-blue); font-weight: 600; margin-top: 12px; }
+    .tiles { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin: 6px 0 18px; align-items: stretch; }
+    .tile { background: var(--tsp-white); border: 1.5px solid var(--tsp-light); border-radius: var(--radius-card); padding: 18px 20px; }
+    .block.white .tile { background: var(--tsp-offwhite); }
+    .tile .lab { font-size: 0.875rem; color: var(--tsp-text-muted); line-height: 1.4; }
+    .tile .big { font-size: 2.4rem; font-weight: 700; color: var(--tsp-dark); line-height: 1.15; margin: 6px 0 8px; }
+    .tile.main { border-color: var(--tsp-teal); }
+    .tile.dim .big { font-size: 1.7rem; color: var(--tsp-text-muted); }
+    .tile.dim { opacity: .9; }
+    .tile.wide .big { font-size: 1.6rem; }
+    .tile .sub { font-size: 1.125rem; font-weight: 600; color: var(--tsp-text-muted); margin-top: 4px; }
+    .tile .goal { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--tsp-light); color: var(--tsp-blue); font-weight: 600; }
+    .strip { background: #eef8f8; border-left: 4px solid var(--tsp-teal); padding: 12px 16px; border-radius: 0 var(--radius-card) var(--radius-card) 0; color: var(--tsp-blue); font-weight: 600; margin: 16px 0; }
+    .strip.big { font-size: 1.25rem; }
+    .strip.small { font-size: 0.9375rem; font-weight: 400; background: transparent; border-left-color: var(--tsp-light); color: var(--tsp-text-muted); margin-top: -6px; }
+    .strip.hl { background: #fff4d6; border-left-color: #e0b13a; color: var(--tsp-dark); }
+    .tw { margin: 14px 0 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+    caption { text-align: left; font-weight: 700; color: var(--tsp-dark); padding: 0 0 8px; font-size: 1rem; }
+    th { text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--tsp-text-muted); border-bottom: 2px solid var(--tsp-light); padding: 6px 8px; vertical-align: bottom; }
+    td { padding: 9px 8px; border-bottom: 1px solid var(--tsp-light); vertical-align: top; }
+    th.r, td.r { text-align: right; }
+    td.r { font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; white-space: nowrap; }
+    td.calc { font-family: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size: 0.85rem; color: var(--tsp-dark); }
+    td.tg { white-space: nowrap; }
+    td.tg small { display: block; white-space: normal; color: var(--tsp-text-muted); font-size: 0.78rem; margin-top: 3px; }
+    tr.sum td { font-weight: 700; border-top: 2px solid var(--tsp-dark); }
+    .neg { color: var(--tsp-red); }
+    .pos { color: #1f8a4c; }
+    .pos.dim { opacity: .65; }
+    .tiny { font-size: 0.8125rem; color: var(--tsp-text-muted); }
+    .levels { display: grid; gap: 0; margin-top: 8px; }
+    .levels div { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--tsp-light); }
+    .levels div:last-child { border-bottom: 0; }
+    .levels b { color: var(--tsp-red); font-family: ui-monospace, monospace; }
+    .minilab { font-size: 0.8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--tsp-text-muted); margin-top: 18px; }
+    .guide { display: grid; gap: 0; }
+    .guide div { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--tsp-light); }
+    .guide div:last-child { border-bottom: 0; }
+    .guide a { font-weight: 600; }
+    .site-footer .legal { font-size: 0.8125rem; color: var(--tsp-text-muted); }
+    @media (max-width: 640px) {
+      .block { padding: 30px 16px; }
+      .hero .hero-sub { font-size: 1.05rem; }
+      .legend div, .guide div { grid-template-columns: 1fr; gap: 4px; }
+      .tiles { grid-template-columns: 1fr; }
+      .tile .big { font-size: 1.9rem; }
+      table, thead, tbody, tr, td, caption { display: block; width: 100%; }
+      thead { position: absolute; left: -9999px; }
+      tr { border: 1px solid var(--tsp-light); border-radius: var(--radius-card); padding: 6px 12px; margin-bottom: 10px; background: var(--tsp-white); }
+      .block.white tr { background: var(--tsp-offwhite); }
+      td { border-bottom: 1px solid var(--tsp-light); padding: 7px 0 7px 106px; position: relative; min-height: 2.2em; text-align: left !important; white-space: normal !important; overflow-wrap: anywhere; }
+      td:last-child { border-bottom: 0; }
+      td::before { content: attr(data-l); position: absolute; left: 0; top: 8px; width: 96px; font-family: var(--font-base); font-size: 0.75rem; color: var(--tsp-text-muted); font-weight: 600; }
+      tr.sum { border-top: 2px solid var(--tsp-dark); }
+      tr.sum td { border-top: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo-wrap">
+        <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span style="font-size:0.8rem;color:var(--tsp-text-muted);font-style:italic;">Success driven by data.</span>
+      </div>
+      <span class="doc-label">MAIDAY Brno</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">MAIDAY Brno · 5. 11. 2026</p>
+      <h1>Čísla z přednášky</h1>
+      <p class="hero-sub">ROI umělé inteligence na naší zakázce a náklad samotné přednášky</p>
+    </div>
+  </section>
+
+  <section class="block white">
+    <div class="container">
+      <p>V přednášce jsme spočítali ROI umělé inteligence na jedné naší analytické zakázce s fixní cenou. Stejným měřítkem jsme pak změřili i samotnou přednášku.</p>
+      <p>Čísla ze zakázky jsou odhad, protože odhadem je baseline i rozsah nákupu. U každého čísla je štítek, jak silně je podložené.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Jak číst štítky</h2>
+      <div class="legend">
+        <div><span><span class="est doc">doloženo</span></span><span>změřené, nebo potvrzené odpovědnou osobou. U potvrzení píšeme, kdo a kdy.</span></div>
+        <div><span><span class="est">spočítáno</span></span><span>výpočet z doložených vstupů</span></div>
+        <div><span><span class="est">odhad</span></span><span>odhad nebo scénář</span></div>
+        <div><span><span class="est">expertní odhad</span></span><span>odhad podle zkušenosti jednoho člověka</span></div>
+        <div><span><span class="est">příklad</span></span><span>ilustrační částka, ukazuje, jak by výpočet vypadal</span></div>
+      </div>
+      <p class="note-teal">Složené číslo má značku nejslabšího vstupu.</p>
+    </div>
+  </section>
+
+  <section class="block white" id="zakazka">
+    <div class="container">
+      <h2>Výsledek zakázky</h2>
+      <div class="tiles">
+        <div class="tile main"><div class="lab">Uvolněný čas prodaný jako obvykle + ušetřený nákup</div><div class="big">ROI asi 11×</div><span class="est">odhad</span></div>
+        <div class="tile dim"><div class="lab">Srovnání: kdyby se čas neprodal</div><div class="big">ROI asi 5×</div><span class="est">odhad</span></div>
+      </div>
+      <p>Přínos má dva zdroje. Třináct MD uvolněného času našich lidí se prodalo jako obvykle, potvrdilo to vedení firmy. K tomu nákup procesní analýzy, který jsme díky AI nemuseli udělat. Utilizace 80 % je náš dlouhodobý průměr: z deseti uvolněných dní počítáme osm jako prodané. Marže na MD je rozdíl prodejní ceny a toho, co nás MD stojí.</p>
+      <div class="tw"><table><caption>Skladba přínosu a nákladu</caption><thead><tr><th class="">Položka</th><th class="">Výpočet</th><th class="r">Částka</th><th class="tg">Značka</th></tr></thead><tbody>
+<tr><td class="" data-l="Položka">Uvolněný čas prodaný jako obvykle</td><td class="" data-l="Výpočet">13 MD × 80 % × 6 500 Kč marže na MD</td><td class="r" data-l="Částka">≈ 68 tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span><small>prodej času potvrdilo vedení firmy</small></td></tr>
+<tr><td class="" data-l="Položka">Ušetřený nákup procesní analýzy</td><td class="" data-l="Výpočet">cena subdodavatele za 5,5 MD − 12 h našich lidí na téže práci</td><td class="r" data-l="Částka">≈ 59 tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Náklad AI na zakázce</td><td class="" data-l="Výpočet">podíl z předplatného + celá režie zavedení a školení</td><td class="r" data-l="Částka">≈ 10,2 tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+</tbody></table></div>
+      <div class="tw"><table><caption>ROI s přínosem, nákladem a rozdílem</caption><thead><tr><th class="">Výpočet</th><th class="r">Přínos AI</th><th class="r">Náklad AI</th><th class="r">Rozdíl: přínos − náklad</th><th class="r">ROI: rozdíl ÷ náklad</th><th class="tg">Značka</th></tr></thead><tbody>
+<tr><td class="" data-l="Výpočet">Výsledek: uvolněný čas prodaný jako obvykle + ušetřený nákup</td><td class="r" data-l="Přínos AI">≈ 127 tis. Kč</td><td class="r" data-l="Náklad AI">≈ 10,2 tis. Kč</td><td class="r" data-l="Rozdíl: přínos − náklad">≈ 117 tis. Kč</td><td class="r" data-l="ROI: rozdíl ÷ náklad">asi 11×</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Výpočet">Srovnání: kdyby se čas neprodal, jen ušetřený nákup</td><td class="r" data-l="Přínos AI">≈ 59 tis. Kč</td><td class="r" data-l="Náklad AI">≈ 10,2 tis. Kč</td><td class="r" data-l="Rozdíl: přínos − náklad">≈ 49 tis. Kč</td><td class="r" data-l="ROI: rozdíl ÷ náklad">asi 5×</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+</tbody></table></div>
+      <div class="strip big">Nákup procesní analýzy nikdy nevznikl.</div>
+      <div class="strip small">Rozsah 5,5 MD je odborný odhad a závisí na něm skoro polovina přínosu. <span class="est">odhad</span></div>
+      <div class="tile main wide"><div class="lab">Bod zvratu bez nákupu</div><div class="big">prodat aspoň 14 % uvolněného času</div><span class="est">odhad</span></div>
+      <p style="margin-top:14px">Výsledek drží i bez nákupu. AI by se zaplatila, i kdybychom prodali jen 14 % uvolněného času. Počítáme s obvyklými 80 %.</p>
+    </div>
+  </section>
+
+  <section class="block" id="baseline">
+    <div class="container">
+      <h2>Výpočet baseline a skutečnosti</h2>
+      <p>Fixní rozsah i cena, dodáno a vyfakturováno. Zakázka měla 45 MD, 23 MD dodal subdodavatel a 22 MD my. Baseline počítáme jen z našich 22 MD.</p>
+      <p>Baseline je odhad z nabídky krát opravný poměr. Opravný poměr 0,737 je medián podílu skutečnost ÷ odhad u 83 našich projektů nad 15 MD ukončených před 13. 1. 2026, kdy u nás začal pilot s AI. Je to poměr jedné firmy, pro vlastní výpočet si ho nepřebírejte.</p>
+      <p>Každá odpracovaná hodina je jen v jednom řádku.</p>
+      <div class="tw"><table><caption>Výpočet baseline a skutečnosti</caption><thead><tr><th class="">Řádek</th><th class="calc">Výpočet</th><th class="r">Hodiny</th><th class="tg">Značka</th></tr></thead><tbody>
+<tr><td class="" data-l="Řádek">Odhad z nabídky</td><td class="calc" data-l="Výpočet">22 MD × 8 h</td><td class="r" data-l="Hodiny">176 h</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Řádek">Schůzky a workshopy</td><td class="calc" data-l="Výpočet">z výkazu, odečítají se z obou stran</td><td class="r" data-l="Hodiny">15 h</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Řádek">Baseline</td><td class="calc" data-l="Výpočet">(176 − 15) × 0,737</td><td class="r" data-l="Hodiny">119 h</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Řádek">Odpracováno</td><td class="calc" data-l="Výpočet">výkaz bez duplicit, úplnost potvrdil vedoucí zakázky 23. 10. 2026</td><td class="r" data-l="Hodiny">41 h</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Řádek">Procesní analýza</td><td class="calc" data-l="Výpočet">patří k ušetřenému nákupu, v kalkulaci nabídky nebyla (potvrdil vedoucí zakázky 23. 10. 2026)</td><td class="r" data-l="Hodiny">12 h</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Řádek">Práce na výstupech</td><td class="calc" data-l="Výpočet">41 − 15 − 12</td><td class="r" data-l="Hodiny">14 h</td><td class="tg" data-l="Značka"><span class="est">spočítáno</span></td></tr>
+<tr class="sum"><td class="" data-l="Řádek">Uvolněný čas našich lidí připsaný AI</td><td class="calc" data-l="Výpočet">119 − 14</td><td class="r" data-l="Hodiny">105 h ≈ 13 MD</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+</tbody></table></div>
+    </div>
+  </section>
+
+  <section class="block white" id="na-md">
+    <div class="container">
+      <h2>Náklad a přínos AI na MD</h2>
+      <p>Jednotka je MD naší vlastní dodávky v ceně zakázky, tedy 22 ze 45 MD. Podle přínosu na MD se dá vybírat, na jaké zakázky AI nasadit.</p>
+      <div class="tw"><table><caption>Náklad a přínos AI na MD</caption><thead><tr><th class="">Na MD vlastní dodávky</th><th class="calc">Výpočet</th><th class="r">Částka</th><th class="tg">Značka</th></tr></thead><tbody>
+<tr class="neg"><td class="" data-l="Na MD vlastní dodávky">Náklad AI</td><td class="calc" data-l="Výpočet">10 239 Kč ÷ 22 MD</td><td class="r" data-l="Částka">≈ 465 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr class="pos"><td class="" data-l="Na MD vlastní dodávky">Přínos AI: uvolněný čas prodaný jako obvykle + ušetřený nákup</td><td class="calc" data-l="Výpočet">126 776 Kč ÷ 22 MD</td><td class="r" data-l="Částka">≈ 5 763 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr class="pos dim"><td class="" data-l="Na MD vlastní dodávky">Přínos AI, kdyby se čas neprodal: jen ušetřený nákup</td><td class="calc" data-l="Výpočet">58 750 Kč ÷ 22 MD</td><td class="r" data-l="Částka">≈ 2 670 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+</tbody></table></div>
+    </div>
+  </section>
+
+  <section class="block" id="naklad-prednasky">
+    <div class="container">
+      <h2>Náklad této přednášky</h2>
+      <p>Během přednášky běžel v rohu plátna graf nákladu. Příprava a cesta v něm byly od začátku a každou minutou přibýval čas sálu.</p>
+      <!-- po_prednasce -->
+      <div class="strip hl" id="po-radek">Odhad pro 200 lidí a 25 minut. Skutečný počet lidí a naměřený čas doplníme po přednášce.</div>
+      <!-- /po_prednasce -->
+      <div class="tw"><table><caption>Položky nákladu přednášky</caption><thead><tr><th class="">Položka</th><th class="">Jak jsme počítali</th><th class="r">Částka</th><th class="tg">Značka</th></tr></thead><tbody>
+<tr><td class="" data-l="Položka">Příprava: tokeny září a říjen</td><td class="" data-l="Jak jsme počítali">podle ceníku API, platíme předplatné a faktura se tím nezvýšila</td><td class="r" data-l="Částka">3 428 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Položka">Příprava: čas řečníka</td><td class="" data-l="Jak jsme počítali">4,95 h z výkazu a logů práce, spodní hranice, 8 500 Kč za MD</td><td class="r" data-l="Částka">5 258 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Položka">Příprava: tokeny srpen</td><td class="" data-l="Jak jsme počítali">dopočet z ceny za token naměřené od září</td><td class="r" data-l="Částka">≈ 1 700 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Cesta z Plzně do Brna a zpět</td><td class="" data-l="Jak jsme počítali">asi 590 km autem a šest hodin řízení po 8 500 Kč za MD</td><td class="r" data-l="Částka">≈ 11 400 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Čas publika</td><td class="" data-l="Jak jsme počítali"><!-- po_prednasce --><span data-po="lide">200</span><!-- /po_prednasce --> lidí × <!-- po_prednasce --><span data-po="minuty">25</span><!-- /po_prednasce --> min × 1 000 Kč za hodinu na člověka</td><td class="r" data-l="Částka"><!-- po_prednasce --><span data-po="publikum">83 333</span><!-- /po_prednasce --> Kč</td><td class="tg" data-l="Značka"><span class="est">expertní odhad</span></td></tr>
+<tr class="sum"><td class="" data-l="Položka">Náklad celkem</td><td class="" data-l="Jak jsme počítali">součet, značka nejslabšího vstupu</td><td class="r" data-l="Částka">≈ <!-- po_prednasce --><span data-po="celkem">105</span><!-- /po_prednasce --> tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+</tbody></table></div>
+    </div>
+  </section>
+
+  <section class="block white" id="co-by-se-stalo">
+    <div class="container">
+      <h2>Co by se muselo stát, aby se přednáška vyplatila</h2>
+      <div class="tile main">
+        <div class="lab">Hypotéza přínosu: jeden zrušený zbytečný výdaj na AI</div>
+        <div class="big">5 000 Kč měsíčně <span class="est">příklad</span></div>
+        <div class="sub">60 000 Kč za rok <span class="est">příklad</span></div>
+        <div class="goal">Aby se náklad vrátil do roka: <!-- po_prednasce --><span data-po="vydaje">2 zrušené výdaje</span><!-- /po_prednasce --> <span class="est">příklad</span></div>
+      </div>
+      <p style="margin-top:14px">Někdo z účastníků díky přednášce najde zbytečný výdaj na AI za 5 000 Kč měsíčně a opravdu ho zruší. Za rok je to 60 000 Kč. Jestli se to stane, zatím nevíme.</p>
+      <div class="strip big">Známe náklad, máme hypotézu přínosu, nemáme důkaz.</div>
+      <div class="minilab">Úrovně důkazu</div>
+      <div class="levels">
+        <div><b>1</b><span>Nové poznání: zjistíme z formuláře hned po přednášce</span></div>
+        <div><b>2</b><span>Změna rozhodování: z odpovědí účastníků výzvy za 30 dní</span></div>
+        <div><b>3</b><span>Ekonomický dopad v penězích: jen tam, kde ho někdo doloží</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="roi-prednasky">
+    <div class="container">
+      <h2>ROI této přednášky</h2>
+      <!-- po_vyhodnoceni -->
+      <div class="strip hl" id="vyhodnoceni">Zatím jen náklad a hypotéza.</div>
+      <!-- /po_vyhodnoceni -->
+      <p>ROI přednášky spočítáme za 30 dní z odpovědí účastníků výzvy. Náklad bude ten, který graf naměřil do konce dotazů. Do přínosu půjdou jen finanční dopady z odpovědí, doložené zvlášť a odhady zvlášť. Výsledek pošleme všem ve výzvě spolu s jejími výsledky a doplníme ho i sem.</p>
+      <p>Do výzvy se přihlásíte na její stránce. <a href="./">AI ROI Reality Check: přihláška do výzvy</a></p>
+    </div>
+  </section>
+
+  <section class="block white" id="z-prednasky">
+    <div class="container">
+      <h2>Z přednášky</h2>
+      <div class="guide">
+        <div><a href="checklist.html">Checklist pěti otázek</a><span>pět otázek k jednomu AI projektu, k tisku, na 15 minut</span></div>
+        <div><a href="kalkulacka.html">ROI kalkulačka</a><span>oddělí doložený přínos od odhadu</span></div>
+        <div><a href="./">Výzva AI ROI Reality Check</a><span>jedno rozhodnutí o AI za 30 dní</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <svg class="footer-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 102.04 68.03" role="img" aria-label="TSP DATA">
+          <polygon fill="#e52a18" points="37.37 17.17 47.84 17.17 47.84 18.85 43.48 18.85 43.48 31.15 41.73 31.15 41.73 18.85 37.37 18.85 37.37 17.17"/>
+          <path fill="#e52a18" d="m57.67,20.78c-.6-1.38-1.52-2.1-2.84-2.1-1.54,0-2.52.78-2.52,2.16,0,1.5,1.38,1.9,3.24,2.38,2.14.56,3.98,1.2,3.98,3.63,0,3.06-1.92,4.45-4.63,4.45s-4.68-1.42-5.21-4.15l1.64-.64c.5,1.88,1.58,3.12,3.58,3.12,1.7,0,2.88-.84,2.88-2.54,0-1.46-1.08-1.76-3.17-2.28-1.98-.5-4.04-1.12-4.04-3.92,0-2.22,1.54-3.9,4.28-3.9,2.44,0,3.82,1.48,4.38,3l-1.54.78Z"/>
+          <path fill="#e52a18" d="m70.5,21.16c0-1.54-.84-2.32-2.38-2.32h-3.5v4.63h3.5c1.54,0,2.38-.78,2.38-2.32m-5.87,3.99v5.99h-1.76v-13.98h5.29c2.7,0,4.16,1.56,4.16,4s-1.46,3.99-4.16,3.99h-3.53Z"/>
+          <path fill="#20313a" d="m41.88,38.72v10.63h1.6c2.78,0,4.52-1.4,4.52-5.32s-1.74-5.31-4.52-5.31h-1.6Zm1.78-1.68c3.64,0,6.21,2.26,6.21,6.99s-2.58,6.99-6.21,6.99h-3.54v-13.98h3.54Z"/>
+          <path fill="#20313a" d="m56.85,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.98,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.98-13.98h-1.68Z"/>
+          <polygon fill="#20313a" points="62.8 37.04 62.8 38.72 67.16 38.72 67.16 51.02 68.92 51.02 68.92 38.72 73.27 38.72 73.27 37.04 62.8 37.04"/>
+          <path fill="#20313a" d="m79.22,39.32l2.16,6.29h-4.32l2.16-6.29Zm-.84-2.28l-4.97,13.98h1.82l1.26-3.74h5.47l1.26,3.74h1.82l-4.97-13.98h-1.68Z"/>
+          <path fill="#e52a18" d="m29.43,33.56l-10.99-2.66c-.84-.22-1.43-.97-1.43-1.84v-9.99c0-1.05.85-1.9,1.9-1.9h10.99c1.05,0,1.9.85,1.9,1.9v12.65c0,1.24-1.17,2.15-2.37,1.84"/>
+          <polygon fill="#20313a" points="17.01 51.01 31.86 51.01 31.86 38.29 17.01 34.64 17.01 51.01"/>
+        </svg>
+        <span class="footer-slogan">Success driven by data.</span>
+      </div>
+      <div class="footer-contact legal">
+        TSP DATA, a. s. · <a href="https://tsp-data.github.io/tsp-onepagers/?lang=cs">https://tsp-data.github.io/tsp-onepagers/?lang=cs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Dopočty hodnot z PO_PREDNASCE a PO_VYHODNOCENI. Bez JavaScriptu zůstává statický odhad v HTML. */
+    (function () {
+      var NB = '\u00a0';
+      function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, NB); }
+      function set(key, text) {
+        var els = document.querySelectorAll('[data-po="' + key + '"]');
+        for (var i = 0; i < els.length; i++) els[i].textContent = text;
+      }
+      var p = PO_PREDNASCE;
+      var publikum = Math.round(p.lide * p.minuty / 60 * 1000);
+      var celkem = NAKLAD_PRIPRAVA_CESTA + publikum;
+      var n = Math.ceil(celkem / 60000);
+      var slovo = n === 1 ? 'zrušený výdaj' : (n >= 2 && n <= 4 ? 'zrušené výdaje' : 'zrušených výdajů');
+      set('lide', fmt(p.lide));
+      set('minuty', fmt(p.minuty));
+      set('publikum', fmt(publikum));
+      set('celkem', fmt(celkem / 1000));
+      set('vydaje', n + NB + slovo);
+      var radek = document.getElementById('po-radek');
+      radek.textContent = p.radek ? p.radek : 'Odhad pro ' + fmt(p.lide) + ' lidí a ' + fmt(p.minuty) + ' minut. Skutečný počet lidí a naměřený čas doplníme po přednášce.';
+      document.getElementById('vyhodnoceni').textContent = PO_VYHODNOCENI.roi;
+    })();
+  </script>
+</body>
+</html>
