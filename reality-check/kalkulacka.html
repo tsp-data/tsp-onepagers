@@ -613,6 +613,7 @@ Složené číslo má značku nejslabšího vstupu.</div>
         c1.marze = marze;
         c1.value = c1h * marze;
         c1.tag = 'odhad';
+        c1.notes.push('Odhad i při doložené ceně a sazbě: prodané hodiny nemůžou být víc než uvolněné a ty stojí na baseline, která je vždycky odhad.');
         if (marze <= 0) c1.notes.push('Marže je nulová nebo záporná.');
         if (c1h > uvolneno.value) c1.notes.push('Prodaných hodin je víc, než se uvolnilo.');
         if (c1h !== 0) { useInp(c1c); useSaz(); }
@@ -1267,7 +1268,7 @@ Složené číslo má značku nejslabšího vstupu.</div>
     s2.appendChild(TF(G, 'b_hod_s', 'Hodiny s AI za hodnocené období', 'Skutečně odpracované hodiny z výkazu, bez schůzek a workshopů.', 'h'));
     s2.appendChild(calcOut(G, 'Uvolněné hodiny', function () {
       var u = R.uvolneno;
-      var note = '';
+      var note = u.value === null ? '' : 'Odhad i při doložených odpracovaných hodinách: odečítají se od baseline a ta je vždycky odhad.';
       if (S.b_vykaz === OPT.vykaz[2]) note = 'Neúplný výkaz vypadá jako zrychlení, uvolněné hodiny proto nepočítáme.';
       return { text: u.value === null ? '–' : A.fmtNum(u.value, 2).replace(/,00$/, '') + NB + 'h', tag: u.value === null ? 'chybí' : 'odhad', note: note };
     }));
