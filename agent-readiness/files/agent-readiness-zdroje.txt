@@ -519,7 +519,7 @@ Pravidla zápisu:
 - Deset rizik: ASI01 Agent Goal Hijack; ASI02 Tool Misuse and Exploitation; ASI03 Identity and Privilege Abuse; ASI04 Agentic Supply Chain Vulnerabilities; ASI05 Unexpected Code Execution (RCE); ASI06 Memory & Context Poisoning; ASI07 Insecure Inter-Agent Communication; ASI08 Cascading Failures; ASI09 Human-Agent Trust Exploitation; ASI10 Rogue Agents.
 - „We expand on the concepts of Least-Privilege and Excessive Agency by citing Least-Agency. This captures our advice to organizations to avoid unnecessary autonomy; deploying agentic behavior where it is not needed expands the attack surface without adding value.“
 - „Similarly, strong observability becomes non-negotiable: without clear visibility into what agents are doing, why they are doing it, and which tools they are invoking, unnecessary autonomy can quietly expand the attack surface.“
-- Mezi opatřeními: lidské schválení pro eskalaci oprávnění (ASI03), kill switch, neměnné a podepsané auditní logy.
+- Mezi opatřeními: lidské schválení pro eskalaci oprávnění (ASI03), kill switch, immutable a podepsané auditní logy.
 
 **Použití v nástroji:** Princip Least-Agency je přesná formulace výchozího postoje nástroje: tam, kde stačí asistent, nedávat agenta. Citace o observabilitě propojuje bezpečnost s tématem akce (Grafana AI Observability Breakfast).
 
