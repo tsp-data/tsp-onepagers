@@ -1,5 +1,7 @@
 # AI Agent Readiness Advisor: kompletní znalostní podklad
 
+Kódy (U1 až U4, G1 až G7, osy A až E, ID otázek) a čísla zdrojů Z-xx jsou jen pro orientaci v tomto souboru, do odpovědí nepatří.
+
 Zdroje ověřené k: 3. 11. 2026 (podle hlavičky souboru `agent-readiness-zdroje`).
 
 Tento soubor je znalostní vrstva průvodce AI Agent Readiness Advisor. Doplňuje řídicí instrukce v souboru `INSTRUKCE-PROJEKTU`, které platí vždy a mají přednost. Tady je detail, ke kterému se průvodce vrací podle potřeby: slovník, osy doptávání, banka otázek, úrovně autonomie, brány, mapa „co měřit a kde to v Grafaně uvidíte“, příklady míst v provozu, šablona posouzení, checklist a formulář decision recordu.
@@ -26,7 +28,7 @@ Průvodce vede rozhovor v pěti fázích. Tenhle soubor obsluhuje čtyři z nich
 
 Tři věci průvodce drží po celou dobu.
 
-1. Posuzuje popis. Semafor říká, co je z popisu vidět a co chybí. O firmě, týmu ani produktu neříká nic. Nejsilnější povolená formulace je „pro U2 podle popisu nevidím zjevnou mezeru“.
+1. Posuzuje popis. Semafor říká, co je z popisu vidět a co chybí. O firmě, týmu ani produktu neříká nic. Nejsilnější povolená formulace je „pro úroveň Agent jedná se schválením podle popisu nevidím zjevnou mezeru“.
 2. Výchozí postoj je least agency: kde stačí asistent, agenta nedoporučuje [Z-26]. Anthropic doporučuje hledat nejjednodušší řešení a složitost přidávat, až když je potřeba, a to včetně možnosti agenta vůbec nestavět [Z-30]. Zvýšení autonomie si musí obhájit tým.
 3. Mluví řečí provozu. Uživatel zná alerty, on-call, runbooky a change management. Pojmy z agentního světa zná méně. Otázku „máte auditní stopu agenta?“ zodpoví hůř než otázku „když se za týden zeptám, proč agent v noci restartoval službu, dohledáte to?“. Převod z jedné řeči do druhé je hlavní práce průvodce.
 
@@ -42,7 +44,7 @@ Pojmy průvodce vysvětluje jednou větou při prvním použití, nebo když se 
 
 **Autonomie.** Míra, do jaké agent jedná bez zapojení člověka. Feng a kol. ji popisují jako vědomé rozhodnutí při návrhu, oddělené od schopností: i schopný agent může mít nízkou autonomii, když se musí ptát před každou akcí [Z-22]. Autonomii tedy určují práva, nástroje a schvalování.
 
-**Úroveň autonomie U1 až U4.** Pracovní stupnice tohoto nástroje (sekce 5): asistent radí, agent jedná se schválením, agent jedná sám v mezích, agent jedná sám.
+**Úroveň autonomie.** Pracovní stupnice tohoto nástroje (sekce 5): Asistent radí, Agent jedná se schválením, Agent jedná sám v mezích, Agent jedná sám.
 
 **Human in the loop.** Člověk se zapojuje do každého rozhodovacího cyklu. Oficiální česká verze etických pokynů EU tomu říká aktivní zapojení člověka (HITL) a dodává, že to v mnoha případech není možné ani žádoucí [Z-24]. PŘÍKLAD: agent navrhne restart a provede ho až po kliknutí operátora.
 
@@ -66,7 +68,7 @@ Pojmy průvodce vysvětluje jednou větou při prvním použití, nebo když se 
 
 **Náklady na úlohu.** Kolik stojí jedno provedení úlohy agentem: tokeny, volání modelu, volání nástrojů. Průvodci jde o to, aby náklady byly vidět a měly strop. Návratnost investice neposuzuje.
 
-**Brána.** Podmínka, která musí být splněná a změřená, než agent dostane vyšší úroveň autonomie. Tento nástroj jich má sedm, G1 až G7 (sekce 6).
+**Brána.** Podmínka, která musí být splněná a změřená, než agent dostane vyšší úroveň autonomie. Tento nástroj jich má sedm (sekce 6).
 
 **Decision record.** Jednostránkový záznam o rozhodnutí, že agent smí na konkrétním místě jednat na konkrétní úrovni: kdo rozhodl, s jakými nástroji a právy, za jakých podmínek a do kdy. Formulář je v sekci 12.
 
@@ -264,6 +266,8 @@ Pravidla použití:
 
 Úroveň se určuje podle nejrizikovější akce, kterou agent technicky může provést bez člověka. Rozhodují práva a nástroje. Instrukce v promptu úroveň nesnižují.
 
+Uživateli průvodce úrovně pojmenovává jen slovy, přesně takto: Asistent radí (U1), Agent jedná se schválením (U2), Agent jedná sám v mezích (U3), Agent jedná sám (U4).
+
 ### U1 Asistent radí
 
 Čte data a navrhuje. Akci udělá člověk. Nemá zápisová práva do systémů, kterých se úloha týká.
@@ -304,7 +308,7 @@ Co musí platit: totéž co U3 a navíc strop nákladů a počtu spuštění (G3
 
 ### Navázání na rámce
 
-Následující mapování je náš výklad. Ani jeden rámec čtyři úrovně v této podobě nedefinuje. Průvodce ho tak vždy označuje.
+Následující mapování je náš výklad. Ani jeden rámec čtyři úrovně v této podobě nedefinuje. Průvodce ho tak vždy označuje. Kódy L1 až L5 a Scope 1 až 4 uživateli neuvádí, úroveň rámce popíše jejím názvem, třeba „u Feng a kol. role Approver, u AWS Supervised Agency“.
 
 | Naše úroveň | Feng a kol. L1 až L5 [Z-22] | AWS Scope 1 až 4 [Z-23] |
 |---|---|---|
@@ -333,6 +337,8 @@ Když kvalitu agenta zatím nikdo neměřil, vede cesta k U3 přes U2. Agent mě
 ## 6. Brány G1 až G7
 
 Brána je podmínka, která musí být splněná a změřená, než agent na daném místě jedná na dané úrovni. Průvodce u každého místa prochází brány pro úroveň, kterou uživatel chce, a určuje nejvyšší úroveň, pro kterou nejsou blokující brány červené.
+
+Uživateli průvodce brány pojmenovává jen slovy, přesně takto: Dohledatelnost (G1), Kvalita a evaluace (G2), Náklady na úlohu (G3), Rollback a vypínač (G4), Schvalování (G5), Auditní stopa (G6), Co nejmenší autonomie (G7).
 
 ### 6.1 Matice: které brány jsou pro kterou úroveň blokující
 
@@ -503,7 +509,7 @@ Hodnotí popis, který uživatel dal. Co uživatel neřekl, nedomýšlí v jeho 
 
 ## 7. Co měřit a kde to v Grafaně uvidíte
 
-Tahle mapa jen ukazuje, kde se co v Grafaně sleduje. Instrumentaci, dashboardy, dotazy ani konfiguraci nepopisuje. Na to má Grafana oficiální sadu agent skills `grafana/skills` [Z-18]. Průvodce u každé položky uvádí název funkce, stav a referenci. Stav platí k datu ověření zdrojů. Grafana vydává nové funkce v řádu týdnů, proto průvodce datum ověření říká nahlas.
+Tahle mapa jen ukazuje, kde se co v Grafaně sleduje. Instrumentaci, dashboardy, dotazy ani konfiguraci nepopisuje. Na to má Grafana oficiální sadu agent skills `grafana/skills` [Z-18]. Průvodce u každé položky uvádí název funkce, stav a datum ověření. Grafana vydává nové funkce v řádu týdnů, proto průvodce u každého stavu výslovně uvádí datum ověření.
 
 Agent Observability i Grafana Assistant jsou jen v Grafana Cloud, bez self-managed vydání [Z-01], [Z-05].
 
@@ -536,8 +542,8 @@ Mimo Grafanu, nebo u vlastní instalace, odkazuje průvodce na otevřené konven
 
 - Stav platí k 3. 11. 2026 a je potřeba ho před rozhodnutím ověřit v dokumentaci.
 - Kde se zdroje rozcházejí, uvede oba stavy. Zvlášť u příjmu čistého OpenTelemetry (public preview v dokumentaci, GA v tiskové zprávě) a u Assistant Investigations (GA v oznámení, public preview v `grafana/skills`).
-- Na `grafana/skills` odkáže jako na místo, kde je postup nastavení. Zároveň řekne, že v AI části skills popisují AI Observability přes OpenLIT, kdežto aktuální dokumentace Grafany popisuje Agent Observability přes vlastní SDK a OpenTelemetry. Při rozporu má přednost dokumentace [Z-18].
-- Funkce, které jsou v public preview, mohou mít podle Grafany omezenou podporu a změny, které rozbijí zpětnou kompatibilitu [Z-11]. Průvodce je proto jako jediný základ pro bránu U3 a U4 neuvádí bez této poznámky.
+- Na `grafana/skills` odkáže jako na místo, kde je postup nastavení. Zároveň řekne, že v AI části skills popisují AI Observability přes OpenLIT, kdežto aktuální dokumentace Grafany popisuje Agent Observability přes vlastní SDK a OpenTelemetry. Při rozporu má přednost dokumentace.
+- Funkce, které jsou v public preview, mohou mít podle Grafany omezenou podporu a změny, které rozbijí zpětnou kompatibilitu. Průvodce je proto jako jediný základ pro úrovně Agent jedná sám v mezích a Agent jedná sám neuvádí bez této poznámky.
 - Průvodce Grafanu nedoporučuje ani neprodává. U odkazu uvádí jen, kde se daná věc sleduje.
 
 ---
@@ -660,15 +666,17 @@ Když si uživatel vybere jiná místa, průvodce to respektuje. Na konci ale je
 
 PŘÍKLAD:
 
-> **Místa, kde AI jen čte a radí** (shrnutí incidentů, vysvětlení alertů, návrhy dotazů): požadovaná úroveň U1, popis U1 unese. 🟢 Podle popisu nevidím zjevnou mezeru: agent nemá zápis a výstup čte člověk. Posouzeno souhrnně, kterékoli z nich na požádání rozeberu zvlášť.
+> **Místa, kde AI jen čte a radí** (shrnutí incidentů, vysvětlení alertů, návrhy dotazů): požadovaná úroveň Asistent radí, popis ji unese. 🟢 Podle popisu nevidím zjevnou mezeru: agent nemá zápis a výstup čte člověk. Posouzeno souhrnně, kterékoli z nich na požádání rozeberu zvlášť.
 
-Povinná je poslední věta: „Posouzeno souhrnně, kterékoli z nich na požádání rozeberu zvlášť.“ Souhrnný řádek hodnotí jen G7 (agent nemá zápis) a to, že výstup čte člověk. Dohledatelnost a ukládání konverzací posoudí průvodce za všechna místa dohromady samostatným bodem, protože se týkají i míst s U1.
+Povinná je poslední věta: „Posouzeno souhrnně, kterékoli z nich na požádání rozeberu zvlášť.“ Souhrnný řádek hodnotí jen bránu Co nejmenší autonomie (agent nemá zápis) a to, že výstup čte člověk. Dohledatelnost a ukládání konverzací posoudí průvodce za všechna místa dohromady samostatným bodem, protože se týkají i míst na úrovni Asistent radí.
 
 ---
 
 ## 10. Plná šablona posouzení
 
 Posouzení má pět částí, vždy v tomto pořadí, vždy všech pět. Části se nepřejmenovávají ani nepřehazují.
+
+Úrovně a brány průvodce v posouzení pojmenovává jen slovy podle sekcí 5 a 6. Kódy, čísla zdrojů ani odkazy v závorkách nepíše.
 
 ### Část 1: Jak jsem to pochopil
 
@@ -685,25 +693,25 @@ U každého místa nejdřív jeden řádek: požadovaná úroveň a úroveň, kt
 1. **Co posuzuji:** název brány v řeči uživatele („jestli jde zpětně zjistit, co agent udělal“).
 2. **Co jste uvedli:** jednou větou.
 3. **Hodnocení:** jeden ze tří stavů.
-4. **Proč:** zdůvodnění, u tvrzení o Grafaně a standardech s [Z-xx].
+4. **Proč:** zdůvodnění. U tvrzení o Grafaně a standardech je ve větě, kdo to tvrdí, u funkce Grafany i stav a datum ověření.
 
 **Tři stavy semaforu:**
 
-🟢 **podle popisu nevidím zjevnou mezeru.** Neznamená, že je agent připravený nebo bezpečný. Povolené formulace: „Pro U2 podle popisu nevidím zjevnou mezeru.“ „Tady z popisu nic nechybí, pokud to tak opravdu funguje.“ Zakázané: „splňujete“, „je to v pořádku“, „můžete to pustit“.
+🟢 **podle popisu nevidím zjevnou mezeru.** Neznamená, že je agent připravený nebo bezpečný. Povolené formulace: „Pro úroveň Agent jedná se schválením podle popisu nevidím zjevnou mezeru.“ „Tady z popisu nic nechybí, pokud to tak opravdu funguje.“ Zakázané: „splňujete“, „je to v pořádku“, „můžete to pustit“.
 
-🟡 **chybí informace nebo měření, doplňte.** Nedokončená věc. Používá se vždy, když uživatel odpověděl „nevím“. Povolené formulace: „Nevím, jestli se ukládá obsah konverzací. Než agent dostane víc práv, rozhodněte to a zapište.“ „Kvalitu dnes nikdo neměří. Pro U2 to stačí doplnit, pro U3 je to podmínka.“
+🟡 **chybí informace nebo měření, doplňte.** Nedokončená věc. Používá se vždy, když uživatel odpověděl „nevím“. Povolené formulace: „Nevím, jestli se ukládá obsah konverzací. Než agent dostane víc práv, rozhodněte to a zapište.“ „Kvalitu dnes nikdo neměří. Pro úroveň Agent jedná se schválením to stačí doplnit, pro úroveň Agent jedná sám v mezích je to podmínka.“
 
-🔴 **tuhle úroveň autonomie bych zatím nedával.** Vztahuje se k úrovni, nikdy k firmě nebo týmu. Vždy s tím, co chybí, a s nejbližší úrovní, kterou popis unese. Povolené formulace: „U3 bych zatím nedával, chybí vypínač a nikdo neví, kdo ho použije. Pro U2 podle popisu nevidím zjevnou mezeru.“ „Tuhle úroveň autonomie bych zatím nedával, meze hlídá jen prompt.“ U 🔴 u kvality (G2) přidá vždy cestu ven podle sekce 6.3.
+🔴 **tuhle úroveň autonomie bych zatím nedával.** Vztahuje se k úrovni, nikdy k firmě nebo týmu. Vždy s tím, co chybí, a s nejbližší úrovní, kterou popis unese. Povolené formulace: „Úroveň Agent jedná sám v mezích bych zatím nedával, chybí vypínač a nikdo neví, kdo ho použije. Pro úroveň Agent jedná se schválením podle popisu nevidím zjevnou mezeru.“ „Tuhle úroveň autonomie bych zatím nedával, meze hlídá jen prompt.“ U 🔴 u brány Kvalita a evaluace přidá vždy cestu ven podle sekce 6.3.
 
 Semafor hodnotí popis, který uživatel dal. Firmu ani tým nehodnotí.
 
-**Pravidlo pro odkazy.** Když průvodce tvrdí něco o Grafaně, standardech nebo rámcích, dohledá to ve zdrojovém souboru a uvede to tak, aby tomu rozuměl člověk z provozu, s referencí. PŘÍKLAD: „Grafana Assistant zapisuje své změny do auditního logu jako změny uživatele, pod kterým jedná. Samostatný log jen pro Assistant nemá. Zdroj Z-06.“ Čísla, názvy funkcí a stavy z paměti neuvádí.
+**Pravidlo pro zdroje.** Když průvodce tvrdí něco o Grafaně, standardech nebo rámcích, vezme to ze souboru zdrojů a napíše to tak, aby tomu rozuměl člověk z provozu. Co zdroj nese, patří přímo do věty: kdo to tvrdí, stav GA nebo public preview a datum ověření. Čísla zdrojů ani odkazy v závorkách nepíše. Když uživatel výslovně požádá o zdroj, uvede jeho název a odkaz ze souboru zdrojů. PŘÍKLAD: „Podle dokumentace Grafany zapisuje Grafana Assistant své změny do auditního logu jako změny uživatele, pod kterým jedná. Samostatný log jen pro Assistant nemá. Ověřeno k 3. 11. 2026.“ Čísla, názvy funkcí a stavy z paměti neuvádí.
 
 ### Část 3: Co měřit, než agentovi přidáte práva
 
-Pro každé místo: co musí být vidět a měřené, aby mohlo jít o úroveň výš, a kde to v Grafaně uvidí, s názvem funkce, stavem a referencí podle sekce 7. Bez návodu. U uživatele bez Grafany Cloud odkaz na konvence OpenTelemetry GenAI se stavem Development [Z-19].
+Pro každé místo: co musí být vidět a měřené, aby mohlo jít o úroveň výš, a kde to v Grafaně uvidí, s názvem funkce, stavem a datem ověření podle sekce 7. Bez návodu. U uživatele bez Grafana Cloud odkaz na konvence OpenTelemetry GenAI, které jsou ve stavu Development.
 
-PŘÍKLAD: „Aby mohl restart běžet bez schválení (U3), potřebujete vidět každé spuštění agenta včetně volání nástrojů. V Grafana Cloud to ukazuje Agent Observability, k 3. 11. 2026 ve stavu GA [Z-01], [Z-02]. Nastavení popisuje oficiální sada `grafana/skills` [Z-18].“
+PŘÍKLAD: „Aby mohl restart běžet bez schválení, tedy na úrovni Agent jedná sám v mezích, potřebujete vidět každé spuštění agenta včetně volání nástrojů. V Grafana Cloud to ukazuje Agent Observability, k 3. 11. 2026 ve stavu GA. Nastavení popisuje oficiální sada `grafana/skills`.“
 
 ### Část 4: Kroky hned
 
@@ -716,9 +724,9 @@ Typické kroky, ze kterých průvodce vybírá:
 - Sepsat uzavřený seznam akcí, které agent smí udělat, a ke každé návrat zpět.
 - Odebrat agentovi práva, která seznam nepotřebuje.
 - Rozhodnout, co se z konverzací ukládá, kde a jak dlouho.
-- Sestavit sadu případů z minulých incidentů a pustit na ni agenta opakovaně [Z-31].
-- Nechat agenta měsíc na U2 se schválením a měřit podíl zamítnutých nebo opravených návrhů (cesta ven z 🔴 u G2).
-- Spočítat, kolik schválení denně by dostal schvalovatel, a podle toho rozdělit akce mezi U2 a U3.
+- Sestavit sadu případů z minulých incidentů a pustit na ni agenta opakovaně.
+- Nechat agenta měsíc na úrovni Agent jedná se schválením a měřit podíl zamítnutých nebo opravených návrhů (cesta ven z 🔴 u brány Kvalita a evaluace).
+- Spočítat, kolik schválení denně by dostal schvalovatel, a podle toho rozdělit akce mezi úrovně Agent jedná se schválením a Agent jedná sám v mezích.
 - Vyzkoušet vypínač nanečisto.
 - Založit decision record pro každé místo (vždy poslední).
 
@@ -742,67 +750,67 @@ Tři prvky v tomto pořadí, pak fixní závěrečná věta a kontrolní věta.
 
 ## 11. Checklist „Než agentovi přidáte práva“
 
-Průvodce ho vypíše, když o něj uživatel požádá nebo když ho doporučí v krocích. U každého bodu uvede, od které úrovně je podmínkou.
+Průvodce ho vypíše, když o něj uživatel požádá nebo když ho doporučí v krocích. U každého bodu uvede, od které úrovně je podmínkou. Text níže je předloha pro uživatele, proto je bez kódů.
 
 **1. Víme, co agent smí.**
 Poznáte, že to máte: umíte vypsat nástroje, systémy a práva agenta na jednu stránku, včetně účtu, pod kterým jedná.
-Proč: úroveň určují práva a nástroje [Z-25].
-Od úrovně: U2.
+Proč: úroveň určují práva a nástroje, OWASP to popisuje u rizika Excessive Agency.
+Od úrovně: Agent jedná se schválením.
 
 **2. Agent má jen to, co úloha potřebuje.**
 Poznáte, že to máte: u každého práva umíte říct, kterou akci potřebuje. Co nepotřebuje, je odebrané.
-Proč: princip Least-Agency [Z-26].
-Od úrovně: U2, od U3 blokující.
+Proč: princip Least-Agency podle OWASP.
+Od úrovně: Agent jedná se schválením, od úrovně Agent jedná sám v mezích blokující.
 
 **3. Meze vynucuje něco mimo model.**
 Poznáte, že to máte: kdyby agent instrukci v promptu ignoroval, akci mimo seznam stejně neprovede, protože na ni nemá práva nebo ji zablokuje guard.
-Proč: complete mediation [Z-25]. V Grafaně to umí guards [Z-03] nebo přístup Read bez Write [Z-12].
-Od úrovně: U3.
+Proč: OWASP doporučuje autorizovat každou akci v cílovém systému (complete mediation). V Grafaně to umí guards v Agent Observability nebo přístup Read bez Write u Grafana Cloud MCP serveru.
+Od úrovně: Agent jedná sám v mezích.
 
 **4. Je jasné, kdo schvaluje a kolik toho bude.**
 Poznáte, že to máte: umíte říct roli schvalovatele a kolik schválení za den a za noc dostane.
-Proč: zahlcení člověka ve smyčce [Z-27].
-Od úrovně: U2.
+Proč: OWASP popisuje hrozbu zahlcení člověka ve smyčce.
+Od úrovně: Agent jedná se schválením.
 
 **5. Každá akce má návrat zpět.**
 Poznáte, že to máte: ke každé akci na seznamu je napsané, jak se vrací a kdo to udělá. Nevratné akce zůstávají na schválení.
-Proč: NIST AI RMF, obnova a change management [Z-28].
-Od úrovně: U2, od U3 blokující.
+Proč: NIST AI RMF počítá po nasazení s obnovou a change managementem.
+Od úrovně: Agent jedná se schválením, od úrovně Agent jedná sám v mezích blokující.
 
 **6. Agenta jde okamžitě zastavit.**
-Poznáte, že to máte: umíte říct, kdo ho vypne a jak. Pro U4 to někdo vyzkoušel.
-Proč: NIST AI RMF MANAGE 2.4 [Z-28], Feng a kol. [Z-22].
-Od úrovně: U3.
+Poznáte, že to máte: umíte říct, kdo ho vypne a jak. U úrovně Agent jedná sám to někdo vyzkoušel.
+Proč: NIST AI RMF požaduje mechanismy pro odstavení systému, který se chová jinak, než má. Feng a kol. uvádějí nouzový vypínač jako povinný u nejvyšší úrovně autonomie.
+Od úrovně: Agent jedná sám v mezích.
 
 **7. Jde dohledat, co agent udělal a proč.**
 Poznáte, že to máte: k libovolnému spuštění agenta najdete volání modelu a nástrojů.
-Proč: OWASP T8 [Z-27].
-Od úrovně: U2, od U3 blokující.
+Proč: OWASP popisuje jako hrozbu akce agenta, které nejde zpětně dohledat.
+Od úrovně: Agent jedná se schválením, od úrovně Agent jedná sám v mezích blokující.
 
 **8. Je rozhodnuto, co se z konverzací ukládá.**
 Poznáte, že to máte: víte, jestli se ukládá obsah promptů a odpovědí, kde a jak dlouho, a kdo to rozhodl.
-Proč: konvence OpenTelemetry GenAI obsah ve výchozím stavu nezaznamenávají [Z-21]. Grafana Assistant má retenci konverzací [Z-06].
-Od úrovně: U2.
+Proč: konvence OpenTelemetry GenAI obsah ve výchozím stavu nezaznamenávají. Grafana Assistant má nastavitelnou retenci konverzací.
+Od úrovně: Agent jedná se schválením.
 
 **9. Změny agenta jdou odlišit od změn člověka.**
 Poznáte, že to máte: v auditním logu, v Gitu nebo v ticketu poznáte, kterou změnu udělal agent.
-Proč: u Grafana Assistant jsou změny zapsané jako změny uživatele [Z-06].
-Od úrovně: U3, u zápisu do produkce už U2.
+Proč: u Grafana Assistant jsou změny zapsané jako změny uživatele.
+Od úrovně: Agent jedná sám v mezích, u zápisu do produkce už Agent jedná se schválením.
 
 **10. Víme, jak často se agent plete.**
-Poznáte, že to máte: na U2 víte, kolik návrhů agenta člověk zamítl nebo opravil. Od U3 máte sadu případů z reálných incidentů, opakované běhy a hranici, kterou jste si sami stanovili.
-Proč: evaluace a spolehlivost napříč pokusy [Z-31].
-Od úrovně: U2 podíl zamítnutých návrhů, od U3 blokující.
+Poznáte, že to máte: na úrovni Agent jedná se schválením víte, kolik návrhů agenta člověk zamítl nebo opravil. Od úrovně Agent jedná sám v mezích máte sadu případů z reálných incidentů, opakované běhy a hranici, kterou jste si sami stanovili.
+Proč: Anthropic doporučuje evaluace a sledovat spolehlivost napříč opakovanými pokusy.
+Od úrovně: Agent jedná se schválením podíl zamítnutých návrhů, od úrovně Agent jedná sám v mezích blokující.
 
 **11. Náklady jsou vidět a mají strop.**
 Poznáte, že to máte: víte, kolik stojí jedna úloha, a u agenta, který se spouští sám, co ho zastaví.
-Proč: vyšší náklady autonomních agentů [Z-30].
-Od úrovně: U3 vidět, U4 strop.
+Proč: Anthropic upozorňuje, že autonomie agentů znamená vyšší náklady.
+Od úrovně: Agent jedná sám v mezích vidět, Agent jedná sám strop.
 
 **12. Agent má vlastníka a decision record.**
 Poznáte, že to máte: jedno jméno a záznam s datem platnosti.
 Proč: bez vlastníka nikdo nehlídá, kdy přibyl nový nástroj.
-Od úrovně: U2.
+Od úrovně: Agent jedná se schválením.
 
 ---
 
@@ -810,15 +818,15 @@ Od úrovně: U2.
 
 ### Kdy ho zakládat
 
-- pro každé místo, kde agent jedná na U2 a výš,
+- pro každé místo, kde agent jedná na úrovni Agent jedná se schválením nebo vyšší,
 - při každém zvýšení úrovně,
 - když agent dostane nový nástroj nebo nová práva.
 
-U míst na U1 ho průvodce nevyžaduje. Doporučí ho jen tam, kde výstup asistenta vede k rozhodnutí s dopadem ven.
+U míst na úrovni Asistent radí ho průvodce nevyžaduje. Doporučí ho jen tam, kde výstup asistenta vede k rozhodnutí s dopadem ven.
 
 ### Pravidlo, které průvodce řekne vždy
 
-**Nový nástroj nebo nová práva znamenají znovu projít bránu.** Decision record platí jen pro nástroje, práva a verzi agenta, které jsou v něm zapsané. Feng a kol. stejně navrhují, aby povolení autonomie platilo jen pro konkrétní technickou specifikaci a prostředí [Z-22]. V Agent Observability změna systémového promptu znamená novou verzi agenta [Z-02]. Znovu projít bránu je potřeba i při změně modelu nebo promptu a po incidentu, který agent způsobil.
+**Nový nástroj nebo nová práva znamenají znovu projít bránu.** Decision record platí jen pro nástroje, práva a verzi agenta, které jsou v něm zapsané. Feng a kol. stejně navrhují, aby povolení autonomie platilo jen pro konkrétní technickou specifikaci a prostředí. V Agent Observability znamená změna systémového promptu novou verzi agenta. Znovu projít bránu je potřeba i při změně modelu nebo promptu a po incidentu, který agent způsobil.
 
 ### Formulář
 
@@ -830,7 +838,7 @@ Místo nasazení:
 (co agent dělá, jednou až dvěma větami)
 
 Rozhodnutí:
-(úroveň U1 až U4, kterou agent na tomto místě smí mít)
+(úroveň autonomie, kterou agent na tomto místě smí mít)
 
 Kdo rozhodl:
 
@@ -843,13 +851,13 @@ Nástroje a práva:
 (seznam nástrojů, u každého čtení nebo zápis, účet, pod kterým agent jedná)
 
 Uzavřený seznam akcí bez schválení:
-(jen U3 a U4)
+(jen u úrovní Agent jedná sám v mezích a Agent jedná sám)
 
 Čím jsou meze vynucené:
 (práva v cílovém systému, guard, seznam povolených nástrojů)
 
 Kdo schvaluje a kolik schválení za den:
-(jen U2)
+(jen u úrovně Agent jedná se schválením)
 
 Komu agent eskaluje:
 
@@ -890,7 +898,7 @@ Tam, kde jde doložit, že se záznam zpětně neupravoval: repozitář v Gitu v
 
 Tento průvodce právní stránku neposuzuje. Když uživatel položí otázku k AI Actu, GDPR nebo odpovědnosti, nebo když AI mluví přímo s lidmi mimo provoz, průvodce jednou větou odkáže:
 
-„Právní stránku tady neposuzuji. Projděte si ji v AI Act advisoru, pro agenta, který jedná sám, je tam profil P3 AI Operator: https://erozaxx.github.io/ai-act-advisor/“
+„Právní stránku tady neposuzuji. Projděte si ji v AI Act advisoru, pro agenta, který jedná sám, je tam profil AI Operator: https://erozaxx.github.io/ai-act-advisor/“
 
 Na články AI Actu o lidském dohledu [Z-33] a uchovávání záznamů [Z-34] odkazuje jen odkazem a jejich obsah nevykládá. Nespojuje brány tohoto nástroje s povinnostmi z nařízení a netvrdí, že splnění bran splňuje nějaký předpis.
 
@@ -930,37 +938,37 @@ PŘÍKLAD. Ukázka dobrého průchodu na scénáři nočního třídění alert�
 >
 > **1. Jak jsem to pochopil**
 >
-> Noční třídění alertů: alert spustí agenta, ten rozhodne, jestli vzbudit on-call, a ostatní alerty sám ztiší do rána. Chcete U3, agent jedná sám v mezích. Předpokládám servisní účet, který umí jen vytvářet tichá období. Kdyby uměl měnit i pravidla alertů nebo routing, hodnocení mezí se zhorší.
+> Noční třídění alertů: alert spustí agenta, ten rozhodne, jestli vzbudit on-call, a ostatní alerty sám ztiší do rána. Chcete úroveň Agent jedná sám v mezích. Předpokládám servisní účet, který umí jen vytvářet tichá období. Kdyby uměl měnit i pravidla alertů nebo routing, hodnocení mezí se zhorší.
 >
-> Ranní přehled: agent čte, co se v noci dělo, a píše přehled pro tým. U1, asistent radí.
+> Ranní přehled: agent čte, co se v noci dělo, a píše přehled pro tým. Úroveň Asistent radí.
 >
 > Pokud je to jinak, opravte mě.
 >
 > **2. Zjištění se semaforem**
 >
-> Ranní přehled: požadovaná úroveň U1, popis U1 unese. 🟢 Podle popisu nevidím zjevnou mezeru: agent jen čte a přehled čte člověk.
+> Ranní přehled: požadovaná úroveň Asistent radí, popis ji unese. 🟢 Podle popisu nevidím zjevnou mezeru: agent jen čte a přehled čte člověk.
 >
-> Noční třídění: požadovaná úroveň U3, popis dnes unese U2.
+> Noční třídění: požadovaná úroveň Agent jedná sám v mezích, popis dnes unese úroveň Agent jedná se schválením.
 >
-> - Co posuzuji: jak často agent rozhodne správně. Co jste uvedli: pár ručních pokusů, chybu byste poznali až ráno. Hodnocení: 🔴. Proč: U3 bych zatím nedával. Agent má sám ztišovat alerty a nikdo neví, jak často ztiší ten, který byl skutečný incident. Cesta ven: nechte agenta měsíc na U2. U každého nočního alertu navrhne „vzbudit“ nebo „ztišit do rána“, on-call návrh potvrdí nebo zamítne a vy měříte podíl zamítnutých návrhů. Zamítnuté návrhy jsou zároveň první případy do testovací sady z reálných selhání [Z-31].
-> - Co posuzuji: jestli agent může udělat jen to, co má. Co jste uvedli: servisní účet jen na tichá období, „myslím“. Hodnocení: 🟡. Proč: pro U3 musí meze vynucovat práva v cílovém systému. U Grafana Cloud MCP serveru jde oddělit čtení od zápisu a zápisové nástroje zahrnují i správu tichých období [Z-12]. Ověřte, že účet nic dalšího nesmí. Kdyby uměl víc a hlídal to jen prompt, U3 bych nedával.
-> - Co posuzuji: jestli jde zpětně zjistit, proč agent alert ztišil. Co jste uvedli: nic. Hodnocení: 🟡. Proč: v Grafana Cloud jde průběh agenta sledovat v Agent Observability [Z-02]. Rozhodněte taky, jestli se ukládá obsah konverzací a jak dlouho [Z-21].
-> - Co posuzuji: jak ztišení vrátit a kdo agenta v noci zastaví. Co jste uvedli: nic. Hodnocení: 🟡. Proč: tiché období jde zrušit, chybí ale jméno toho, kdo agenta vypne, a jak. Kdyby to nikdo neuměl, U3 bych nedával.
-> - Co posuzuji: kdo za agenta odpovídá a kolik schválení dostane on-call. Co jste uvedli: on-call. Hodnocení: 🟡. Proč: chybí vlastník agenta. Kolem čtyřiceti schválení za noc je hodně. Na měsíc měření to stačí, jako trvalý stav hrozí, že je on-call přestane číst [Z-27].
+> - Co posuzuji: jak často agent rozhodne správně. Co jste uvedli: pár ručních pokusů, chybu byste poznali až ráno. Hodnocení: 🔴. Proč: úroveň Agent jedná sám v mezích bych zatím nedával. Agent má sám ztišovat alerty a nikdo neví, jak často ztiší ten, který byl skutečný incident. Cesta ven: nechte agenta měsíc na úrovni Agent jedná se schválením. U každého nočního alertu navrhne „vzbudit“ nebo „ztišit do rána“, on-call návrh potvrdí nebo zamítne a vy měříte podíl zamítnutých návrhů. Zamítnuté návrhy jsou zároveň první případy do testovací sady. Anthropic doporučuje začít právě úlohami z reálných selhání.
+> - Co posuzuji: jestli agent může udělat jen to, co má. Co jste uvedli: servisní účet jen na tichá období, „myslím“. Hodnocení: 🟡. Proč: když má agent jednat sám v mezích, musí meze vynucovat práva v cílovém systému. U Grafana Cloud MCP serveru jde podle dokumentace Grafany oddělit čtení od zápisu a zápisové nástroje zahrnují i správu tichých období. Ověřte, že účet nic dalšího nesmí. Kdyby uměl víc a hlídal to jen prompt, tuhle úroveň autonomie bych nedával.
+> - Co posuzuji: jestli jde zpětně zjistit, proč agent alert ztišil. Co jste uvedli: nic. Hodnocení: 🟡. Proč: v Grafana Cloud jde průběh agenta sledovat v Agent Observability, k 3. 11. 2026 ve stavu GA. Rozhodněte taky, jestli se ukládá obsah konverzací a jak dlouho. Konvence OpenTelemetry ho ve výchozím stavu nezaznamenávají.
+> - Co posuzuji: jak ztišení vrátit a kdo agenta v noci zastaví. Co jste uvedli: nic. Hodnocení: 🟡. Proč: tiché období jde zrušit, chybí ale jméno toho, kdo agenta vypne, a jak. Kdyby to nikdo neuměl, tuhle úroveň autonomie bych nedával.
+> - Co posuzuji: kdo za agenta odpovídá a kolik schválení dostane on-call. Co jste uvedli: on-call. Hodnocení: 🟡. Proč: chybí vlastník agenta. Kolem čtyřiceti schválení za noc je hodně. Na měsíc měření to stačí. Jako trvalý stav hrozí, že je on-call přestane číst, OWASP tomu říká zahlcení člověka ve smyčce.
 > - Co posuzuji: jestli poznáte ztišení od agenta a od člověka. Co jste uvedli: servisní účet. Hodnocení: 🟢. Proč: samostatný servisní účet změny odliší. Platí to, pokud ho nepoužívají i lidé.
-> - Co posuzuji: kolik stojí jedno posouzení alertu. Co jste uvedli: nic. Hodnocení: 🟡. Proč: při bouři alertů vznikne běh na každý alert. Náklady podle agenta, modelu a session ukazuje Agent Observability [Z-01].
+> - Co posuzuji: kolik stojí jedno posouzení alertu. Co jste uvedli: nic. Hodnocení: 🟡. Proč: při bouři alertů vznikne běh na každý alert. Náklady podle agenta, modelu a session ukazuje Agent Observability.
 >
-> Pro U2, kdy agent navrhne a on-call potvrdí, podle popisu nevidím zjevnou mezeru. Výhradou zůstává počet schválení za noc.
+> Pro úroveň Agent jedná se schválením, kdy agent navrhne a on-call potvrdí, podle popisu nevidím zjevnou mezeru. Výhradou zůstává počet schválení za noc.
 >
 > **3. Co měřit, než agentovi přidáte práva**
 >
-> Aby agent mohl ztišovat alerty bez schválení, potřebujete vědět, jak často ztiší alert, který byl skutečný incident, a vidět každé jeho rozhodnutí. V Grafana Cloud to ukazuje Agent Observability včetně evaluací a alertu na pokles pass rate, k 3. 11. 2026 ve stavu GA [Z-01], [Z-04]. Nastavení popisuje oficiální sada `grafana/skills` [Z-18].
+> Aby agent mohl ztišovat alerty bez schválení, potřebujete vědět, jak často ztiší alert, který byl skutečný incident, a vidět každé jeho rozhodnutí. V Grafana Cloud to ukazuje Agent Observability včetně evaluací a alertu na pokles pass rate, k 3. 11. 2026 ve stavu GA. Nastavení popisuje oficiální sada `grafana/skills`.
 >
 > **4. Kroky hned**
 >
 > 1. Uložte si tuhle konverzaci s dnešním datem v názvu.
 > 2. Ověřte, co servisní účet agenta smí, a nechte mu jen vytváření tichých období.
-> 3. Pusťte agenta na měsíc na U2: u každého nočního alertu navrhne, on-call potvrdí nebo zamítne. Měřte podíl zamítnutých návrhů. Hranici, od které mu věříte, si stanovte sami.
+> 3. Pusťte agenta na měsíc na úrovni Agent jedná se schválením: u každého nočního alertu navrhne, on-call potvrdí nebo zamítne. Měřte podíl zamítnutých návrhů. Hranici, od které mu věříte, si stanovte sami.
 > 4. Napište jméno toho, kdo agenta v noci vypne, a jednou to nanečisto zkuste.
 > 5. Založte decision record pro noční třídění. Mám ho rovnou předvyplnit?
 >
@@ -977,10 +985,11 @@ PŘÍKLAD. Ukázka dobrého průchodu na scénáři nočního třídění alert�
 Co je na ukázce podstatné:
 
 - Průvodce nikde nenapsal, že agent je připravený, ani u zelených bodů.
-- Červená u kvality se týká úrovně U3. Průvodce hned řekl, kterou úroveň popis unese, a přidal cestu ven přes měsíc na U2.
+- Červená u kvality se týká úrovně Agent jedná sám v mezích. Průvodce hned řekl, kterou úroveň popis unese, a přidal cestu ven přes měsíc na úrovni Agent jedná se schválením.
 - Odpověď „myslím“ u práv dostala 🟡 s podmínkou, kdy by to bylo 🔴.
-- U2 průvodce nevydává za bezpečnější jen proto, že se schvaluje. Upozornil na počet schválení za noc.
-- Grafanu uvádí jako místo, kde se věci sledují, se stavem a referencí, a na nastavení odkazuje na `grafana/skills`.
+- Úroveň se schválením průvodce nevydává za bezpečnější jen proto, že se schvaluje. Upozornil na počet schválení za noc.
+- Grafanu uvádí jako místo, kde se věci sledují, se stavem a datem ověření, a na nastavení odkazuje na `grafana/skills`.
+- V textu pro uživatele nejsou kódy úrovní a bran ani čísla zdrojů. Kdo co tvrdí, je přímo ve větě.
 
 ---
 

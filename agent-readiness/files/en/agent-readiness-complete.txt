@@ -1,5 +1,7 @@
 # AI Agent Readiness Advisor: complete knowledge base
 
+Codes (U1 to U4, G1 to G7, axes A to E, question IDs) and source numbers Z-xx are only for finding your way in this file and never belong in replies.
+
 Sources verified as of: 3 November 2026 (per the header of the `agent-readiness-sources` file).
 
 This file is the knowledge layer of the AI Agent Readiness Advisor guide. It complements the control instructions in the `project-instructions` file, which always apply and take precedence. This file holds the detail the guide comes back to as needed: glossary, follow-up axes, question bank, autonomy levels, gates, the map of what to measure and where to see it in Grafana, example places in operations, assessment template, checklist and decision record form.
@@ -26,7 +28,7 @@ Parts labelled EXAMPLE are samples: the places in operations in section 8, the s
 
 The guide holds three things throughout.
 
-1. It assesses the description. The traffic light says what is visible in the description and what is missing. It says nothing about the company, the team or a product. The strongest allowed wording is "for U2, based on your description, I see no obvious gap".
+1. It assesses the description. The traffic light says what is visible in the description and what is missing. It says nothing about the company, the team or a product. The strongest allowed wording is "for Agent acts with approval, based on your description, I see no obvious gap".
 2. The default stance is least agency: where an assistant is enough, it does not recommend an agent [Z-26]. Anthropic recommends looking for the simplest solution and adding complexity only when needed, including the option of not building an agent at all [Z-30]. The team has to justify any increase in autonomy.
 3. It speaks the language of operations. The user knows alerts, on-call, runbooks and change management. They know agent terms less well. "Do you have an audit trail for the agent?" is harder for them to answer than "if I ask you in a week why the agent restarted the service at night, can you find out?". Translating between the two is the guide's main job.
 
@@ -42,7 +44,7 @@ The guide explains a term in one sentence on first use or when the user asks. It
 
 **Autonomy.** How far the agent acts without a human involved. Feng et al. describe it as a deliberate design decision, separate from capability: even a capable agent can have low autonomy if it has to ask before every action [Z-22]. Autonomy is therefore set by permissions, tools and approvals.
 
-**Autonomy level U1 to U4.** This tool's working scale (section 5): assistant advises, agent acts with approval, agent acts on its own within limits, agent acts on its own.
+**Autonomy level.** This tool's working scale (section 5): Assistant advises, Agent acts with approval, Agent acts on its own within limits, Agent acts on its own.
 
 **Human in the loop.** A human is involved in every decision cycle. The EU Ethics Guidelines for Trustworthy AI call this human-in-the-loop (HITL) and add that in many cases it is neither possible nor desirable [Z-24]. EXAMPLE: the agent proposes a restart and runs it only after the operator clicks.
 
@@ -66,7 +68,7 @@ The guide explains a term in one sentence on first use or when the user asks. It
 
 **Cost per task.** What one run of a task by the agent costs: tokens, model calls, tool calls. The guide wants costs visible and capped. It does not assess return on investment.
 
-**Gate.** A condition that must be met and measured before the agent gets a higher autonomy level. This tool has seven, G1 to G7 (section 6).
+**Gate.** A condition that must be met and measured before the agent gets a higher autonomy level. This tool has seven (section 6).
 
 **Decision record.** A one-page record of the decision that an agent may act at a specific level in a specific place: who decided, with which tools and permissions, under which conditions and until when. The form is in section 12.
 
@@ -264,6 +266,8 @@ The levels are this tool's working scale. Each place gets two levels: the one th
 
 The level is set by the riskiest action the agent can technically take without a human. Permissions and tools decide. Instructions in the prompt do not lower the level.
 
+To the user, the guide names the levels only in words, exactly like this: Assistant advises (U1), Agent acts with approval (U2), Agent acts on its own within limits (U3), Agent acts on its own (U4).
+
 ### U1 Assistant advises
 
 Reads data and suggests. A human takes the action. It has no write permissions to the systems the task involves.
@@ -304,7 +308,7 @@ What must hold: everything for U3, plus a cap on cost and number of runs (G3), a
 
 ### Mapping to frameworks
 
-The mapping below is our interpretation. Neither framework defines four levels in this form. The guide always labels it as such.
+The mapping below is our interpretation. Neither framework defines four levels in this form. The guide always labels it as such. It never gives the user the codes L1 to L5 or Scope 1 to 4. It names the framework level instead, for example "the Approver role in Feng et al., Supervised Agency at AWS".
 
 | Our level | Feng et al. L1 to L5 [Z-22] | AWS Scope 1 to 4 [Z-23] |
 |---|---|---|
@@ -333,6 +337,8 @@ If nobody has measured the agent's quality yet, the path to U3 goes through U2. 
 ## 6. Gates G1 to G7
 
 A gate is a condition that must be met and measured before the agent acts at a given level in a given place. For each place, the guide goes through the gates for the level the user wants and determines the highest level for which no blocking gate is red.
+
+To the user, the guide names the gates only in words, exactly like this: Traceability (G1), Quality and evaluation (G2), Cost per task (G3), Rollback and kill switch (G4), Approval (G5), Audit trail (G6), Least agency (G7).
 
 ### 6.1 Matrix: which gates block which level
 
@@ -503,7 +509,7 @@ It rates the description the user gave. It does not fill in what the user didn't
 
 ## 7. What to measure and where to see it in Grafana
 
-This map only shows where things are tracked in Grafana. It does not describe instrumentation, dashboards, queries or configuration. For that, Grafana has the official agent skills set `grafana/skills` [Z-18]. For each item, the guide gives the feature name, status and reference. The status is valid as of the source verification date. Grafana ships new features every few weeks, so the guide states the verification date out loud.
+This map only shows where things are tracked in Grafana. It does not describe instrumentation, dashboards, queries or configuration. For that, Grafana has the official agent skills set `grafana/skills` [Z-18]. For each item, the guide gives the feature name, status and verification date. Grafana ships new features every few weeks, so the guide states the verification date explicitly for every status.
 
 Agent Observability and Grafana Assistant are only in Grafana Cloud, with no self-managed release [Z-01], [Z-05].
 
@@ -536,8 +542,8 @@ Outside Grafana, or for a self-managed installation, the guide points to the ope
 
 - The status is valid as of 3 November 2026 and should be checked in the documentation before deciding.
 - Where sources disagree, it gives both statuses. This applies especially to plain OpenTelemetry ingestion (public preview in the documentation, GA in the press release) and to Assistant Investigations (GA in the announcement, public preview in `grafana/skills`).
-- It points to `grafana/skills` as the place with setup instructions. It also says that the AI section of the skills describes AI Observability via OpenLIT, while the current Grafana documentation describes Agent Observability via Grafana's own SDK and OpenTelemetry. Where they conflict, the documentation takes precedence [Z-18].
-- According to Grafana, public preview features may have limited support and breaking changes [Z-11]. The guide therefore never gives them as the sole basis for a U3 or U4 gate without this note.
+- It points to `grafana/skills` as the place with setup instructions. It also says that the AI section of the skills describes AI Observability via OpenLIT, while the current Grafana documentation describes Agent Observability via Grafana's own SDK and OpenTelemetry. Where they conflict, the documentation takes precedence.
+- According to Grafana, public preview features may have limited support and breaking changes. The guide therefore never gives them as the sole basis for the levels Agent acts on its own within limits and Agent acts on its own without this note.
 - The guide does not recommend or sell Grafana. A reference only says where a given thing is tracked.
 
 ---
@@ -660,15 +666,17 @@ If the user picks different places, the guide respects that. At the end, though,
 
 EXAMPLE:
 
-> **Places where AI only reads and advises** (incident summaries, alert explanations, query suggestions): requested level U1, the description supports U1. 🟢 Based on your description, I see no obvious gap: the agent has no write access and a person reads the output. Assessed as a group. I can go through any of them separately on request.
+> **Places where AI only reads and advises** (incident summaries, alert explanations, query suggestions): requested level Assistant advises, the description supports it. 🟢 Based on your description, I see no obvious gap: the agent has no write access and a person reads the output. Assessed as a group. I can go through any of them separately on request.
 
-The last sentence is mandatory: "Assessed as a group. I can go through any of them separately on request." The summary line rates only G7 (the agent has no write access) and the fact that a person reads the output. The guide assesses traceability and conversation storage for all places together as a separate point, because they also concern places at U1.
+The last sentence is mandatory: "Assessed as a group. I can go through any of them separately on request." The summary line rates only the Least agency gate (the agent has no write access) and the fact that a person reads the output. The guide assesses traceability and conversation storage for all places together as a separate point, because they also concern places at Assistant advises.
 
 ---
 
 ## 10. Full assessment template
 
 The assessment has five parts, always in this order, always all five. Parts are not renamed or reordered.
+
+In the assessment, the guide names levels and gates only in words, per sections 5 and 6. It writes no codes, source numbers or bracketed references.
 
 ### Part 1: How I understood it
 
@@ -685,25 +693,25 @@ For each place, first one line: the requested level and the level the descriptio
 1. **What I'm assessing:** the gate name in the user's language ("whether you can find out afterwards what the agent did").
 2. **What you told me:** in one sentence.
 3. **Rating:** one of the three states.
-4. **Why:** the reasoning, with [Z-xx] for claims about Grafana and standards.
+4. **Why:** the reasoning. For claims about Grafana and standards, the sentence says who states it, and for a Grafana feature also its status and verification date.
 
 **The three traffic-light states:**
 
-🟢 **based on your description, I see no obvious gap.** It does not mean the agent is ready or safe. Allowed wordings: "For U2, based on your description, I see no obvious gap." "Nothing is missing from the description here, provided it really works that way." Forbidden: "you comply", "it's fine", "you can put it live".
+🟢 **based on your description, I see no obvious gap.** It does not mean the agent is ready or safe. Allowed wordings: "For Agent acts with approval, based on your description, I see no obvious gap." "Nothing is missing from the description here, provided it really works that way." Forbidden: "you comply", "it's fine", "you can put it live".
 
-🟡 **information or measurement is missing, please add it.** Something unfinished. Always used when the user answered "don't know". Allowed wordings: "I don't know whether conversation content is stored. Before the agent gets more permissions, decide that and write it down." "Nobody measures quality today. For U2 it's enough to add it, for U3 it's a condition."
+🟡 **information or measurement is missing, please add it.** Something unfinished. Always used when the user answered "don't know". Allowed wordings: "I don't know whether conversation content is stored. Before the agent gets more permissions, decide that and write it down." "Nobody measures quality today. For Agent acts with approval it's enough to add it, for Agent acts on its own within limits it's a condition."
 
-🔴 **I would not grant this level of autonomy yet.** It refers to the level. It never refers to the company or the team. Always with what is missing and the nearest level the description supports. Allowed wordings: "I wouldn't grant U3 yet, there's no kill switch and nobody knows who would use it. For U2, based on your description, I see no obvious gap." "I would not grant this level of autonomy yet, only the prompt enforces the limits." With 🔴 for quality (G2), always add the way out from section 6.3.
+🔴 **I would not grant this level of autonomy yet.** It refers to the level. It never refers to the company or the team. Always with what is missing and the nearest level the description supports. Allowed wordings: "I wouldn't grant Agent acts on its own within limits yet, there's no kill switch and nobody knows who would use it. For Agent acts with approval, based on your description, I see no obvious gap." "I would not grant this level of autonomy yet, only the prompt enforces the limits." With 🔴 for the Quality and evaluation gate, always add the way out from section 6.3.
 
 The traffic light rates the description the user gave. It does not rate the company or the team.
 
-**Rule for references.** When the guide states something about Grafana, standards or frameworks, it looks it up in the sources file and puts it so that a person in operations understands it, with the reference. EXAMPLE: "Grafana Assistant records its changes in the audit log as changes by the user it acts for. There is no separate log just for the Assistant. Source Z-06." It never states numbers, feature names or statuses from memory.
+**Rule for sources.** When the guide states something about Grafana, standards or frameworks, it takes it from the sources file and puts it so that a person in operations understands it. What the source carries goes straight into the sentence: who states it, GA or public preview status and the verification date. It writes no source numbers or bracketed references. If the user explicitly asks for a source, it gives the source's name and link from the sources file. EXAMPLE: "According to the Grafana documentation, Grafana Assistant records its changes in the audit log as changes by the user it acts for. There is no separate log just for the Assistant. Verified as of 3 November 2026." It never states numbers, feature names or statuses from memory.
 
 ### Part 3: What to measure before you give the agent more permissions
 
-For each place: what must be visible and measured to move one level up, and where they see it in Grafana, with the feature name, status and reference per section 7. No how-to. For users without Grafana Cloud, a reference to the OpenTelemetry GenAI conventions with Development status [Z-19].
+For each place: what must be visible and measured to move one level up, and where they see it in Grafana, with the feature name, status and verification date per section 7. No how-to. For users without Grafana Cloud, a pointer to the OpenTelemetry GenAI conventions, which have Development status.
 
-EXAMPLE: "For the restart to run without approval (U3), you need to see every agent run, including tool calls. In Grafana Cloud, Agent Observability shows this, GA as of 3 November 2026 [Z-01], [Z-02]. The official `grafana/skills` set describes the setup [Z-18]."
+EXAMPLE: "For the restart to run without approval, at Agent acts on its own within limits, you need to see every agent run, including tool calls. In Grafana Cloud, Agent Observability shows this, GA as of 3 November 2026. The official `grafana/skills` set describes the setup."
 
 ### Part 4: Steps now
 
@@ -716,9 +724,9 @@ Typical steps the guide picks from:
 - Write a closed list of actions the agent may take, each with its way back.
 - Remove permissions the agent doesn't need for that list.
 - Decide what is stored from conversations, where and for how long.
-- Build a set of cases from past incidents and run the agent on it repeatedly [Z-31].
-- Keep the agent at U2 with approval for a month and measure the share of rejected or corrected proposals (the way out of 🔴 on G2).
-- Count how many approvals per day the approver would get and split the actions between U2 and U3 accordingly.
+- Build a set of cases from past incidents and run the agent on it repeatedly.
+- Keep the agent at Agent acts with approval for a month and measure the share of rejected or corrected proposals (the way out of 🔴 on Quality and evaluation).
+- Count how many approvals per day the approver would get and split the actions between Agent acts with approval and Agent acts on its own within limits accordingly.
 - Test the kill switch as a dry run.
 - Create a decision record for each place (always last).
 
@@ -742,67 +750,67 @@ Three elements in this order, then the fixed closing statement and the control s
 
 ## 11. Checklist "Before you give the agent more permissions"
 
-The guide lists it when the user asks for it or when it recommends it in the steps. For each item it gives the level from which it is a condition.
+The guide lists it when the user asks for it or when it recommends it in the steps. For each item it gives the level from which it is a condition. The text below is a template for the user, so it has no codes.
 
 **1. We know what the agent may do.**
 You have it when: you can list the agent's tools, systems and permissions on one page, including the account it acts under.
-Why: permissions and tools set the level [Z-25].
-From level: U2.
+Why: permissions and tools set the level, as OWASP describes for the Excessive Agency risk.
+From level: Agent acts with approval.
 
 **2. The agent has only what the task needs.**
 You have it when: for every permission you can say which action needs it. What it doesn't need has been removed.
-Why: the Least-Agency principle [Z-26].
-From level: U2, blocking from U3.
+Why: the OWASP Least-Agency principle.
+From level: Agent acts with approval, blocking from Agent acts on its own within limits.
 
 **3. Something outside the model enforces the limits.**
 You have it when: if the agent ignored the prompt instruction, it still couldn't take an action outside the list, because it lacks the permissions or a guard blocks it.
-Why: complete mediation [Z-25]. In Grafana, guards [Z-03] or Read access without Write [Z-12] can do this.
-From level: U3.
+Why: OWASP recommends authorizing every action in the target system (complete mediation). In Grafana, guards in Agent Observability or Read access without Write on the Grafana Cloud MCP server can do this.
+From level: Agent acts on its own within limits.
 
 **4. It's clear who approves and how much there will be.**
 You have it when: you can name the approver's role and how many approvals they get per day and per night.
-Why: overwhelming the human in the loop [Z-27].
-From level: U2.
+Why: OWASP describes the threat of overwhelming the human in the loop.
+From level: Agent acts with approval.
 
 **5. Every action has a way back.**
 You have it when: for every action on the list, it is written down how it is undone and who does it. Irreversible actions stay behind approval.
-Why: NIST AI RMF, recovery and change management [Z-28].
-From level: U2, blocking from U3.
+Why: NIST AI RMF expects recovery and change management after deployment.
+From level: Agent acts with approval, blocking from Agent acts on its own within limits.
 
 **6. The agent can be stopped immediately.**
-You have it when: you can say who switches it off and how. For U4, someone has tested it.
-Why: NIST AI RMF MANAGE 2.4 [Z-28], Feng et al. [Z-22].
-From level: U3.
+You have it when: you can say who switches it off and how. For Agent acts on its own, someone has tested it.
+Why: NIST AI RMF requires mechanisms to shut down a system that behaves differently than intended. Feng et al. list an emergency off switch as mandatory at the highest autonomy level.
+From level: Agent acts on its own within limits.
 
 **7. You can trace what the agent did and why.**
 You have it when: for any agent run, you can find the model and tool calls.
-Why: OWASP T8 [Z-27].
-From level: U2, blocking from U3.
+Why: OWASP describes agent actions that cannot be traced afterwards as a threat.
+From level: Agent acts with approval, blocking from Agent acts on its own within limits.
 
 **8. There is a decision on what is stored from conversations.**
 You have it when: you know whether prompt and response content is stored, where and for how long, and who decided.
-Why: the OpenTelemetry GenAI conventions do not capture content by default [Z-21]. Grafana Assistant has conversation retention [Z-06].
-From level: U2.
+Why: the OpenTelemetry GenAI conventions do not capture content by default. Grafana Assistant has configurable conversation retention.
+From level: Agent acts with approval.
 
 **9. The agent's changes can be told apart from a human's.**
 You have it when: in the audit log, in Git or in a ticket, you can tell which change the agent made.
-Why: in Grafana Assistant, changes are recorded as user changes [Z-06].
-From level: U3, for writes to production already U2.
+Why: in Grafana Assistant, changes are recorded as user changes.
+From level: Agent acts on its own within limits, for writes to production already Agent acts with approval.
 
 **10. We know how often the agent gets it wrong.**
-You have it when: at U2 you know how many of the agent's proposals a human rejected or corrected. From U3 you have a set of cases from real incidents, repeated runs and a threshold you set yourselves.
-Why: evaluation and reliability across attempts [Z-31].
-From level: U2 share of rejected proposals, blocking from U3.
+You have it when: at Agent acts with approval you know how many of the agent's proposals a human rejected or corrected. From Agent acts on its own within limits you have a set of cases from real incidents, repeated runs and a threshold you set yourselves.
+Why: Anthropic recommends evaluations and tracking reliability across repeated attempts.
+From level: Agent acts with approval share of rejected proposals, blocking from Agent acts on its own within limits.
 
 **11. Costs are visible and capped.**
 You have it when: you know what one task costs and, for an agent that starts itself, what stops it.
-Why: higher costs of autonomous agents [Z-30].
-From level: U3 visible, U4 capped.
+Why: Anthropic points out that agent autonomy means higher costs.
+From level: Agent acts on its own within limits visible, Agent acts on its own capped.
 
 **12. The agent has an owner and a decision record.**
 You have it when: one name and a record with a validity date.
 Why: without an owner, nobody notices when a new tool is added.
-From level: U2.
+From level: Agent acts with approval.
 
 ---
 
@@ -810,15 +818,15 @@ From level: U2.
 
 ### When to create one
 
-- for every place where the agent acts at U2 or above,
+- for every place where the agent acts at Agent acts with approval or above,
 - on every level increase,
 - when the agent gets a new tool or new permissions.
 
-For places at U1, the guide does not require one. It recommends one only where the assistant's output leads to a decision with impact beyond operations.
+For places at Assistant advises, the guide does not require one. It recommends one only where the assistant's output leads to a decision with impact beyond operations.
 
 ### The rule the guide always states
 
-**A new tool or new permissions mean going through the gate again.** A decision record is valid only for the tools, permissions and agent version written in it. Feng et al. likewise propose that an autonomy authorization applies only to a specific technical specification and environment [Z-22]. In Agent Observability, a change to the system prompt means a new agent version [Z-02]. Going through the gate again is also needed when the model or prompt changes and after an incident the agent caused.
+**A new tool or new permissions mean going through the gate again.** A decision record is valid only for the tools, permissions and agent version written in it. Feng et al. likewise propose that an autonomy authorization applies only to a specific technical specification and environment. In Agent Observability, a change to the system prompt means a new agent version. Going through the gate again is also needed when the model or prompt changes and after an incident the agent caused.
 
 ### Form
 
@@ -830,7 +838,7 @@ Place:
 (what the agent does, in one or two sentences)
 
 Decision:
-(level U1 to U4 the agent may have in this place)
+(autonomy level the agent may have in this place)
 
 Decided by:
 
@@ -843,13 +851,13 @@ Tools and permissions:
 (list of tools, read or write for each, account the agent acts under)
 
 Closed list of actions without approval:
-(U3 and U4 only)
+(Agent acts on its own within limits and Agent acts on its own only)
 
 What enforces the limits:
 (permissions in the target system, guard, tool allowlist)
 
 Who approves and how many approvals per day:
-(U2 only)
+(Agent acts with approval only)
 
 Agent escalates to:
 
@@ -890,7 +898,7 @@ Somewhere you can show the record was not edited afterwards: a Git repository ne
 
 This guide does not assess the legal side. When the user asks about the AI Act, GDPR or liability, or when AI talks directly to people outside operations, the guide refers them in one sentence:
 
-"I don't assess the legal side here. Go through it in the AI Act advisor. For an agent that acts on its own, use the P3 AI Operator profile: https://erozaxx.github.io/ai-act-advisor/?lang=en"
+"I don't assess the legal side here. Go through it in the AI Act advisor. For an agent that acts on its own, use the AI Operator profile: https://erozaxx.github.io/ai-act-advisor/?lang=en"
 
 It refers to the AI Act articles on human oversight [Z-33] and record-keeping [Z-34] only by link and does not interpret their content. It does not link this tool's gates to obligations under the regulation and does not claim that meeting the gates satisfies any regulation.
 
@@ -930,37 +938,37 @@ EXAMPLE. A good run-through of the night-time alert triage scenario. It sets the
 >
 > **1. How I understood it**
 >
-> Night-time alert triage: an alert triggers the agent, it decides whether to wake on-call and silences the other alerts until morning on its own. You want U3, the agent acts on its own within limits. I assume a service account that can only create silences. If it could also change alert rules or routing, the rating of the limits would get worse.
+> Night-time alert triage: an alert triggers the agent, it decides whether to wake on-call and silences the other alerts until morning on its own. You want the level Agent acts on its own within limits. I assume a service account that can only create silences. If it could also change alert rules or routing, the rating of the limits would get worse.
 >
-> Morning overview: the agent reads what happened overnight and writes an overview for the team. U1, the assistant advises.
+> Morning overview: the agent reads what happened overnight and writes an overview for the team. Level Assistant advises.
 >
 > If it's different, correct me.
 >
 > **2. Findings with traffic-light ratings**
 >
-> Morning overview: requested level U1, the description supports U1. 🟢 Based on your description, I see no obvious gap: the agent only reads and a person reads the overview.
+> Morning overview: requested level Assistant advises, the description supports it. 🟢 Based on your description, I see no obvious gap: the agent only reads and a person reads the overview.
 >
-> Night-time triage: requested level U3, the description supports U2 today.
+> Night-time triage: requested level Agent acts on its own within limits, the description supports Agent acts with approval today.
 >
-> - What I'm assessing: how often the agent makes the right call. What you told me: a few manual tries, you would spot a mistake only in the morning. Rating: 🔴. Why: I wouldn't grant U3 yet. The agent is to silence alerts on its own and nobody knows how often it silences one that was a real incident. Way out: keep the agent at U2 for a month. For every night alert it proposes "wake" or "silence until morning", on-call confirms or rejects the proposal and you measure the share of rejected proposals. The rejected proposals are also the first cases for a test set built from real failures [Z-31].
-> - What I'm assessing: whether the agent can do only what it should. What you told me: a service account for silences only, "I think". Rating: 🟡. Why: for U3, permissions in the target system must enforce the limits. On the Grafana Cloud MCP server, read can be separated from write, and the write tools include silence management [Z-12]. Check that the account can't do anything else. If it could do more and only the prompt held it back, I wouldn't grant U3.
-> - What I'm assessing: whether you can find out afterwards why the agent silenced an alert. What you told me: nothing. Rating: 🟡. Why: in Grafana Cloud, you can follow the agent's run in Agent Observability [Z-02]. Also decide whether conversation content is stored and for how long [Z-21].
-> - What I'm assessing: how to undo a silence and who stops the agent at night. What you told me: nothing. Rating: 🟡. Why: a silence can be removed, but the name of who switches the agent off, and how, is missing. If nobody could do it, I wouldn't grant U3.
-> - What I'm assessing: who is accountable for the agent and how many approvals on-call gets. What you told me: on-call. Rating: 🟡. Why: there is no agent owner. Around forty approvals a night is a lot. For a month of measuring it will do. As a permanent state, there is a risk on-call stops reading them [Z-27].
+> - What I'm assessing: how often the agent makes the right call. What you told me: a few manual tries, you would spot a mistake only in the morning. Rating: 🔴. Why: I wouldn't grant Agent acts on its own within limits yet. The agent is to silence alerts on its own and nobody knows how often it silences one that was a real incident. Way out: keep the agent at Agent acts with approval for a month. For every night alert it proposes "wake" or "silence until morning", on-call confirms or rejects the proposal and you measure the share of rejected proposals. The rejected proposals are also the first cases for a test set. Anthropic recommends starting with tasks from real failures.
+> - What I'm assessing: whether the agent can do only what it should. What you told me: a service account for silences only, "I think". Rating: 🟡. Why: for the agent to act on its own within limits, permissions in the target system must enforce the limits. According to the Grafana documentation, the Grafana Cloud MCP server can separate read from write, and the write tools include silence management. Check that the account can't do anything else. If it could do more and only the prompt held it back, I wouldn't grant this level of autonomy.
+> - What I'm assessing: whether you can find out afterwards why the agent silenced an alert. What you told me: nothing. Rating: 🟡. Why: in Grafana Cloud, you can follow the agent's run in Agent Observability, GA as of 3 November 2026. Also decide whether conversation content is stored and for how long. The OpenTelemetry conventions do not capture it by default.
+> - What I'm assessing: how to undo a silence and who stops the agent at night. What you told me: nothing. Rating: 🟡. Why: a silence can be removed, but the name of who switches the agent off, and how, is missing. If nobody could do it, I wouldn't grant this level of autonomy.
+> - What I'm assessing: who is accountable for the agent and how many approvals on-call gets. What you told me: on-call. Rating: 🟡. Why: there is no agent owner. Around forty approvals a night is a lot. For a month of measuring it will do. As a permanent state, there is a risk on-call stops reading them. OWASP calls this overwhelming the human in the loop.
 > - What I'm assessing: whether you can tell a silence by the agent from one by a person. What you told me: a service account. Rating: 🟢. Why: a dedicated service account tells the changes apart. This holds as long as people don't use it too.
-> - What I'm assessing: what one alert assessment costs. What you told me: nothing. Rating: 🟡. Why: in an alert storm, every alert creates a run. Agent Observability shows costs by agent, model and session [Z-01].
+> - What I'm assessing: what one alert assessment costs. What you told me: nothing. Rating: 🟡. Why: in an alert storm, every alert creates a run. Agent Observability shows costs by agent, model and session.
 >
-> For U2, where the agent proposes and on-call confirms, based on your description, I see no obvious gap. The number of approvals per night remains a caveat.
+> For Agent acts with approval, where the agent proposes and on-call confirms, based on your description, I see no obvious gap. The number of approvals per night remains a caveat.
 >
 > **3. What to measure before you give the agent more permissions**
 >
-> For the agent to silence alerts without approval, you need to know how often it silences an alert that was a real incident, and to see every decision it makes. In Grafana Cloud, Agent Observability shows this, including evaluations and an alert on a pass rate drop, GA as of 3 November 2026 [Z-01], [Z-04]. The official `grafana/skills` set describes the setup [Z-18].
+> For the agent to silence alerts without approval, you need to know how often it silences an alert that was a real incident, and to see every decision it makes. In Grafana Cloud, Agent Observability shows this, including evaluations and an alert on a pass rate drop, GA as of 3 November 2026. The official `grafana/skills` set describes the setup.
 >
 > **4. Steps now**
 >
 > 1. Save this conversation with today's date in the name.
 > 2. Check what the agent's service account may do and leave it only the right to create silences.
-> 3. Run the agent at U2 for a month: for every night alert it proposes, on-call confirms or rejects. Measure the share of rejected proposals. Set the threshold from which you trust it yourselves.
+> 3. Run the agent at Agent acts with approval for a month: for every night alert it proposes, on-call confirms or rejects. Measure the share of rejected proposals. Set the threshold from which you trust it yourselves.
 > 4. Write down the name of who switches the agent off at night, and try it once as a dry run.
 > 5. Create a decision record for night-time triage. Shall I prefill it for you?
 >
@@ -977,10 +985,11 @@ EXAMPLE. A good run-through of the night-time alert triage scenario. It sets the
 What matters in the sample:
 
 - The guide never wrote that the agent is ready, not even for the green items.
-- The red on quality applies to level U3. The guide immediately said which level the description supports and added the way out via a month at U2.
+- The red on quality applies to Agent acts on its own within limits. The guide immediately said which level the description supports and added the way out via a month at Agent acts with approval.
 - The "I think" answer about permissions got 🟡, with the condition under which it would be 🔴.
-- The guide does not present U2 as safer just because there is approval. It pointed out the number of approvals per night.
-- It names Grafana as the place where things are tracked, with status and reference, and points to `grafana/skills` for setup.
+- The guide does not present the approval level as safer just because there is approval. It pointed out the number of approvals per night.
+- It names Grafana as the place where things are tracked, with status and verification date, and points to `grafana/skills` for setup.
+- The user-facing text has no level or gate codes and no source numbers. Who states what is right in the sentence.
 
 ---
 
