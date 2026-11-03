@@ -209,8 +209,8 @@ pre.code{background:var(--tsp-dark);color:#fff;border-radius:6px;padding:1rem;fo
 details.faq-item{background:#fff;border:1px solid var(--tsp-light);border-radius:6px;padding:1rem}
 details.faq-item summary{font-weight:600;cursor:pointer;list-style:none;position:relative;padding-right:1.5rem}
 details.faq-item summary::-webkit-details-marker{display:none}
-details.faq-item summary::after{content:'+';position:absolute;right:0;top:0;font-size:1.2rem;font-weight:700;color:var(--tsp-blue)}
-details.faq-item[open] summary::after{content:'–'}
+details.faq-item summary::after{content:'';position:absolute;right:.25rem;top:.3em;width:.5rem;height:.5rem;border-right:2px solid var(--tsp-blue);border-bottom:2px solid var(--tsp-blue);transform:rotate(45deg);transition:transform .15s}
+details.faq-item[open] summary::after{transform:rotate(-135deg);top:.5em}
 details.faq-item p{margin:.6rem 0 0;font-size:.92rem;color:var(--tsp-blue)}
 
 /* patička */
@@ -295,14 +295,6 @@ dialog#copy-dialog button{background:var(--tsp-red);color:#fff;border:none;borde
 .case-list li:last-child{border-bottom:none}
 .case-list li::before{content:'✓';position:absolute;left:0;color:var(--color-success);font-weight:700}
 .part{margin:1rem 0}
-.part-open{border:2px solid var(--tsp-red);border-radius:10px;padding:0 1rem .5rem;background:#fff}
-.part-open>h3{margin:1rem 0 .25rem}
-details.part{border:1px solid var(--tsp-light);border-radius:10px;padding:0 1rem;background:#fff}
-details.part>summary{font-size:1.1rem;font-weight:600;cursor:pointer;padding:.9rem 1.5rem .9rem 0;list-style:none;position:relative;overflow-wrap:anywhere}
-details.part>summary::-webkit-details-marker{display:none}
-details.part>summary::after{content:'+';position:absolute;right:0;top:.7rem;font-size:1.3rem;color:var(--tsp-blue)}
-details.part[open]>summary::after{content:'–'}
-details.part[open]{padding-bottom:.5rem}
 .scroll-x{overflow-x:auto;max-width:100%;margin:1rem 0;border:1px solid var(--tsp-light);border-radius:6px;background:#fff;-webkit-overflow-scrolling:touch}
 table.num{border-collapse:collapse;min-width:640px;width:100%;font-size:.9rem}
 table.num th{background:var(--tsp-dark);color:#fff;text-align:right;padding:.55rem .8rem;white-space:nowrap}
@@ -315,9 +307,8 @@ table.num td:first-child{background:#fff;font-weight:600}
 @media (max-width:700px){
   .chat-msg.user{margin-right:0}
   .chat-msg.guide{margin-left:0}
-  .part-open{padding:0 .75rem .4rem}
 }
-@media print{details.part>*:not(summary){display:block!important}details.part>summary::after{display:none}.chat-msg,.case-comment,.part{break-inside:avoid}}
+@media print{.chat-msg,.case-comment{break-inside:avoid}}
 </style>
 </head>
 <body>
