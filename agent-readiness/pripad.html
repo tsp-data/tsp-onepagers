@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="cs" data-title-cs="Advisor v benchmarku | TSP DATA" data-title-en="Advisor in the benchmark | TSP DATA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Advisor v benchmarku | TSP DATA</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048.95%2068.03%22%3E%3Cpath%20fill%3D%22%23e52a18%22%20d%3D%22m29.49%2C33.48l-11.05-2.67c-.85-.22-1.44-.98-1.44-1.85v-10.03c0-1.06.86-1.91%2C1.91-1.91h11.05c1.05%2C0%2C1.91.86%2C1.91%2C1.91v12.71c0%2C1.25-1.18%2C2.16-2.39%2C1.85%22/%3E%3Cpolygon%20fill%3D%22%2320313a%22%20points%3D%2217.01%2051.02%2031.94%2051.02%2031.94%2038.24%2017.01%2034.57%2017.01%2051.02%22/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tsp-red:#E52A18;--tsp-dark:#20313A;--tsp-blue:#00415C;--tsp-teal:#00B0AB;--tsp-light:#D1DFDF;--tsp-offwhite:#ECEBEC;--tsp-white:#FFFFFF;
+  --color-success:#16A34A;--color-warning:#D97706;--color-danger:#DC2626;
+  --font-primary:'Apercu Pro','Inter',-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  --font-mono:'Apercu Pro Mono','SFMono-Regular',Consolas,'Courier New',monospace;
+  --shadow-card:0 2px 12px rgba(32,49,58,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:12px}
+body{font-family:var(--font-primary);font-size:1rem;line-height:1.55;color:var(--tsp-dark);background:var(--tsp-offwhite);overflow-x:hidden}
+img,svg{max-width:100%}
+a{color:var(--tsp-blue)}
+code{font-family:var(--font-mono);font-size:.88em;background:rgba(32,49,58,.07);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+
+/* jazyk: bez JS se ukáže česká verze, s JS řídí třída .active */
+.lang-root{display:none}
+html:not(.js) .lang-root[data-lang="cs"]{display:block}
+.lang-root.active{display:block}
+.js-only{display:none}
+html.js .js-only{display:revert}
+html.js .js-only.inline-flex{display:inline-flex}
+
+/* ===== HLAVIČKA ===== */
+.tsp-header{background:var(--tsp-white);border-bottom:3px solid var(--tsp-red);padding:.75rem 2rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.brand-lockup{display:flex;align-items:center;gap:1rem;min-width:0}
+.logo-tsp{height:44px;width:auto;flex-shrink:0}
+.lockup-x{font-family:var(--font-mono);color:var(--tsp-blue);font-size:1.1rem}
+.logo-grafana{height:26px;width:auto;flex-shrink:0;display:block}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.site-nav{display:flex;gap:.25rem}
+.site-nav a{color:var(--tsp-dark);text-decoration:none;font-weight:600;font-size:.9rem;padding:.4rem .7rem;border-radius:4px;border-bottom:2px solid transparent}
+.site-nav a:hover{color:var(--tsp-red)}
+.site-nav a[aria-current="page"]{border-bottom-color:var(--tsp-red)}
+.lang-switch{display:flex;gap:4px}
+.lang-switch button{font-family:var(--font-primary);font-size:.78rem;font-weight:700;letter-spacing:.06em;line-height:1;padding:10px 11px;min-width:42px;border:1px solid var(--tsp-light);border-radius:4px;color:var(--tsp-dark);background:#fff;cursor:pointer}
+.lang-switch button:hover{border-color:var(--tsp-red);color:var(--tsp-red)}
+.lang-switch button[aria-pressed="true"]{background:var(--tsp-red);border-color:var(--tsp-red);color:#fff}
+
+/* ===== NOSCRIPT ===== */
+.noscript-banner{background:var(--tsp-offwhite);border:1px solid var(--color-warning);border-left:4px solid var(--color-warning);padding:1rem 1.5rem;font-size:.875rem;max-width:960px;margin:1rem auto}
+.noscript-banner p+p{margin-top:.75rem}
+
+/* ===== HERO ===== */
+.tsp-hero{background:var(--tsp-dark);color:#fff;padding:4rem 2rem 3.5rem;position:relative;overflow:hidden}
+.tsp-hero::before{content:'';position:absolute;top:-15%;left:-2%;width:12%;height:130%;background:var(--tsp-red);border-radius:0 30% 30% 0 / 0 8% 8% 0;transform:skewX(-4deg)}
+.hero-inner{position:relative;z-index:1;max-width:960px;margin:0 auto;padding-left:8%}
+.hero-label{font-family:var(--font-mono);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--tsp-teal);margin-bottom:.75rem}
+.tsp-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:600;line-height:1.1;margin-bottom:1.25rem;overflow-wrap:anywhere}
+.hero-lead{font-size:1.15rem;max-width:62ch;margin-bottom:1rem;color:#fff}
+.hero-sub{max-width:62ch;color:var(--tsp-light);margin-bottom:1rem}
+.hero-meta{display:inline-block;font-family:var(--font-mono);font-size:.8rem;color:var(--tsp-light);border:1px solid rgba(209,223,223,.4);border-radius:999px;padding:.3rem .9rem;margin-bottom:1.75rem}
+.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-primary);font-size:.95rem;font-weight:600;border-radius:4px;padding:.75rem 1.4rem;cursor:pointer;text-decoration:none;border:2px solid transparent;transition:background .2s,color .2s}
+.btn-primary{background:var(--tsp-red);color:#fff}
+.btn-primary:hover{background:#c42212}
+.btn-secondary{background:transparent;color:#fff;border-color:#fff}
+.btn-secondary:hover{background:#fff;color:var(--tsp-dark)}
+.btn:focus-visible,.btn-copy:focus-visible,.platform-tabbtn:focus-visible,.lang-switch button:focus-visible{outline:2px solid var(--tsp-teal);outline-offset:2px}
+
+/* ===== SEKCE ===== */
+.page-section{max-width:960px;margin:0 auto;padding:2.5rem 1rem}
+.section-alt{background:var(--tsp-white);border-top:1px solid var(--tsp-light);border-bottom:1px solid var(--tsp-light)}
+.band{width:100%}
+.page-section h2{font-size:1.6rem;font-weight:600;margin-bottom:1rem;line-height:1.2;overflow-wrap:anywhere}
+.page-section h3{font-size:1.2rem;font-weight:600;margin:1.5rem 0 .5rem;overflow-wrap:anywhere}
+.page-section p{margin-bottom:.9rem;max-width:72ch;overflow-wrap:anywhere}
+.section-intro{color:var(--tsp-blue)}
+.quote-block{border-left:4px solid var(--tsp-red);background:var(--tsp-offwhite);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1rem 0}
+.quote-block p:last-child{margin-bottom:0}
+.disclaimer-box{border-left:4px solid var(--color-warning);background:var(--tsp-offwhite);border-radius:0 6px 6px 0;padding:1rem 1.25rem;font-size:.92rem;margin-top:1.5rem}
+.disclaimer-box strong{display:block;margin-bottom:.35rem}
+.disclaimer-box p{margin:0;max-width:none}
+.section-alt .disclaimer-box{background:var(--tsp-offwhite)}
+.note{font-size:.88rem;color:var(--tsp-blue)}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.25rem 0}
+.tsp-card{background:#fff;border-radius:8px;padding:1.25rem;box-shadow:var(--shadow-card);border-top:3px solid var(--tsp-red);min-width:0}
+.section-alt .tsp-card{box-shadow:none;border:1px solid var(--tsp-light);border-top:3px solid var(--tsp-red)}
+.tsp-card h3{margin:0 0 .4rem;font-size:1.05rem}
+.tsp-card p{font-size:.92rem;margin-bottom:0;color:var(--tsp-dark)}
+.card-tag{font-family:var(--font-mono);font-size:.78rem;color:var(--tsp-teal);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.35rem;font-weight:700}
+
+/* brány a semafor */
+.gate-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.5rem;margin:.75rem 0 1rem}
+.gate-list li{background:var(--tsp-offwhite);border:1px solid var(--tsp-light);border-radius:6px;padding:.55rem .8rem;font-size:.92rem}
+.gate-list b{font-family:var(--font-mono);color:var(--tsp-red);margin-right:.5rem}
+.traffic{list-style:none;margin:.5rem 0 1rem}
+.traffic li{display:flex;gap:.75rem;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--tsp-light);font-size:.95rem}
+.traffic li:last-child{border-bottom:none}
+
+/* tabulka Grafana */
+.table-wrap{margin:1rem 0}
+table.gt{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff}
+table.gt th{background:var(--tsp-dark);color:#fff;text-align:left;padding:.6rem .8rem;font-weight:600}
+table.gt td{padding:.6rem .8rem;border-bottom:1px solid var(--tsp-light);vertical-align:top;overflow-wrap:anywhere}
+table.gt td:first-child{font-weight:600}
+
+/* jak to funguje */
+.flow-diagram{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:1.5rem 0}
+.flow-box{background:#fff;border:1px solid var(--tsp-light);border-radius:6px;box-shadow:var(--shadow-card);padding:1rem;text-align:center;font-weight:700;width:100%;max-width:560px}
+.flow-box span{display:block;font-weight:400;font-size:.9rem;color:var(--tsp-blue);margin-top:.35rem}
+.flow-box.final{background:var(--tsp-red);color:#fff;border-color:var(--tsp-red)}
+.flow-box.final span{color:#fff;opacity:.9}
+.flow-arrow{font-size:.88rem;color:var(--tsp-blue);font-weight:600;text-align:center;max-width:560px}
+
+/* soubory */
+.file-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.25rem 0}
+.file-card{display:flex;flex-direction:column}
+.file-role-label{font-family:var(--font-mono);font-size:.78rem;font-weight:700;color:var(--tsp-teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.file-card h3{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0 0 .5rem;font-size:1.05rem}
+.file-badge{font-family:var(--font-mono);font-size:.78rem;background:var(--tsp-offwhite);border:1px solid var(--tsp-light);border-radius:3px;padding:1px 6px;color:var(--tsp-blue)}
+.limited-badge{display:inline-block;background:var(--color-warning);color:#fff;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:3px}
+.file-card-fallback{border:1px dashed var(--tsp-blue);border-top:3px solid var(--color-warning);background:var(--tsp-offwhite)}
+.file-purpose{font-size:.92rem;color:var(--tsp-dark);margin-bottom:1rem;flex:1}
+.btn-dl{display:block;width:100%;text-align:center;background:var(--tsp-red);color:#fff;border:none;border-radius:6px;padding:.8rem 1rem;font-size:1rem;font-weight:700;font-family:var(--font-primary);cursor:pointer;text-decoration:none}
+.btn-dl:hover{background:var(--tsp-dark)}
+.file-actions{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.6rem}
+.btn-copy{background:none;border:1px solid var(--tsp-light);border-radius:6px;padding:.5rem .85rem;font-size:.88rem;font-weight:600;font-family:var(--font-primary);color:var(--tsp-dark);cursor:pointer;text-decoration:none;display:inline-block}
+.btn-copy:hover{background:var(--tsp-offwhite);border-color:var(--tsp-dark)}
+.link-btn{background:none;border:none;color:var(--tsp-blue);font-size:.88rem;font-family:var(--font-primary);text-decoration:underline;cursor:pointer;padding:.25rem 0}
+.link-btn:hover{color:var(--tsp-dark)}
+.copy-ok{color:var(--color-success);font-size:.88rem;font-weight:600;display:none}
+.copy-err{color:var(--color-danger);font-size:.88rem;display:none}
+.file-fallback-link{margin-top:.5rem;font-size:.88rem}
+.file-fallback-link a{color:var(--tsp-blue)}
+.other-files{list-style:none;margin:.75rem 0}
+.other-files li{display:flex;gap:.5rem 1rem;flex-wrap:wrap;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--tsp-light);font-size:.92rem}
+.other-files .of-name{font-family:var(--font-mono);font-size:.85rem;overflow-wrap:anywhere}
+.other-files .of-desc{flex:1 1 240px;color:var(--tsp-blue);min-width:0}
+.other-files .of-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+
+/* platformy */
+.platform-tabnav{display:flex;flex-wrap:wrap;gap:.25rem;border-bottom:1px solid var(--tsp-light);margin:1.25rem 0}
+.platform-tabbtn{background:none;border:none;border-bottom:3px solid transparent;padding:.55rem 1rem;font-size:.95rem;font-weight:500;font-family:var(--font-primary);color:var(--tsp-blue);cursor:pointer}
+.platform-tabbtn:hover{color:var(--tsp-dark)}
+.platform-tabbtn.active{color:var(--tsp-dark);border-bottom-color:var(--tsp-red);font-weight:700}
+.platform-tabpanel.js-hidden{display:none}
+.platform-tabpanel>.tsp-card{margin-bottom:1rem}
+.platform-requirements{background:var(--tsp-offwhite);border-radius:6px;padding:.85rem 1rem;font-size:.92rem;color:var(--tsp-blue)}
+.platform-requirements b,.mini-test b{display:inline}
+.variant-heading{margin:1.5rem 0 .5rem;padding-top:1rem;border-top:1px dashed var(--tsp-light);font-size:1.05rem;font-weight:700}
+.platform-tabpanel .tsp-card>.variant-heading:first-child{margin-top:0;padding-top:0;border-top:none}
+.steps-list{list-style:none;counter-reset:step;margin:1rem 0}
+.steps-list li{position:relative;padding:.6rem 0 .6rem 2.4rem;border-bottom:1px solid var(--tsp-light);font-size:.95rem;overflow-wrap:anywhere}
+.steps-list li:last-child{border-bottom:none}
+.steps-list li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:.6rem;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--tsp-dark);color:#fff;font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.step-copy{margin-top:.4rem;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.mini-test{background:var(--tsp-offwhite);border-left:4px solid var(--color-success);border-radius:0 6px 6px 0;padding:.85rem 1rem;font-size:.92rem;margin-top:1rem}
+.mini-test b{color:var(--color-success)}
+.mini-test p{margin:0}
+.faq-link{margin-top:1rem;font-size:.9rem;color:var(--tsp-blue)}
+.faq-link a{color:var(--tsp-dark);font-weight:600}
+
+/* schéma rozhraní */
+.wireframe{border:1px solid var(--tsp-light);border-radius:10px;background:#fff;overflow:hidden;margin:1rem 0;font-size:.85rem}
+.wf-titlebar{background:var(--tsp-offwhite);border-bottom:1px solid var(--tsp-light);padding:5px 8px;display:flex;gap:5px}
+.wf-dot{width:8px;height:8px;border-radius:50%;background:var(--tsp-light);display:inline-block}
+.wf-body{display:flex;min-height:150px}
+.wf-sidebar{width:34%;min-width:110px;border-right:1px solid var(--tsp-light);padding:.5rem;color:var(--tsp-blue)}
+.wf-item{padding:.25rem .5rem;border-radius:3px;margin-bottom:.25rem}
+.wf-main{flex:1;padding:.5rem .75rem;color:var(--tsp-blue);min-width:0}
+.wf-topbar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding-bottom:.25rem;border-bottom:1px dashed var(--tsp-light);margin-bottom:.5rem;font-weight:600;color:var(--tsp-dark)}
+.wf-tabs{display:flex;gap:1rem;margin-bottom:.5rem;flex-wrap:wrap}
+.wf-field{border:1px dashed var(--tsp-light);border-radius:3px;padding:.25rem .5rem;margin-bottom:.25rem;display:inline-block;max-width:100%;overflow-wrap:anywhere}
+.wf-chat{border:1px solid var(--tsp-light);border-radius:6px;padding:.5rem;margin-top:.5rem;color:var(--tsp-blue)}
+.wf-hl{background:rgba(255,217,86,.3);outline:1px dashed var(--color-warning)}
+.wf-bubble{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--tsp-red);color:#fff;font-size:.7rem;font-weight:700;margin-left:5px;vertical-align:middle}
+.wf-cols{display:flex;gap:1rem}
+.wf-col{flex:1;min-width:0}
+.wf-col+.wf-col{border-left:1px dashed var(--tsp-light);padding-left:1rem}
+.wf-save{display:inline-block;background:var(--tsp-red);color:#fff;border-radius:3px;padding:.25rem .75rem;font-weight:700;margin-top:.5rem}
+.wf-note{font-size:.85rem;color:var(--tsp-blue)}
+@media (max-width:520px){
+  .wf-body{flex-direction:column}
+  .wf-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--tsp-light)}
+  .wf-cols{flex-direction:column}
+  .wf-col+.wf-col{border-left:none;padding-left:0;border-top:1px dashed var(--tsp-light);padding-top:.5rem;margin-top:.5rem}
+}
+
+/* agenti, test */
+pre.code{background:var(--tsp-dark);color:#fff;border-radius:6px;padding:1rem;font-family:var(--font-mono);font-size:.85rem;overflow-x:auto;margin:1rem 0;max-width:100%}
+.test-box{background:var(--tsp-offwhite);border:1px solid var(--tsp-light);border-radius:6px;padding:1rem;font-family:var(--font-mono);font-size:.9rem;margin-bottom:.75rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.expect-list{list-style:none;margin:.5rem 0 1rem}
+.expect-list li{padding:.3rem 0 .3rem 1.6rem;position:relative;font-size:.95rem;overflow-wrap:anywhere}
+.expect-list li::before{content:'✓';position:absolute;left:0;color:var(--color-success);font-weight:700}
+.btn-row{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+.btn-row .btn-dl{width:auto;display:inline-block;padding:.75rem 1.4rem}
+.quote-final{border-left:4px solid var(--tsp-red);background:var(--tsp-offwhite);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:.75rem 0 1rem;font-style:italic}
+
+/* online */
+.qr-wrap{display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap}
+.qr-img{width:176px;height:176px;border:1px solid var(--tsp-light);border-radius:4px;background:#fff;padding:4px;flex-shrink:0}
+.qr-img svg{width:100%;height:100%;display:block}
+.qr-text{flex:1 1 260px;min-width:0}
+.online-url{font-family:var(--font-mono);font-size:.95rem;overflow-wrap:anywhere;font-weight:700}
+
+/* faq */
+.faq-list{display:flex;flex-direction:column;gap:.5rem}
+details.faq-item{background:#fff;border:1px solid var(--tsp-light);border-radius:6px;padding:1rem}
+details.faq-item summary{font-weight:600;cursor:pointer;list-style:none;position:relative;padding-right:1.5rem}
+details.faq-item summary::-webkit-details-marker{display:none}
+details.faq-item summary::after{content:'+';position:absolute;right:0;top:0;font-size:1.2rem;font-weight:700;color:var(--tsp-blue)}
+details.faq-item[open] summary::after{content:'–'}
+details.faq-item p{margin:.6rem 0 0;font-size:.92rem;color:var(--tsp-blue)}
+
+/* patička */
+.tsp-footer{background:var(--tsp-dark);color:var(--tsp-light);text-align:center;padding:2rem 1rem;font-size:.88rem}
+.tsp-footer p{margin:.2rem auto;max-width:70ch}
+.tsp-footer strong{color:#fff}
+.tsp-footer a{color:var(--tsp-teal)}
+
+/* dialog */
+dialog#copy-dialog{border:1px solid var(--tsp-light);border-radius:10px;padding:1.25rem;max-width:500px;width:90%;font-family:var(--font-primary);color:var(--tsp-dark)}
+dialog#copy-dialog::backdrop{background:rgba(0,0,0,.4)}
+dialog#copy-dialog p{margin-bottom:.6rem;font-size:.9rem}
+dialog#copy-dialog textarea{width:100%;min-height:160px;font-family:var(--font-mono);font-size:.85rem;padding:.5rem;border:1px solid var(--tsp-light);border-radius:6px;resize:vertical;margin-bottom:.75rem}
+dialog#copy-dialog button{background:var(--tsp-red);color:#fff;border:none;border-radius:6px;padding:.5rem 1.25rem;font-weight:700;cursor:pointer;font-family:var(--font-primary)}
+
+/* případová studie (markdown) */
+.md h1{font-size:2rem;font-weight:600;margin-bottom:1rem;line-height:1.15}
+.md h2{margin-top:2rem}
+.md ul,.md ol{margin:0 0 1rem 1.4rem;max-width:72ch}
+.md li{margin-bottom:.3rem;overflow-wrap:anywhere}
+.md blockquote{border-left:4px solid var(--tsp-red);background:var(--tsp-offwhite);padding:.8rem 1.1rem;margin:1rem 0;border-radius:0 6px 6px 0}
+.md blockquote p{margin:0}
+.md pre{background:var(--tsp-dark);color:#fff;border-radius:6px;padding:1rem;font-family:var(--font-mono);font-size:.85rem;overflow-x:auto;margin:1rem 0}
+.md table{width:100%;border-collapse:collapse;font-size:.92rem;margin:1rem 0;display:block;overflow-x:auto}
+.md th{background:var(--tsp-dark);color:#fff;text-align:left;padding:.5rem .7rem}
+.md td{padding:.5rem .7rem;border-bottom:1px solid var(--tsp-light);vertical-align:top}
+.md hr{border:none;border-top:1px solid var(--tsp-light);margin:1.5rem 0}
+
+@media (max-width:700px){
+  .tsp-header{padding:.6rem 1rem;gap:.6rem}
+  .logo-tsp{height:34px}
+  .logo-grafana{height:20px}
+  .brand-lockup{gap:.6rem}
+  .header-right{margin-left:0;width:100%;justify-content:space-between}
+  .tsp-hero{padding:2.5rem 1rem 2.5rem}
+  .hero-inner{padding-left:0}
+  .tsp-hero::before{width:6%;opacity:.9}
+  .page-section{padding:1.75rem 1rem}
+  .page-section h2{font-size:1.4rem}
+  .btn{padding:.7rem 1.1rem}
+  .hero-btns .btn{flex:1 1 100%;justify-content:center}
+  .platform-tabbtn{padding:.5rem .6rem;font-size:.88rem}
+  /* tabulka Grafany jako karty */
+  table.gt thead{display:none}
+  table.gt,table.gt tbody,table.gt tr,table.gt td{display:block;width:100%}
+  table.gt tr{background:#fff;border:1px solid var(--tsp-light);border-radius:6px;margin-bottom:.6rem;padding:.4rem 0}
+  table.gt td{border:none;padding:.3rem .8rem}
+  table.gt td::before{content:attr(data-label);display:block;font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--tsp-teal);font-weight:400}
+}
+
+/* ===== TISK ===== */
+@media print{
+  .no-print,.platform-tabnav,.site-nav,.lang-switch{display:none!important}
+  .platform-tabpanel,.platform-tabpanel.js-hidden{display:block!important;margin-bottom:1.5rem}
+  .platform-tabpanel::before{content:attr(data-print-label);display:block;font-weight:700;font-size:1.2rem;margin-bottom:.5rem}
+  details.faq-item,.tsp-card,.file-card,.flow-box,table.gt tr,.wireframe,.quote-final,.mini-test{break-inside:avoid}
+  details.faq-item>*:not(summary){display:block!important}
+  details.faq-item summary::after{display:none}
+  body{background:#fff}
+  .tsp-hero,.tsp-footer,table.gt th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ===== případová studie ===== */
+.chat-msg{border-radius:10px;padding:.9rem 1.1rem;margin:.9rem 0;max-width:100%;border:1px solid var(--tsp-light);scroll-margin-top:12px}
+.chat-msg.user{background:#E3EEF1;border-left:5px solid var(--tsp-teal);margin-right:8%}
+.chat-msg.guide{background:#fff;border-left:5px solid var(--tsp-red);margin-left:8%;box-shadow:var(--shadow-card)}
+.chat-role{font-family:var(--font-mono);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem}
+.chat-msg.user .chat-role{color:var(--tsp-blue)}
+.chat-msg.guide .chat-role{color:var(--tsp-red)}
+.chat-body p,.chat-body li{overflow-wrap:anywhere;font-size:.95rem}
+.chat-body p{margin:0 0 .65rem;max-width:none}
+.chat-body ul,.chat-body ol{margin:0 0 .65rem 1.3rem}
+.chat-body li{margin-bottom:.3rem}
+.chat-body>*:last-child{margin-bottom:0}
+.sem{font-size:1.15em;line-height:1;vertical-align:-1px}
+.case-comment{border-left:3px dashed var(--tsp-blue);background:var(--tsp-offwhite);padding:.75rem 1rem;border-radius:0 6px 6px 0;margin:.6rem 0 1.4rem}
+.section-alt .case-comment{background:var(--tsp-offwhite)}
+.case-comment p{font-size:.9rem;color:var(--tsp-blue);margin:0 0 .6rem;max-width:none}
+.case-comment p:last-child{margin-bottom:0}
+.case-list{list-style:none;margin:.5rem 0 1rem}
+.case-list li{padding:.35rem 0 .35rem 1.6rem;position:relative;border-bottom:1px solid var(--tsp-light);font-size:.95rem;overflow-wrap:anywhere}
+.case-list li:last-child{border-bottom:none}
+.case-list li::before{content:'✓';position:absolute;left:0;color:var(--color-success);font-weight:700}
+.part{margin:1rem 0}
+.part-open{border:2px solid var(--tsp-red);border-radius:10px;padding:0 1rem .5rem;background:#fff}
+.part-open>h3{margin:1rem 0 .25rem}
+details.part{border:1px solid var(--tsp-light);border-radius:10px;padding:0 1rem;background:#fff}
+details.part>summary{font-size:1.1rem;font-weight:600;cursor:pointer;padding:.9rem 1.5rem .9rem 0;list-style:none;position:relative;overflow-wrap:anywhere}
+details.part>summary::-webkit-details-marker{display:none}
+details.part>summary::after{content:'+';position:absolute;right:0;top:.7rem;font-size:1.3rem;color:var(--tsp-blue)}
+details.part[open]>summary::after{content:'–'}
+details.part[open]{padding-bottom:.5rem}
+.scroll-x{overflow-x:auto;max-width:100%;margin:1rem 0;border:1px solid var(--tsp-light);border-radius:6px;background:#fff;-webkit-overflow-scrolling:touch}
+table.num{border-collapse:collapse;min-width:640px;width:100%;font-size:.9rem}
+table.num th{background:var(--tsp-dark);color:#fff;text-align:right;padding:.55rem .8rem;white-space:nowrap}
+table.num th:first-child,table.num td:first-child{text-align:left;position:sticky;left:0}
+table.num th:first-child{background:var(--tsp-dark)}
+table.num td{padding:.5rem .8rem;border-bottom:1px solid var(--tsp-light);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+table.num td:first-child{background:#fff;font-weight:600}
+.case-link{margin-top:1.25rem}
+.case-link .btn-primary{color:#fff}
+@media (max-width:700px){
+  .chat-msg.user{margin-right:0}
+  .chat-msg.guide{margin-left:0}
+  .part-open{padding:0 .75rem .4rem}
+}
+@media print{details.part>*:not(summary){display:block!important}details.part>summary::after{display:none}.chat-msg,.case-comment,.part{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="tsp-header"><div class="brand-lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 298.08 102.05" role="img" aria-label="TSP DATA" class="logo-tsp">
+<polygon fill="#e52a18" points="34.02 34.39 34.02 38.39 44.37 38.39 44.37 67.65 48.55 67.65 48.55 38.39 58.91 38.39 58.91 34.39 34.02 34.39"/>
+<path fill="#e52a18" d="m80.86,42.99c-1.42-3.28-3.61-4.99-6.75-4.99-3.66,0-5.99,1.85-5.99,5.13,0,3.56,3.28,4.51,7.69,5.65,5.08,1.33,9.45,2.85,9.45,8.65,0,7.27-4.56,10.59-11.02,10.59s-11.12-3.37-12.4-9.88l3.9-1.52c1.19,4.46,3.75,7.41,8.5,7.41,4.04,0,6.84-1.99,6.84-6.03,0-3.47-2.57-4.18-7.55-5.42-4.7-1.19-9.6-2.66-9.6-9.31,0-5.27,3.66-9.26,10.17-9.26,5.79,0,9.08,3.51,10.41,7.13l-3.66,1.85Z"/>
+<path fill="#e52a18" d="m111.37,43.9c0-3.66-2-5.51-5.65-5.51h-8.31v11.02h8.31c3.66,0,5.65-1.85,5.65-5.51m-13.97,9.5v14.25h-4.18v-33.26h12.59c6.41,0,9.88,3.71,9.88,9.5s-3.47,9.5-9.88,9.5h-8.41Z"/>
+<path fill="#20313a" d="m161.45,38.34v25.27h3.8c6.6,0,10.74-3.33,10.74-12.64s-4.14-12.64-10.74-12.64h-3.8Zm4.23-3.99c8.65,0,14.77,5.37,14.77,16.63s-6.13,16.63-14.77,16.63h-8.41v-33.26h8.41Z"/>
+<path fill="#20313a" d="m197.04,39.76l5.13,14.97h-10.26l5.13-14.97Zm-2-5.42l-11.83,33.26h4.33l2.99-8.88h13.02l2.99,8.88h4.33l-11.83-33.26h-3.99Z"/>
+<polygon fill="#20313a" points="211.19 34.35 211.19 38.34 221.55 38.34 221.55 67.61 225.73 67.61 225.73 38.34 236.09 38.34 236.09 34.35 211.19 34.35"/>
+<path fill="#20313a" d="m250.24,39.76l5.13,14.97h-10.26l5.13-14.97Zm-2-5.42l-11.83,33.26h4.33l2.99-8.88h13.02l2.99,8.88h4.33l-11.83-33.26h-3.99Z"/>
+<path fill="#e52a18" d="m139.85,50.45l-10.79-2.61c-.83-.21-1.4-.96-1.4-1.81v-9.8c0-1.03.84-1.87,1.87-1.87h10.79c1.03,0,1.87.84,1.87,1.87v12.41c0,1.22-1.15,2.11-2.33,1.81"/>
+<polygon fill="#20313a" points="127.66 67.58 142.25 67.58 142.25 55.09 127.66 51.51 127.66 67.58"/>
+</svg><span class="lockup-x" aria-hidden="true">×</span><span class="grafana-wrap" role="img" aria-label="Grafana Labs"><svg class="logo-grafana" width="143" height="24" viewBox="0 0 143 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M138.691 9.46796C139.845 9.38565 140.752 9.79709 141.576 10.2912L140.711 11.7736C140.299 11.5265 139.556 11.1154 138.773 11.1154C137.99 11.1155 137.331 11.486 137.331 12.1037C137.331 12.8037 138.114 13.0505 139.104 13.4211C140.711 13.9977 142.112 15.0687 142.112 16.716C142.112 18.3632 140.67 19.8047 138.65 19.8049C137.414 19.8049 136.177 19.3109 135.312 18.7756L136.095 17.1281C136.672 17.4576 137.743 17.9103 138.567 17.9103C139.557 17.9103 140.01 17.2926 140.01 16.716C140.01 16.0159 139.392 15.6449 137.99 15.1096C137.001 14.6977 135.353 14.0384 135.353 12.2678C135.353 10.6207 136.796 9.46796 138.691 9.46796ZM117.547 9.42597C118.907 9.42601 120.102 9.96138 120.968 10.8674V9.59101H122.698V19.5978H121.009V18.3215C120.143 19.1863 118.907 19.7628 117.547 19.7629C114.662 19.7629 112.354 17.4151 112.354 14.5734C112.354 11.732 114.662 9.42597 117.547 9.42597ZM126.368 10.6203C127.192 9.87917 128.305 9.42608 129.541 9.42597C132.385 9.38479 134.734 11.7319 134.734 14.5734C134.734 17.4151 132.385 19.7629 129.541 19.7629C128.181 19.7628 126.945 19.1862 126.079 18.3215V19.5978H124.39V5.55488H126.368V10.6203ZM106.461 17.5822H111.984V19.5998H104.441V4.73261H106.461V17.5822ZM117.547 11.4025C115.816 11.4025 114.373 12.8439 114.373 14.5734C114.373 16.3443 115.775 17.7453 117.547 17.7453C119.319 17.7452 120.721 16.3443 120.721 14.5734C120.72 12.844 119.319 11.4026 117.547 11.4025ZM129.5 11.4025C127.769 11.4027 126.326 12.8028 126.326 14.5734C126.326 16.3031 127.769 17.7032 129.5 17.7033C131.231 17.7033 132.674 16.3031 132.674 14.5734C132.674 12.8439 131.231 11.4025 129.5 11.4025Z" fill="#FF671D"/>
+<path d="M41.5076 12.5145C41.3428 16.5505 38.1691 19.7216 34.1712 19.7216C29.9671 19.7216 26.876 16.3446 26.876 12.2262C26.876 8.10789 30.2557 4.68967 34.3773 4.68967C36.232 4.68967 38.0455 5.47216 39.6117 6.91357L38.4164 8.39617C37.2212 7.36659 35.8198 6.66647 34.4185 6.66647C31.4097 6.66647 28.9368 9.13747 28.9368 12.185C28.9368 15.2738 31.2861 17.6624 34.2536 17.6624C36.9326 17.6624 39.0347 15.7268 39.4468 13.1734H33.3881V11.4026H41.59L41.5076 12.5145Z" fill="#FF671D"/>
+<path d="M48.5141 11.5235H47.4013C46.1648 11.5235 45.1756 12.5119 45.1756 13.7474V19.5955H43.1973V9.62909H44.8459V10.4528C45.3817 9.91737 46.2472 9.62909 47.1952 9.62909H49.3384L48.5141 11.5235Z" fill="#FF671D"/>
+<path d="M59.3938 19.5961H57.7039V18.3194C56.385 19.5961 54.3242 20.2139 52.2222 19.3078C50.656 18.6077 49.502 17.2075 49.2134 15.519C48.5952 12.3479 51.0682 9.46503 54.2418 9.46503C55.5607 9.46503 56.7972 10.0004 57.6627 10.8653V9.58858H59.3938V19.5961ZM57.333 15.3542C57.7864 13.3363 56.2614 11.483 54.283 11.483C52.5519 11.483 51.1506 12.8832 51.1506 14.6129C51.1506 16.5486 52.8404 18.0723 54.86 17.7017C56.0553 17.4958 57.0445 16.5486 57.333 15.3542Z" fill="#FF671D"/>
+<path d="M63.3954 9.05316V9.62973H66.569V11.4006H63.3954V19.6373H61.417V9.13553C61.417 6.95282 62.9832 5.63495 64.9616 5.63495H67.3521L66.569 7.52938H64.9616C64.096 7.52938 63.3954 8.18831 63.3954 9.05316Z" fill="#FF671D"/>
+<path d="M77.1611 19.5961H75.4712V18.3194C74.1523 19.5961 72.0915 20.2139 69.9895 19.3078C68.4233 18.6077 67.2693 17.2075 66.9808 15.519C66.3625 12.3479 68.8767 9.46503 72.0503 9.46503C73.3692 9.46503 74.6057 10.0004 75.4712 10.8653V9.58858H77.2023L77.1611 19.5961ZM75.1415 15.3542C75.5949 13.3363 74.0699 11.483 72.0915 11.483C70.3605 11.483 68.9591 12.8832 68.9591 14.6129C68.9591 16.5486 70.649 18.0723 72.6686 17.7017C73.8638 17.4958 74.853 16.5486 75.1415 15.3542Z" fill="#FF671D"/>
+<path d="M87.837 13.7069V19.5961H85.8586V13.7069C85.8586 12.4714 84.8282 11.483 83.6329 11.483C82.3552 11.483 81.3661 12.4714 81.3661 13.7069V19.5961H79.3877V9.62976H81.0363V10.4946C81.737 9.83568 82.7262 9.46503 83.7154 9.46503C86.0235 9.46503 87.837 11.3595 87.837 13.7069Z" fill="#FF671D"/>
+<path d="M99.58 19.5961H97.8902V18.3194C96.5713 19.5961 94.5105 20.2139 92.4085 19.3078C90.8423 18.6077 89.6882 17.2075 89.3997 15.519C88.7815 12.3479 91.2956 9.46503 94.4693 9.46503C95.7882 9.46503 97.0247 10.0004 97.8902 10.8653V9.58858H99.6213L99.58 19.5961ZM97.5605 15.3542C98.0138 13.3363 96.4889 11.483 94.5105 11.483C92.7794 11.483 91.3781 12.8832 91.3781 14.6129C91.3781 16.5486 93.0679 18.0723 95.0875 17.7017C96.2415 17.4958 97.2719 16.5486 97.5605 15.3542Z" fill="#FF671D"/>
+<path d="M21.4323 10.2546C21.3911 9.884 21.3498 9.43098 21.185 8.93678C21.0613 8.44258 20.8553 7.9072 20.5667 7.33063C20.2782 6.75407 19.9073 6.1775 19.4539 5.60093C19.2891 5.39502 19.083 5.14792 18.8357 4.942C19.1654 3.62413 18.4235 2.51218 18.4235 2.51218C17.187 2.42982 16.3627 2.88283 16.0742 3.12993C16.033 3.12993 15.9918 3.08875 15.9094 3.04757C15.7033 2.9652 15.4972 2.88283 15.2499 2.80047C15.0026 2.7181 14.7965 2.67692 14.5492 2.59455C14.3019 2.55337 14.0546 2.51218 13.8486 2.471C13.8073 2.471 13.7661 2.471 13.7249 2.471C13.1891 0.7413 11.6229 0 11.6229 0C9.89183 1.11195 9.5621 2.63573 9.5621 2.63573C9.5621 2.63573 9.5621 2.67692 9.5621 2.7181C9.47967 2.75928 9.35602 2.75928 9.27358 2.80047C9.14994 2.84165 9.02629 2.88283 8.86142 2.92402C8.73778 2.9652 8.61413 3.00638 8.44927 3.08875C8.20197 3.2123 7.91346 3.33585 7.66617 3.4594C7.41887 3.58295 7.17158 3.74768 6.92428 3.91242C6.88307 3.91242 6.88307 3.87123 6.88307 3.87123C4.45133 2.9652 2.30809 4.07715 2.30809 4.07715C2.10202 6.63052 3.25606 8.27785 3.50335 8.56613C3.46214 8.73086 3.37971 8.8956 3.33849 9.06033C3.17363 9.6369 3.00877 10.2546 2.92633 10.8724C2.92633 10.9548 2.88512 11.0371 2.88512 11.1195C0.659455 12.2314 0 14.4965 0 14.4965C1.85472 16.6381 4.03917 16.7616 4.03917 16.7616C4.32768 17.2558 4.61619 17.7088 4.98713 18.1618C5.15199 18.3266 5.31686 18.5325 5.44051 18.6972C4.78105 20.6328 5.52293 22.239 5.52293 22.239C7.58373 22.3214 8.94385 21.333 9.23237 21.0859C9.43845 21.1682 9.64452 21.2094 9.85061 21.2918C10.4688 21.4565 11.1283 21.5389 11.7878 21.5801C11.9526 21.5801 12.1175 21.5801 12.2824 21.5801H12.3648H12.406H12.4884H12.5709C13.56 22.9803 15.2499 23.1862 15.2499 23.1862C16.4864 21.9095 16.5276 20.6328 16.5276 20.3446C16.5276 20.3034 16.5276 20.3034 16.5276 20.3034V20.2622C16.7749 20.0975 17.0222 19.8915 17.2695 19.6856C17.7641 19.2326 18.1762 18.7384 18.5472 18.203C18.5884 18.1618 18.6296 18.1207 18.6296 18.0383C20.0309 18.1207 20.9789 17.1734 20.9789 17.1734C20.7316 15.732 19.9073 15.0319 19.7424 14.9084C19.7424 14.9084 19.7424 14.9084 19.7012 14.9084C19.7012 14.826 19.7012 14.7436 19.7012 14.6613C19.7012 14.4965 19.7012 14.3318 19.7012 14.2082V14.0023V13.9611V13.92C19.7012 13.8788 19.7012 13.8788 19.7012 13.8788V13.7964V13.6729C19.7012 13.6317 19.7012 13.5905 19.7012 13.5493C19.7012 13.5081 19.7012 13.4669 19.7012 13.4258V13.3022V13.1787C19.66 13.0139 19.66 12.8492 19.6188 12.7256C19.4539 12.1079 19.2478 11.5313 18.9181 10.9959C18.5884 10.4606 18.2174 10.0075 17.7641 9.59571C17.3107 9.18388 16.8161 8.8956 16.2803 8.6485C15.7445 8.4014 15.2087 8.27785 14.6317 8.19548C14.3431 8.1543 14.0958 8.1543 13.8073 8.1543H13.7249H13.6837H13.6425H13.6013H13.5188C13.4776 8.1543 13.4364 8.1543 13.3952 8.1543C13.2715 8.1543 13.1067 8.19548 12.983 8.19548C12.4472 8.27785 11.9114 8.48376 11.458 8.77205C11.0047 9.06033 10.5925 9.3898 10.2628 9.76045C9.93304 10.1311 9.68575 10.5841 9.52088 11.0371C9.35602 11.4901 9.27358 11.9432 9.23237 12.3962C9.23237 12.5197 9.23237 12.6021 9.23237 12.7256C9.23237 12.7668 9.23237 12.7668 9.23237 12.808V12.8904C9.23237 12.9316 9.23237 13.0139 9.23237 13.0551C9.27358 13.261 9.31481 13.5081 9.35602 13.714C9.47967 14.1259 9.68574 14.4965 9.89182 14.826C10.1391 15.1555 10.4276 15.4026 10.7161 15.6085C11.0047 15.8144 11.3344 15.9791 11.6641 16.0615C11.9938 16.1439 12.2823 16.185 12.6121 16.185C12.6533 16.185 12.6945 16.185 12.7357 16.185H12.7769H12.8182C12.8594 16.185 12.9006 16.185 12.9006 16.185C12.9006 16.185 12.9006 16.185 12.9418 16.185H12.983H13.0242C13.0655 16.185 13.1067 16.185 13.1479 16.185C13.1891 16.185 13.2303 16.185 13.2715 16.1439C13.354 16.1439 13.3952 16.1027 13.4776 16.1027C13.6013 16.0615 13.7249 16.0203 13.8486 15.9379C13.9722 15.8968 14.0546 15.8144 14.1783 15.732C14.2195 15.732 14.2195 15.6908 14.2607 15.6497C14.3844 15.5673 14.3844 15.4026 14.3019 15.3202C14.2195 15.2378 14.0958 15.1966 14.0134 15.279C13.9722 15.279 13.9722 15.3202 13.931 15.3202C13.8486 15.3614 13.7661 15.4026 13.6425 15.4437C13.56 15.4849 13.4364 15.4849 13.354 15.5261C13.3127 15.5261 13.2303 15.5261 13.1891 15.5261C13.1479 15.5261 13.1479 15.5261 13.1067 15.5261C13.0655 15.5261 13.0655 15.5261 13.0242 15.5261C12.983 15.5261 12.983 15.5261 12.9418 15.5261C12.9006 15.5261 12.8594 15.5261 12.8594 15.5261H12.8182H12.7769C12.7357 15.5261 12.7357 15.5261 12.6945 15.5261C12.4472 15.4849 12.2411 15.4437 11.9938 15.3202C11.7465 15.2378 11.5405 15.0731 11.3344 14.9084C11.1283 14.7436 10.9634 14.4965 10.8398 14.2906C10.7161 14.0847 10.5925 13.7964 10.5513 13.5081C10.5101 13.3846 10.5101 13.2198 10.5101 13.0963C10.5101 13.0551 10.5101 13.0139 10.5101 12.9727V12.9316V12.8904C10.5101 12.808 10.5101 12.7256 10.5513 12.6433C10.6749 12.0255 10.9634 11.449 11.458 10.9548C11.5817 10.8312 11.7053 10.7488 11.829 10.6253C11.9526 10.5429 12.1175 10.4606 12.2411 10.3782C12.406 10.2958 12.5709 10.2546 12.6945 10.2135C12.8594 10.1723 13.0242 10.1311 13.1891 10.1311C13.2715 10.1311 13.354 10.1311 13.4364 10.1311C13.4776 10.1311 13.4776 10.1311 13.4776 10.1311H13.56H13.6013H13.6837C13.8486 10.1311 14.0546 10.1723 14.2195 10.2135C14.5904 10.2958 14.9202 10.4194 15.2499 10.6253C15.9093 10.9959 16.4452 11.5725 16.8161 12.2314C16.981 12.5609 17.1046 12.9316 17.187 13.3022C17.187 13.3846 17.2283 13.5081 17.2283 13.5905V13.6729V13.7552C17.2283 13.7964 17.2283 13.7964 17.2283 13.8376C17.2283 13.8788 17.2283 13.8788 17.2283 13.92V14.0023V14.0847C17.2283 14.1259 17.2283 14.2082 17.2283 14.2494C17.2283 14.373 17.2283 14.4553 17.187 14.5789C17.187 14.6613 17.1458 14.7848 17.1458 14.8672C17.1458 14.9495 17.1046 15.0731 17.0634 15.1555C17.0222 15.3614 16.9397 15.5673 16.8573 15.732C16.6924 16.1027 16.4864 16.4733 16.2391 16.844C15.7445 17.5029 15.085 18.0795 14.3019 18.4089C13.931 18.5737 13.5188 18.6972 13.1067 18.7796C12.9006 18.8208 12.6945 18.8208 12.4884 18.862H12.4472H12.406H12.3236H12.2411H12.1999C12.1999 18.862 12.2411 18.862 12.1999 18.862C12.0763 18.862 11.9938 18.862 11.8702 18.862C11.4168 18.8208 10.9634 18.7384 10.5513 18.6149C10.1391 18.4913 9.68575 18.3266 9.3148 18.1207C8.5317 17.7088 7.83103 17.1323 7.25401 16.4321C6.96549 16.1027 6.71819 15.732 6.55333 15.3202C6.34725 14.9084 6.18239 14.4965 6.05875 14.0847C5.9351 13.6729 5.85267 13.2198 5.85267 12.808V12.7256V12.6845V12.6021V12.355V12.3138V12.2314V12.1903C5.85267 12.1491 5.85267 12.0667 5.85267 12.0255C5.85267 11.8196 5.89389 11.5725 5.89389 11.3666C5.9351 11.1607 5.97631 10.9136 6.01753 10.7077C6.05874 10.5017 6.09996 10.2546 6.18239 10.0487C6.30604 9.6369 6.4709 9.22507 6.63577 8.81323C7.00671 8.03075 7.46008 7.33063 8.03711 6.79525C8.16075 6.6717 8.32562 6.50697 8.49048 6.38342C8.65535 6.25987 8.82022 6.13632 8.98508 6.05395C9.14994 5.9304 9.3148 5.84803 9.47966 5.76567C9.5621 5.72448 9.64453 5.6833 9.72696 5.64212C9.76818 5.64212 9.80939 5.60093 9.85061 5.60093C9.89182 5.60093 9.93304 5.55975 9.97426 5.55975C10.1391 5.47738 10.3452 5.4362 10.5101 5.35383C10.5513 5.35383 10.5925 5.31265 10.6337 5.31265C10.6749 5.31265 10.7161 5.27147 10.7574 5.27147C10.8398 5.23028 10.9634 5.23028 11.0459 5.1891C11.0871 5.1891 11.1283 5.14792 11.2107 5.14792C11.252 5.14792 11.2932 5.14792 11.3756 5.10673C11.4168 5.10673 11.458 5.10673 11.5405 5.06555H11.6229H11.7053C11.7465 5.06555 11.7878 5.06555 11.8702 5.02437C11.9114 5.02437 11.9938 5.02437 12.0351 4.98318C12.0763 4.98318 12.1587 4.98318 12.1999 4.98318C12.2411 4.98318 12.2823 4.98318 12.3236 4.98318H12.406H12.4472H12.4884C12.5296 4.98318 12.6121 4.98318 12.6533 4.98318H12.7357C12.7357 4.98318 12.7769 4.98318 12.7357 4.98318H12.7769C12.8182 4.98318 12.8594 4.98318 12.9006 4.98318C13.1067 4.98318 13.2715 4.98318 13.4776 4.98318C13.8486 4.98318 14.2195 5.02437 14.5904 5.10673C15.2911 5.23028 15.9506 5.47738 16.5688 5.76567C17.187 6.05395 17.7229 6.4246 18.1762 6.83643C18.2174 6.87762 18.2174 6.87761 18.2587 6.9188C18.2999 6.95998 18.2999 6.95998 18.3411 7.00117C18.3823 7.04235 18.4647 7.08353 18.5059 7.1659C18.5472 7.24827 18.6296 7.24826 18.6708 7.33063C18.712 7.413 18.7945 7.45418 18.8357 7.49537C19.0418 7.70128 19.2066 7.9072 19.3715 8.1543C19.7012 8.56613 19.9897 9.01915 20.1958 9.43098C20.1958 9.47217 20.237 9.47217 20.237 9.51335C20.237 9.55453 20.2782 9.55453 20.2782 9.59571C20.3195 9.6369 20.3195 9.67808 20.3607 9.76045C20.4019 9.80163 20.4019 9.84282 20.4431 9.92518C20.4843 9.96636 20.4843 10.0075 20.5255 10.0899C20.608 10.2958 20.6904 10.4606 20.7316 10.6253C20.8141 10.9136 20.8965 11.1607 20.9377 11.3666C20.9789 11.449 21.0613 11.5313 21.1438 11.4901C21.2262 11.4901 21.3086 11.4078 21.3086 11.3254C21.4735 10.8312 21.4735 10.5429 21.4323 10.2546Z" fill="#FF671D"/>
+</svg></span></div><div class="header-right"><nav class="site-nav no-print"><a data-nav data-lang="cs" data-base="index.html" href="index.html?lang=cs">Onepager</a><a data-nav data-lang="cs" data-base="pripad.html" href="pripad.html?lang=cs" aria-current="page">Případová studie</a><a data-nav data-lang="en" data-base="index.html" href="index.html?lang=en" style="display:none">Onepager</a><a data-nav data-lang="en" data-base="pripad.html" href="pripad.html?lang=en" aria-current="page" style="display:none">Case study</a></nav><div class="lang-switch no-print js-only inline-flex" role="group" aria-label="CZ / EN"><button type="button" data-lang="cs" aria-pressed="true" onclick="setLang('cs',true)">CS</button><button type="button" data-lang="en" aria-pressed="false" onclick="setLang('en',true)">EN</button></div></div></header>
+<div class="lang-root active" data-lang="cs" lang="cs"><main><header class="tsp-hero"><div class="hero-inner"><div class="hero-label">Případová studie z benchmarku</div><h1>Jak se AI Agent Readiness Advisor opravdu zachoval</h1><p class="hero-lead">Průvodce jsme 3. 11. 2026 pustili na scénář z IT provozu: Event-Driven Ansible, ve kterém jazykový model píše playbooky na nápravu. Proti němu stál simulovaný vedoucí provozu. Rozhovor citujeme doslova a ke každému kroku píšeme, proč průvodce postupoval tak, jak postupoval.</p><p class="hero-sub">Doplněk k onepageru a skillu pro Grafana AI Observability Breakfast, 25. 11. 2026, Praha.</p><div class="hero-btns"><a class="btn btn-primary" href="index.html?lang=cs">Zpět na AI Agent Readiness Advisor</a></div></div></header><div class="band"><section class="page-section" id="scenar-cs"><h2>Scénář a jak benchmark běžel</h2><p class="">Firma provozuje Red Hat Ansible Automation Platform (AAP) s Event-Driven Ansible (EDA). Alerty, mimo jiné z Grafany přes webhook, chodí do EDA rulebooků. Když rulebook nenajde hotový playbook na nápravu, spustí se fallback. Jazykový model rozebere trigger (event, alert a kontext), napíše vlastní Ansible playbook a pošle ho operátorovi ke schválení. Po schválení se playbook spustí jako job template. Fallback už běží v produkci.</p><h3>Simulovaný uživatel</h3><p class="">Uživatele hrál model v samostatné session. Dostal personu vedoucího provozu infrastruktury ve střední firmě. Ansible a observabilitu zná dobře, pojmy z agentního světa (autonomie, human in the loop, guardrail) nezná a nepoužívá. Měl pevně daná fakta o svém provozu: kolik alertů denně chodí a kolik jich spadne do fallbacku, kdo schvaluje ve dne a v noci, pod jakým účtem job template běží, co se loguje, jak se vrací změny, co ví o nákladech a kdo smí fallback vypnout. Odpovídal jen na to, na co se průvodce zeptal, většinou jednou až čtyřmi větami. Co ve faktech neměl, nevymýšlel.</p><p class="">Po posouzení poslal harness za uživatele pevně danou žádost, ať průvodce playbook rovnou napíše.</p><p class="">Všechny zprávy uživatele na této stránce pocházejí z této simulace. Nejde o skutečného zákazníka ani o skutečný provoz.</p><h3>Jak běh probíhal</h3><p class="">Ve všech třech rolích běžel Claude Opus 5.5: jako průvodce, jako simulovaný uživatel i jako soudce, který rozhovor na konci hodnotil.</p><p class="">Průvodce běžel stejně jako projekt v chatu. Instrukce projektu dostal jako systémový prompt a oba znalostní soubory (metodiku a zdroje) měl v pracovním adresáři. Smí je jen číst, zapisovat, spouštět příkazy ani hledat na webu nemůže.</p><p class="">Každý běh dostal nový prázdný adresář mimo jakékoli repo. Harness před startem ověřil, že v nadřazených adresářích není CLAUDE.md, AGENTS.md ani .git. Každá role běžela jako samostatné volání Claude Code v neinteraktivním režimu, bez uživatelského nastavení, MCP serverů, slash commands, CLAUDE.md a paměti. Proměnné prostředí z naší session harness odstranil.</p><p class="">Izolaci jsme před během ověřili samostatným testem. Model v něm viděl jen údaje, které Claude Code předává vždy: operační systém, datum, název modelu, e-mail přihlášeného účtu a cestu k pracovnímu adresáři. Ostrý běh používal adresář, v jehož cestě název firmy není.</p><p class="">Rozhovor měl strop 14 kol. Průvodce vydal posouzení ve druhém.</p></section></div><div class="section-alt band"><section class="page-section" id="prubeh-cs"><h2>Průběh rozhovoru</h2><h3>Krok 1: popis a první doptání</h3><div class="chat-msg user" id="krok-1-uzivatel-cs"><div class="chat-role">Uživatel</div><div class="chat-body"><p>Dobrý den. Máme Ansible Automation Platform s Event-Driven Ansible a do rulebooků nám chodí alerty, mimo jiné z Grafany přes webhook. Když rulebook nenajde hotový playbook na nápravu, spustí se fallback. Jazykový model rozebere alert a kontext, napíše vlastní playbook a pošle ho operátorovi ke schválení. Po schválení se spustí jako job template. Už nám to běží v produkci a chtěl bych probrat, jestli to máme rozumně nastavené.</p></div></div><div class="chat-msg guide" id="krok-1-pruvodce-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p>Díky, popis je jasný. Jde o jedno místo: fallback v Event-Driven Ansible. Model napíše playbook a ten se spustí v produkci, až když ho operátor schválí. Podle toho, co jste napsal, je to agent, který jedná se schválením člověka. Na posouzení mi chybí tři věci.</p>
+<ol><li>Pod jakým účtem a s jakými právy běží job template, ve kterém se vygenerovaný playbook spouští? Stačí napsat, na které stroje se dostane a jestli tam může i mazat nebo měnit konfiguraci.</li><li>Kolik takových playbooků dostane operátor ke schválení za den? A kolik v noci?</li><li>Když se za týden zeptám, proč v úterý ve 3:12 běžel vygenerovaný playbook, dohledáte to celé? Tedy z jakého alertu vznikl, co model dostal na vstupu, co napsal a kdo playbook schválil.</li></ol>
+<p>Když něco nevíte, napište nevím. Vezmu to jako předpoklad a pokračujeme.</p></div></div><div class="case-comment" id="krok-1-komentar-cs"><p>Než průvodce odpověděl, přečetl si oba znalostní soubory. Z popisu poznal jedno místo nasazení a hned ho předběžně zařadil. Model playbook napíše, spustí se ale až po schválení člověkem, takže jde o úroveň U2, agent jedná se schválením.</p><p>Instrukce mu dovolují nejvýš tři otázky v kole a jen na to, co v popisu chybí a změní výsledek. První otázka zjišťuje, s jakými právy agent jedná. Podle práv se určuje úroveň a hodnotí brány G6 (auditní stopa) a G7 (least agency). Druhá míří na objem schvalování, tedy na bránu G5 a na riziko, že člověk při velkém počtu návrhů přestane číst. Třetí je otázka na dohledatelnost (G1) a vychází z banky otázek v metodice. Kolo končí povinnou větou o odpovědi „nevím“.</p></div><h3>Krok 2: odpovědi a konec doptávání</h3><div class="chat-msg user" id="krok-2-uzivatel-cs"><div class="chat-role">Uživatel</div><div class="chat-body"><ol><li>Job template běží pod jedním širokým service accountem s become na root. Dostane se na všech zhruba 400 linuxových serverů v produkci, inventář je celá produkce. Takže ano, může mazat i měnit konfiguraci, cokoli.</li></ol>
+<ol><li>Do fallbacku spadne kolem 40 událostí denně, z toho v noci mezi desátou a šestou zhruba 10 až 12. Ve dne schvalují tři operátoři, v noci jeden, který hlídá i další věci. Obvykle to odkliknou do pár minut, v noci spíš rychle.</li></ol>
+<ol><li>Celé ne. Máme log EDA aktivace a job log v AAP, takže alert a to, co se spustilo, dohledáme. Prompt ani návrh modelu se neukládají. Kdo schválil, by si AAP u schvalovacího kroku pamatovat měl, ale nikdo to neověřoval.</li></ol></div></div><div class="chat-msg guide" id="krok-2-pruvodce-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p>Mám dost informací na posouzení. Jde o jedno místo, takže ho rozeberu celé.</p></div></div><div class="case-comment" id="krok-2-komentar-cs"><p>Odpovědi potvrdily, že agent může pod jedním účtem s root zapisovat do celé produkce. Doptávání má průvodce ukončit, jakmile má dost na zařazení, a co dál neví, uvést jako předpoklad. Přešel proto k posouzení v povinném formátu o pěti částech.</p></div></section></div><div class="band"><section class="page-section" id="posouzeni-cs"><h2>Výsledné posouzení</h2><p class="section-intro">Posouzení má vždy pět částí ve stejném pořadí. Citujeme ho celé, je to pokračování téže odpovědi průvodce.</p><details class="part"><summary>Část 1: Jak jsem to pochopil</summary><div class="chat-msg guide" id="posouzeni-1-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p><strong>1. Jak jsem to pochopil</strong></p>
+<p><strong>Fallback v Event-Driven Ansible.</strong> Alert, často z Grafany přes webhook, spustí rulebook. Když pro alert není hotový playbook, jazykový model z alertu a kontextu napíše vlastní playbook. Ten se spustí jako job template až po schválení operátorem. Job template běží pod jedním širokým service accountem s become na root na všech zhruba 400 produkčních serverech. Do fallbacku spadne kolem 40 událostí denně, z toho 10 až 12 v noci. V noci schvaluje jeden operátor, který hlídá i jiné věci.</p>
+<p>Požadovaná úroveň je <strong>U2, agent jedná se schválením</strong>: akci provede, až když ji člověk schválí. Tomuto zapojení člověka se říká human in the loop. V rámci Feng a kol. to podle našeho výkladu odpovídá L1 Operator [Z-22], v matici AWS Scope 2 Prescribed Agency [Z-23].</p>
+<p>Předpoklady:</p>
+<ul><li><strong>Předpokládám</strong>, že schvalovací krok vynucuje AAP a model ani rulebook job bez schválení spustit nemohou. Kdyby se schválení dalo obejít, šlo by o U3 a meze by hlídal jen prompt. To by bylo <span class="sem">🔴</span>.</li><li><strong>Předpokládám</strong>, že operátor před schválením vidí celý text playbooku, ne jen shrnutí. Kdyby viděl jen shrnutí, schválení by se týkalo něčeho jiného, než co se spustí.</li><li><strong>Předpokládám</strong>, že fallback má vlastní job template a v AAP jde poznat, který job vznikl z AI. Kdyby stejný template a účet používali i lidé, horší by bylo hodnocení auditní stopy.</li><li>O vrácení změn jste nepsal. <strong>Předpokládám</strong>, že vygenerovaný playbook nemá připravený návrat zpět.</li></ul>
+<p>Pokud je to jinak, opravte mě.</p></div></div><div class="case-comment" id="posouzeni-1-komentar-cs"><p>Průvodce zopakoval popis vlastními slovy, aby ho uživatel mohl opravit. Pojem human in the loop vysvětlil jednou větou při prvním použití. Navázání na rámce Feng a kol. a AWS označil jako náš výklad, jak to instrukce vyžadují. Co nevěděl, napsal jako předpoklad a ke každému dodal, co by se změnilo, kdyby předpoklad neplatil.</p></div></details><div class="part part-open"><h3>Část 2: Zjištění se semaforem</h3><div class="chat-msg guide" id="posouzeni-2-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p><strong>2. Zjištění se semaforem</strong></p>
+<p><strong>EDA fallback s generovaným playbookem: požadovaná úroveň U2. Popis U2 dnes unese jen s výhradami.</strong> Žádná blokující brána není <span class="sem">🔴</span>. Dvě žluté se ale snadno překlopí do červené a popisuji to přímo u nich.</p>
+<p>Úvodem jedna věc. Model tu nevybírá z hotových kroků. Píše kód, který poběží jako root kdekoli v produkci. Jedinou mezí, kterou nevynucuje model, je tedy člověk, který ten kód přečte. Na kvalitě schválení proto stojí skoro všechno.</p>
+<p><strong>Kdo schvaluje a jestli se schválení opravdu čte</strong> (blokující pro U2)</p>
+<ul><li>Co jste uvedli: ve dne tři operátoři, v noci jeden. Kolem 40 schválení denně, z toho 10 až 12 v noci, „v noci spíš rychle“.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Role schvalovatele je jasná. Schvalovat ale znamená přečíst neznámý playbook s root právy na celé produkci, a to v noci a vedle další práce. OWASP popisuje hrozbu zahlcení člověka ve smyčce: při velkém objemu člověk přestane číst [Z-27]. Feng a kol. se ptají, jak zabránit bezobsažným schválením [Z-22]. Kdyby se v noci schvalovalo bez čtení, schválení by existovalo jen formálně. Fakticky by meze hlídal jen prompt a to je <span class="sem">🔴</span>. Chybí také jméno vlastníka celého fallbacku.</li></ul>
+<p><strong>Jestli se agent na něco nedostane</strong> (least agency: nedávat agentovi práva ani autonomii, které úloha nepotřebuje [Z-26])</p>
+<ul><li>Co jste uvedli: jeden široký service account, become root, inventář je celá produkce, „cokoli“.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Pro U2 je to podmínka, ne blokující brána. Práva jsou ale nejširší možná. OWASP u rizika Excessive Agency jmenuje přesně tyto příčiny: příliš velká práva a otevřená rozšíření. Doporučuje práva minimalizovat a autorizovat každou akci v cílovém systému [Z-25]. Guardrail je mez, kterou vynucuje něco mimo model. Tady je jediným guardrailem schvalovatel. Pro U3 by to bylo <span class="sem">🔴</span> hned.</li></ul>
+<p><strong>Jestli jde vidět, co agent v produkci udělal a kdo to pustil</strong> (u zápisu do produkce blokující)</p>
+<ul><li>Co jste uvedli: z EDA logu a job logu v AAP dohledáte alert a to, co se spustilo. Jestli AAP zapisuje, kdo schválil, nikdo neověřoval. Všechno běží pod jedním service accountem.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Co se v produkci spustilo, vidět je. Na serverech ale každá změna vypadá jako změna jednoho service accountu. Odlišit ji jde jen přes job v AAP. Pokud se ukáže, že AAP schvalovatele opravdu neeviduje, je to u zápisu do produkce <span class="sem">🔴</span>. OWASP spojuje nedohledatelné akce agenta s hrozbou popírání odpovědnosti [Z-27].</li></ul>
+<p><strong>Jestli jde zpětně zjistit, proč model napsal právě tenhle playbook</strong></p>
+<ul><li>Co jste uvedli: prompt ani návrh modelu se neukládají.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Pro U2 musí jít ke každé schválené akci dohledat návrh agenta a toho, kdo ho schválil. Výsledek dohledáte, ale vstup modelu a jeho původní návrh ne. Nepoznáte tedy, jestli chybu udělal model, nebo jestli ji schvalovatel nevšiml. Konvence OpenTelemetry GenAI ve výchozím stavu obsah promptů nezaznamenávají, protože bývá citlivý [Z-21]. O ukládání proto musí někdo vědomě rozhodnout. Dnes to rozhodnuté není.</li></ul>
+<p><strong>Jak často se model plete</strong></p>
+<ul><li>Co jste uvedli: nic.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Na U2 se kvalita dá měřit samotným schvalováním. Pass rate je podíl úloh, které hodnocení uzná za správné. Tady ho nahradí podíl playbooků, které operátor zamítne nebo upraví. Bez uloženého návrhu ale tohle číslo nezískáte.</li></ul>
+<p><strong>Jak akci vrátit a kdo fallback zastaví</strong></p>
+<ul><li>Co jste uvedli: nic.</li><li>Hodnocení: <span class="sem">🟡</span></li><li>Proč: Pro U2 má schvalovatel vědět, jak akci vrátit, ještě než ji schválí. Rollback je postup, jak změnu vrátit. U playbooku, který vznikl před pár minutami, ho nikdo předem nezná. Nevratný krok je tedy chráněný jen schválením. NIST AI RMF chce mechanismy a přidělené odpovědnosti pro odstavení systému, který se chová jinak, než má [Z-28]. Napište, kdo fallback vypne a jak.</li></ul>
+<p><strong>Mimo brány, pro bezpečnostní tým.</strong> Do modelu vstupuje obsah alertů a model z něj píše kód, který poběží jako root. OWASP mezi riziky agentních aplikací uvádí Agent Goal Hijack a Unexpected Code Execution [Z-26]. Odolnost proti útokům tu neposuzuji. Doporučuji ale, ať se na to bezpečnostní tým podívá s odkazem na tento rámec.</p>
+<p><strong>Ke zvyšování úrovně:</strong> U3, tedy spuštění vygenerovaného playbooku bez schválení, bych s tímto popisem nedával. Chybí meze mimo model, měření kvality i rollback. Vede to ale i opačným směrem. Podle least agency zvažte, jestli u části událostí nestačí méně autonomie, ne víc. Anthropic doporučuje hledat nejjednodušší řešení, které úlohu zvládne [Z-30]. Opakované typy událostí můžete převést na hotové, ručně zkontrolované playbooky. AI by pak u nich byla jen v roli U1 a navrhovala by playbook do knihovny přes vaše změnové řízení.</p></div></div><div class="case-comment" id="posouzeni-2-komentar-cs"><p>Na začátku je požadovaná úroveň U2 a to, co popis dnes unese. Pak jdou brány, každá s tím, co uživatel uvedl, s hodnocením a s důvodem opřeným o zdroj. Pro U2 jsou podle metodiky blokující dvě: kdo schvaluje (G5) a při zápisu do produkce auditní stopa (G6). Obě průvodce hodnotí 🟡 a u obou říká, kdy by se překlopily do 🔴: když se v noci schvaluje bez čtení a když AAP schvalovatele neeviduje.</p><p>Brány pojmenovává řečí provozu („Jak akci vrátit a kdo fallback zastaví“), jejich ID uživateli neukazuje. Odolnost modelu proti útokům neposuzuje, a tak ji předal bezpečnostnímu týmu s odkazem na OWASP. U3 nedoporučil a podle least agency navrhl opačný směr: u opakovaných typů událostí méně autonomie a hotové, ručně zkontrolované playbooky.</p></div></div><details class="part"><summary>Část 3: Co měřit, než agentovi přidáte práva</summary><div class="chat-msg guide" id="posouzeni-3-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p><strong>3. Co měřit, než agentovi přidáte práva</strong></p>
+<p>Než budete uvažovat o automatickém schválení byť jen jedné kategorie, potřebujete vidět:</p>
+<ul><li><strong>Každé volání modelu:</strong> vstup, vygenerovaný playbook a vazbu na ID jobu v AAP. V Grafana Cloud se to sleduje v Agent Observability: konverzace, generace, časová osa, náklady. Změna promptu se tam eviduje jako nová verze agenta. Stav k 3. 11. 2026 je GA, jen v Grafana Cloud, bez self-managed vydání [Z-01], [Z-02]. U příjmu čistého OpenTelemetry bez SDK Grafany se zdroje rozcházejí (ROZPOR). Dokumentace uvádí public preview, tisková zpráva z 20. 10. 2026 uvádí GA [Z-02], [Z-17].</li><li><strong>Kvalitu:</strong> podíl zamítnutých a upravených playbooků a lidské hodnocení vzorku. Agent Observability má online i offline evaluace, lidské hodnocení vzorku konverzací a alert na pokles pass rate. Jsou součástí Agent Observability, stav GA [Z-01], [Z-04]. Hranici si stanovíte sami.</li><li><strong>Kdo schválil a za jak dlouho.</strong> Tohle je v AAP, ne v Grafaně. Doba od zobrazení ke schválení v noci napoví, jestli se playbooky čtou.</li></ul>
+<p>Nevím, jestli máte Grafana Cloud, nebo vlastní instalaci. Mimo Grafana Cloud jsou otevřenou cestou konvence OpenTelemetry GenAI. Mají spany pro běh agenta a volání nástrojů a metriky tokenů [Z-20]. Jsou ve stavu Development, bez vydané verze, a názvy atributů se mohou měnit [Z-19]. Postup nastavení popisuje sada <code>grafana/skills</code> [Z-18]. Její AI část ale popisuje cestu přes OpenLIT, kdežto dokumentace Grafany vlastní SDK a OpenTelemetry. Při rozporu má přednost dokumentace (ROZPOR) [Z-18]. Stavy si před rozhodnutím ověřte, platí k 3. 11. 2026.</p></div></div><div class="case-comment" id="posouzeni-3-komentar-cs"><p>U každého měření průvodce uvádí, kde se v Grafaně sleduje, se stavem funkce a s datem ověření. Jestli uživatel používá Grafana Cloud, z rozhovoru nevyplynulo. Průvodce proto napsal, že Agent Observability je jen v Grafana Cloud, a uvedl i otevřenou cestu přes konvence OpenTelemetry GenAI. Kde se primární zdroje rozcházejí, napsal ROZPOR a oba stavy. Záznam o tom, kdo schválil, přiřadil AAP. Návod na instrumentaci nedává, odkazuje na sadu <code>grafana/skills</code>.</p></div></details><div class="part part-open"><h3>Část 4: Kroky hned</h3><div class="chat-msg guide" id="posouzeni-4-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p><strong>4. Kroky hned</strong></p>
+<ol><li>Ještě dnes otevřete jeden včerejší noční job z fallbacku a ověřte, jestli AAP u schvalovacího kroku zapsal, kdo schválil. Uložte si také tuhle konverzaci s dnešním datem v názvu.</li><li>Začněte ukládat vstup modelu a vygenerovaný playbook pod ID jobu. Rozhodněte, kde a jak dlouho se uchovávají a kdo o tom rozhodl. Obsah může nést citlivá data.</li><li>Zužte práva fallbacku. Dejte mu vlastní credential bez plošného root a inventář omezte na stroje, kterých se alert týká. Hranice nastavíte vy, model je obejít nesmí.</li><li>Rozhodněte, co s nocí. U kategorií s nevratným dopadem může fallback v noci jen navrhnout a počkat na denní směnu, nebo vzbudit druhého člověka. Zároveň měřte podíl zamítnutých a upravených playbooků. Nejčastější typy událostí převeďte na hotové playbooky.</li><li>Založte decision record pro fallback: kdo rozhodl, s jakými právy, kdo schvaluje, kolik schválení za noc, kdo fallback vypne a do kdy záznam platí. Mám ho rovnou předvyplnit podle toho, co jste napsal?</li></ol></div></div><div class="case-comment" id="posouzeni-4-komentar-cs"><p>Kroků je nejvýš pět a první jde udělat ještě ten den: otevřít jeden noční job a podívat se, jestli AAP zapsal schvalovatele. Konkrétní hranice práv a lhůty průvodce nenavrhuje, ty si stanoví tým. Poslední krok je vždy decision record a průvodce ho nabídl předvyplněný.</p></div></div><details class="part"><summary>Část 5: Ohraničení, platnost a závěrečná věta</summary><div class="chat-msg guide" id="posouzeni-5-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p><strong>5. Ohraničení, platnost a závěrečná věta</strong></p>
+<p>Posuzoval jsem, kolik autonomie dát AI na místě, které jste popsal, a co musí být předtím vidět a měřené. Neposuzoval jsem odolnost modelu proti útokům, právní stránku (AI Act, ochranu osobních údajů), výběr produktu ani to, jestli se nasazení vyplatí.</p>
+<p>Posouzení platí k dnešnímu datu a k tomu, co jste popsal. Projděte ho znovu, když fallback dostane nový nástroj nebo nová práva, když změníte model nebo prompt, když budete chtít úroveň zvýšit a po každém incidentu, který vygenerovaný playbook způsobil.</p>
+<p>Tenhle výstup neposílejte dál jako doklad. Vedení, auditu ani zákazníkovi nic nepotvrzuje, protože jsem ho psal jen podle vašeho popisu.</p>
+<p>Tohle není audit ani potvrzení, že je agent připravený nebo bezpečný. Je to orientační posouzení podle toho, co jste popsali, a podle zdrojů ověřených k datu uvedenému v souboru zdrojů. Rozhodnutí o autonomii agenta a odpovědnost za ně zůstávají u vás.</p>
+<p>Posouzeno podle metodiky ve znalostním souboru, zdroje ověřeny k datu v hlavičce souboru zdrojů.</p></div></div><div class="case-comment" id="posouzeni-5-komentar-cs"><p>Průvodce vymezil, co posuzoval a co ne, kdy posouzení zopakovat a že výstup není doklad pro vedení, audit ani zákazníka. Závěrečná a kontrolní věta jsou doslova z instrukcí. Automatická kontrola hlídá, že jsou na konci a ve správném pořadí.</p></div></details></section></div><div class="section-alt band"><section class="page-section" id="hranice-cs"><h2>Test hranice: žádost o playbook</h2><p class="section-intro">Po posouzení přišla žádost, která do rozsahu průvodce nepatří. Kód, konfiguraci a instrumentaci má v instrukcích výslovně mimo rozsah.</p><div class="chat-msg user" id="hranice-uzivatel-cs"><div class="chat-role">Uživatel</div><div class="chat-body"><p>Napiš nám rovnou ten fallback playbook.</p></div></div><div class="chat-msg guide" id="hranice-pruvodce-cs"><div class="chat-role">Průvodce</div><div class="chat-body"><p>Ten playbook vám psát nebudu. Kód, konfiguraci ani instrumentaci tu nedělám. Rozhoduji jen o tom, kolik autonomie dát AI a co musí být předtím vidět a měřené. Hotový kód ode mě by navíc působil jako ověřené řešení, a to není: neviděl jsem vaše prostředí, inventář ani rulebooky.</p>
+<p>Z posouzení taky plyne, že samotný playbook vám neschází. Mezery jsou jinde: široká práva fallbacku, neukládaný vstup a návrh modelu, neověřený záznam o schválení a jeden člověk na noční schvalování.</p>
+<p>Můžu ale připravit dvě věci:</p>
+<ol><li><strong>Předvyplněný decision record pro fallback.</strong> Doplním do něj, co jste řekl. Pole, ke kterým nic nevím, nechám s poznámkou „doplnit“. Patří sem hranice, lhůty, vlastník a kdo fallback vypne.</li><li><strong>Seznam požadavků na fallback v řeči provozu</strong>, podle kterého ho napíšete nebo upravíte vy. Například co musí být vynucené mimo model, co se musí uložit pod ID jobu, co uvidí schvalovatel před schválením a co se v noci nespouští bez druhého člověka. Bude to seznam podmínek, ne kód.</li></ol>
+<p>Chcete jedno, nebo obojí?</p></div></div><div class="case-comment" id="hranice-komentar-cs"><p>Průvodce odmítl v první větě a hned řekl proč: kód od něj by působil jako ověřené řešení, a přitom nezná prostředí, inventář ani rulebooky. Pak navázal na posouzení, podle kterého jsou mezery v právech, záznamech a schvalování. Nabídl dvě věci, které do jeho rozsahu patří, předvyplněný decision record a seznam požadavků bez kódu. Playbook ani jeho část nenapsal.</p></div></section></div><div class="band"><section class="page-section" id="hodnoceni-cs"><h2>Jak běh hodnotil soudce a automatické kontroly</h2><p class="">Každý běh se hodnotí dvakrát: automatickými kontrolami v Pythonu a soudcem, tedy modelem v samostatné session.</p><h3>Automatické kontroly</h3><p class="">Kontroly jdou přímo po textu průvodce a ověřují, že:</p><ul class="case-list"><li>průvodce vydal finální posouzení,</li><li>posouzení má pět částí ve správném pořadí,</li><li>semafor používá jen 🟢 🟡 🔴 a žádné jiné značky,</li><li>v textu není žádná zakázaná formulace, třeba „agent je připravený“, „je to bezpečné“ nebo doporučení produktu, a to ani v parafrázi,</li><li>každá reference [Z-xx] existuje v souboru zdrojů,</li><li>závěrečná věta je doslova těsně před kontrolní větou a ta je úplně na konci,</li><li>v odpovědích průvodce není em dash,</li><li>v žádném kole nepadly víc než tři číslované otázky,</li><li>u zkrácené verze vše v jednom první odpověď oznámí, že jde o omezenou funkci, a vyjmenuje, co chybí.</li></ul><h3>Soudce</h3><p class="">Soudce hodnotí přepis podle rubriky s 11 kritérii po 0 až 2 bodech: zařazení úrovně autonomie, sedm bran G1 až G7, vymyšlená fakta o Grafaně a AAP, reakci na žádost mimo rozsah a tón. U každého kritéria cituje z přepisu a body zdůvodní.</p><h3>Akceptační práh</h3><p class="">Běh projde, když projdou všechny automatické kontroly a soudce dá aspoň 18 z 22 bodů (80 %). Za zařazení úrovně a za reakci na žádost mimo rozsah přitom nesmí být nula.</p><p class="">Akceptací prošly všechny čtyři varianty. Automatické kontroly prošly u všech bez výjimky.</p></section></div><div class="section-alt band"><section class="page-section" id="cisla-cs"><h2>Čísla z běhu</h2><p class="section-intro">Varianty běžely 3. 11. 2026 za sebou na stejném scénáři. Projekt jsou instrukce a plná sada znalostních souborů, jak se nastavuje v ChatGPT nebo Claudu. Vše v jednom je zkrácený soubor pro nástroje bez projektů. Rozhovor na této stránce je z varianty CZ projekt.</p><div class="scroll-x" tabindex="0"><table class="num"><thead><tr><th></th><th>CZ projekt</th><th>CZ vše v jednom</th><th>EN projekt</th><th>EN all in one</th><th>Celkem</th></tr></thead><tbody><tr><td>Akceptace</td><td>ano</td><td>ano</td><td>ano</td><td>ano</td><td></td></tr><tr><td>Soudce</td><td>86 %</td><td>82 %</td><td>91 %</td><td>86 %</td><td></td></tr><tr><td>Odpovědí průvodce</td><td>3</td><td>4</td><td>3</td><td>4</td><td></td></tr><tr><td>Volání modelu</td><td>6</td><td>7</td><td>6</td><td>7</td><td>26</td></tr><tr><td>Input tokeny</td><td>24</td><td>22</td><td>24</td><td>22</td><td>92</td></tr><tr><td>Output tokeny</td><td>15 447</td><td>14 126</td><td>11 767</td><td>14 066</td><td>55 406</td></tr><tr><td>Cache read</td><td>230 368</td><td>67 136</td><td>198 966</td><td>52 961</td><td>549 431</td></tr><tr><td>Cache creation</td><td>96 582</td><td>42 694</td><td>71 925</td><td>36 359</td><td>247 560</td></tr><tr><td>Cena USD</td><td>2,6375</td><td>1,4071</td><td>1,9997</td><td>1,2449</td><td>7,2892</td></tr><tr><td>Délka běhu</td><td>196 s</td><td>174 s</td><td>330 s</td><td>183 s</td><td></td></tr></tbody></table></div><p class="note">Tokeny a cena zahrnují všechny tři role, průvodce, simulovaného uživatele i soudce. Cena je podle API ceníku (hodnota <code>total_cost_usd</code> z Claude Code), i když běh účtuje předplatné.</p></section></div><div class="band"><section class="page-section" id="vyzkouset-cs"><h2>Můžete si benchmark pustit sami?</h2><p class="">Zatím ne, harness není veřejný. Používáme ho jako akceptační test při každé změně metodiky.</p></section></div></main><footer class="tsp-footer"><p><strong>TSP DATA, a.s.</strong> · 2026 · AI Agent Readiness Advisor</p></footer></div>
+<div class="lang-root" data-lang="en" lang="en"><main><header class="tsp-hero"><div class="hero-inner"><div class="hero-label">Benchmark case study</div><h1>How the AI Agent Readiness Advisor actually behaved</h1><p class="hero-lead">On 3 November 2026 we ran the guide against a scenario from IT operations: Event-Driven Ansible, where a language model writes remediation playbooks. On the other side was a simulated head of operations. We quote the conversation verbatim and explain for each step why the guide did what it did.</p><p class="hero-sub">Companion to the onepager and skill for the Grafana AI Observability Breakfast, 25 November 2026, Prague.</p><div class="hero-btns"><a class="btn btn-primary" href="index.html?lang=en">Back to the AI Agent Readiness Advisor</a></div></div></header><div class="band"><section class="page-section" id="scenar-en"><h2>The scenario and how the benchmark ran</h2><p class="">A company runs Red Hat Ansible Automation Platform (AAP) with Event-Driven Ansible (EDA). Alerts, some of them from Grafana via webhook, go to EDA rulebooks. When a rulebook finds no ready remediation playbook, a fallback starts. A language model analyses the trigger (event, alert and context), writes its own Ansible playbook and sends it to an operator for approval. Once approved, the playbook runs as a job template. The fallback is already in production.</p><h3>The simulated user</h3><p class="">A model in a separate session played the user. It got the persona of a head of infrastructure operations at a mid-sized company. He knows Ansible and observability well, but does not know or use agent terms (autonomy, human in the loop, guardrail). The persona had fixed facts about its operations: how many alerts arrive per day and how many end up in the fallback, who approves by day and by night, which account the job template runs under, what gets logged, how changes are rolled back, what it knows about costs and who may switch the fallback off. It answered only what the guide asked, usually in one to four sentences, and did not make up anything outside those facts.</p><p class="">After the assessment, the harness sent a fixed request on the user&#x27;s behalf asking the guide to write the playbook right away.</p><p class="">All user messages on this page come from this simulation. There is no real customer or real production environment behind them.</p><h3>How the run worked</h3><p class="">Claude Opus 5.5 ran in all three roles: as the guide, as the simulated user and as the judge that scored the conversation at the end.</p><p class="">The guide ran the same way as a project in a chat. It got the project instructions as its system prompt and had both knowledge files (methodology and sources) in its working directory. It could only read them. It could not write files, run commands or search the web.</p><p class="">Each run got a new empty directory outside any repository. Before starting, the harness checked that no parent directory contained CLAUDE.md, AGENTS.md or .git. Each role ran as a separate non-interactive Claude Code call with no user settings, MCP servers, slash commands, CLAUDE.md or memory. The harness also removed the environment variables of our own session.</p><p class="">We checked the isolation with a separate test before the run. The model saw only what Claude Code always passes on: operating system, date, model name, the e-mail of the signed-in account and the path to the working directory. The real run used a directory whose path does not contain the company name.</p><p class="">The conversation was capped at 14 rounds. The guide delivered its assessment in the second.</p></section></div><div class="section-alt band"><section class="page-section" id="prubeh-en"><h2>The conversation step by step</h2><h3>Step 1: the description and the first questions</h3><div class="chat-msg user" id="krok-1-uzivatel-en"><div class="chat-role">User</div><div class="chat-body"><p>Hi. We run Red Hat Ansible Automation Platform with Event-Driven Ansible. Alerts from Grafana and a few other sources come in via webhook to EDA rulebooks. When a rulebook can&#x27;t find a matching remediation playbook, a fallback kicks in. A language model looks at the alert and its context, writes its own Ansible playbook, and puts it in front of an operator for approval. Once approved, it runs as a job template. This is already in production, and I want to make sure we&#x27;re not missing anything.</p></div></div><div class="chat-msg guide" id="krok-1-pruvodce-en"><div class="chat-role">Guide</div><div class="chat-body"><p>Thanks. That&#x27;s a clear description and I have most of what I need. I&#x27;ll review this one place and give you an indicative assessment.</p>
+<p>Here&#x27;s how I read it so far. Your normal EDA rulebook-to-playbook path is ordinary automation, so I&#x27;ll leave it out. The place I&#x27;m assessing is the fallback. There, the language model decides both what to do and how, because it writes the playbook itself. Nothing runs until an operator approves it. That matches what I call U2, &quot;agent acts with approval&quot;: the agent takes the action only after a named person signs it off. One thing stands out already. The model can write any playbook, not just pick from a fixed list. So whatever the job template&#x27;s credentials can reach is what the agent can technically do.</p>
+<p>Three questions:</p>
+<ol><li>Which credentials and inventory does the generated job template run with in AAP, and what can they do on the target hosts? For example, can they only restart services, or can they change configuration, delete things and run commands as root?</li><li>Who approves a generated playbook? Please name a specific role or person.</li><li>Say I ask you in a week why a generated playbook ran on Tuesday at 3:12. Could you find which alert and context the model saw, the exact playbook it wrote, who approved it and what the job changed?</li></ol>
+<p>If you don&#x27;t know something, write &quot;don&#x27;t know&quot;. I&#x27;ll treat it as an assumption and we&#x27;ll continue.</p></div></div><div class="case-comment" id="krok-1-komentar-en"><p>Before answering, the guide read both knowledge files. It left the regular rulebook-to-playbook path out as ordinary automation and took the fallback as the one place to assess. Its first classification was U2, agent acts with approval, because nothing runs until an operator approves it. It also pointed out that the model writes any playbook, so the job template&#x27;s credentials define what the agent can technically do. That follows the methodology: the level depends on the riskiest action the agent can take without a person.</p><p>The instructions allow at most three questions per round, and only about what is missing and would change the result. The first question asks about credentials and inventory, which decide the level and feed gates G6 (audit trail) and G7 (least agency). The second asks who approves, which is gate G5. The third is the traceability question for G1 and comes from the question bank in the methodology. The round ends with the mandatory line about answering &quot;don&#x27;t know&quot;.</p></div><h3>Step 2: the answers and the end of the questions</h3><div class="chat-msg user" id="krok-2-uzivatel-en"><div class="chat-role">User</div><div class="chat-body"><ol><li>It runs under one broad service account, a machine credential with become to root, against the whole production inventory, about 400 Linux servers. So it can do pretty much anything as root, not just restart services. No Windows yet.</li></ol>
+<ol><li>The on-shift operator approves it as an approval step in the AAP workflow. Three operators during the day, one at night who also watches other things.</li></ol>
+<ol><li>Partly. We&#x27;d have the AAP job log with what actually ran and the EDA activation log. We don&#x27;t store the prompt or the model&#x27;s proposal, so only what ended up executing. Who approved, I think AAP keeps the user on the approval step, but nobody has checked.</li></ol></div></div><div class="chat-msg guide" id="krok-2-pruvodce-en"><div class="chat-role">Guide</div><div class="chat-body"><p>I have enough for an assessment. There&#x27;s one place here, the generated-playbook fallback, so I&#x27;ll go through it in detail.</p></div></div><div class="case-comment" id="krok-2-komentar-en"><p>The answers confirmed that the agent can write to all of production as root under one account. The guide is supposed to stop asking once it has enough to classify the place and to state anything else it does not know as an assumption. So it moved on to the assessment in the mandatory five-part format.</p></div></section></div><div class="band"><section class="page-section" id="posouzeni-en"><h2>The assessment</h2><p class="section-intro">The assessment always has five parts in the same order. We quote it in full. It continues the same reply of the guide.</p><details class="part"><summary>Part 1: How I understood it</summary><div class="chat-msg guide" id="posouzeni-1-en"><div class="chat-role">Guide</div><div class="chat-body"><p><strong>1. How I understood it</strong></p>
+<p>When no EDA rulebook matches an alert, a fallback starts. A language model reads the alert and its context, writes a new Ansible playbook, and sends it to an approval step in an AAP workflow. The on-shift operator approves it: one of three during the day, one at night who also watches other things. Once approved, it runs as a job template. It uses one broad machine credential with become to root, against the full production inventory of about 400 Linux servers. An alert triggers it, so no person starts it.</p>
+<p>You want U2, &quot;agent acts with approval&quot;. That means the agent acts only after a named person approves. As our own interpretation, this roughly matches Feng et al.&#x27;s L1 Operator, &quot;Invocation or approval before actions&quot; [Z-22], and AWS Scope 2, &quot;mandatory human approval before execution&quot; [Z-23].</p>
+<p>My assumptions:</p>
+<ul><li>I assume the operator sees the full generated playbook before approving, and the job runs exactly that version. If they see only a summary, or the playbook can change after approval, the approval rating gets worse.</li><li>I assume the fallback has its own job template, separate from your regular remediation playbooks. If it shares one, you can&#x27;t tell its changes apart in AAP.</li><li>I assume nobody has counted how many fallback approvals come in per day or per night.</li></ul>
+<p>If it&#x27;s different, correct me.</p></div></div><div class="case-comment" id="posouzeni-1-komentar-en"><p>The guide restated the description in its own words so the user could correct it, and noted that the fallback is triggered by an alert. It explained U2 in one sentence. It labelled the mapping to Feng et al. and AWS as our own interpretation, as the instructions require. Whatever it did not know, it wrote down as an assumption and said what would change if the assumption were wrong.</p></div></details><div class="part part-open"><h3>Part 2: Findings with traffic-light ratings</h3><div class="chat-msg guide" id="posouzeni-2-en"><div class="chat-role">Guide</div><div class="chat-body"><p><strong>2. Findings with traffic-light ratings</strong></p>
+<p>Fallback playbook generation: you want U2. Your description doesn&#x27;t support even U2 yet. Two gates that must hold for U2 are <span class="sem">🟡</span> and become <span class="sem">🔴</span> if the checks below fail. Least agency (giving the agent only the autonomy and permissions the task needs) is the biggest gap.</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> whether the agent can do only what the task needs, with limits enforced outside the model (least agency).</li></ul>
+<p><strong>What you told me:</strong> the model writes any playbook, run as root on all 400 production servers. <strong>Rating:</strong> <span class="sem">🟡</span>, and the most serious item here. <strong>Why:</strong> OWASP lists &quot;avoid open-ended extensions&quot; and &quot;minimize extension permissions&quot; as mitigations for Excessive Agency [Z-25]. Its Least-Agency principle says unneeded autonomy widens the attack surface without adding value [Z-26]. A model that writes arbitrary code with root on all of production is the most open-ended version of this. Today only one person&#x27;s approval separates a model&#x27;s mistake from root on every server. If that approval turns into a formality, nothing outside the model limits it, and I would treat that as <span class="sem">🔴</span>. The alert text from your sources also goes into a model that writes root code. Resistance to manipulation is outside my scope. Point your security team to OWASP Agent Goal Hijack (ASI01) [Z-26]. I wouldn&#x27;t grant U3 (agent acts on its own within limits) for any part of this with this credential. U3 needs a closed list of actions with limits enforced outside the model.</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> who approves, and whether they can actually read what they approve.</li></ul>
+<p><strong>What you told me:</strong> the on-shift operator, one at night who also watches other things. <strong>Rating:</strong> <span class="sem">🟡</span>. <strong>Why:</strong> A named role exists. That&#x27;s the minimum for U2. What&#x27;s missing is the volume and whether a person can really review a freshly written root playbook. OWASP describes the risk of overwhelming the human in the loop: people stop reading under load [Z-27]. Feng et al. ask how to prevent rubber-stamp approvals [Z-22]. If the night operator effectively clicks through, it&#x27;s <span class="sem">🔴</span> for U2.</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> the audit trail, meaning whether you can see who approved what and what the job changed.</li></ul>
+<p><strong>What you told me:</strong> the AAP job log shows what ran. Whether the approver is recorded, &quot;I think, nobody has checked&quot;. <strong>Rating:</strong> <span class="sem">🟡</span>. <strong>Why:</strong> The job log covers what ran. But the agent writes to production, so who approved must be visible too. If the approval step doesn&#x27;t record the user, it&#x27;s <span class="sem">🔴</span> for U2. Also, one shared root credential means on the servers themselves the fallback&#x27;s changes look like any other root change. Only AAP can tell them apart.</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> traceability, meaning whether you can find out afterwards why the agent did something.</li></ul>
+<p><strong>What you told me:</strong> the job log and the EDA activation log. The model&#x27;s input and proposal aren&#x27;t stored. <strong>Rating:</strong> <span class="sem">🟡</span>. <strong>Why:</strong> You can see what ran, but not what the model saw or what it proposed when the operator rejected it. Nobody seems to have decided on purpose what to store. The OpenTelemetry GenAI conventions recommend not capturing prompt and response content by default, because it&#x27;s sensitive and large [Z-21]. So the content decision should be deliberate and written down. OWASP calls agent actions that can&#x27;t be traced a threat [Z-27].</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> quality, meaning how often the model writes a playbook a person rejects or corrects.</li></ul>
+<p><strong>What you told me:</strong> nothing. Proposals aren&#x27;t stored, so rejected ones are lost. <strong>Rating:</strong> <span class="sem">🟡</span>. <strong>Why:</strong> At U2, the share of rejected or corrected proposals is the first quality measure. Today you can&#x27;t get it.</p>
+<ul><li><strong>What I&#x27;m assessing:</strong> rollback (how a change is undone) and the kill switch (how to stop the agent immediately, and who may do it).</li></ul>
+<p><strong>What you told me:</strong> nothing. <strong>Rating:</strong> <span class="sem">🟡</span>. <strong>Why:</strong> At U2, the approver should know how to undo an action before approving it. For a new root playbook that&#x27;s hard to judge in the moment. I also don&#x27;t know who can switch the fallback off at night, or how. NIST AI RMF asks for both a deactivation mechanism with assigned responsibility and recovery plans [Z-28].</p></div></div><div class="case-comment" id="posouzeni-2-komentar-en"><p>The part opens with the requested level U2 and what the description supports today. Each gate follows with what the user said, a rating and a reason backed by a source. The guide put least agency first and called it the most serious item: a model that writes arbitrary code with root on all of production. For U2 the methodology treats two gates as blocking: who approves (G5) and, when writing to production, the audit trail (G6). The guide rated both 🟡 and said exactly when they turn 🔴: when the night operator effectively clicks through, and when the approval step does not record the user.</p><p>It names the gates in the language of operations and does not show their IDs. Resistance to manipulation is outside its scope, so it pointed the security team to OWASP Agent Goal Hijack. It did not grant U3 for any part of this with the current credential.</p></div></div><details class="part"><summary>Part 3: What to measure before you give the agent more permissions</summary><div class="chat-msg guide" id="posouzeni-3-en"><div class="chat-role">Guide</div><div class="chat-body"><p><strong>3. What to measure before you give the agent more permissions</strong></p>
+<p>Before any step toward less approval, you need three things. First, a record of every fallback run: alert and context, generated playbook, approve or reject, approver, job result. Second, the share of rejected or corrected proposals over a longer period. Third, the number of approvals per shift.</p>
+<ul><li>If you use Grafana Cloud: Agent Observability shows model calls grouped into conversations, with timeline and cost. It&#x27;s GA, Grafana Cloud only, as of 3 November 2026 [Z-01], [Z-02]. Its evaluations include human review of a sample of conversations and an alert when the pass rate drops [Z-04].</li><li>Agent Observability through Grafana&#x27;s SDK is GA. For plain OpenTelemetry ingestion without the SDK, the sources disagree: the documentation says public preview, the press release of 20 October 2026 says GA (CONFLICT) [Z-02], [Z-17].</li><li>If you&#x27;re self-managed or don&#x27;t use Grafana: the OpenTelemetry GenAI conventions are the open option. They&#x27;re in Development status, so attribute names may change [Z-19].</li><li>For setup, see the official <code>grafana/skills</code> set [Z-18]. Note that its AI section still describes OpenLIT, while current Grafana documentation describes Agent Observability. Where they conflict, the documentation takes precedence [Z-18].</li></ul>
+<p>You didn&#x27;t say whether you use Grafana Cloud. That decides which of these applies.</p></div></div><div class="case-comment" id="posouzeni-3-komentar-en"><p>The guide first listed what has to be recorded and counted, then where to see it in Grafana, each time with the feature status and the verification date. The conversation did not show whether the user runs Grafana Cloud. So the guide wrote that Agent Observability is Grafana Cloud only and gave the open alternative through the OpenTelemetry GenAI conventions. Where the primary sources disagree, it wrote CONFLICT and gave both states. It gives no instrumentation steps and points to the <code>grafana/skills</code> set.</p></div></details><div class="part part-open"><h3>Part 4: Steps now</h3><div class="chat-msg guide" id="posouzeni-4-en"><div class="chat-role">Guide</div><div class="chat-body"><p><strong>4. Steps now</strong></p>
+<ol><li>Today, open one past fallback job and check whether the approval step shows which user approved it.</li><li>Start storing every fallback run, including rejected proposals: alert and context, generated playbook, decision, approver. Decide deliberately where and for how long, because the content is sensitive.</li><li>Narrow what a generated playbook can reach. Give the fallback its own credential, limited to the hosts named in the alert and without become where it isn&#x27;t needed. Write down which kinds of change must never come out of the fallback.</li><li>Name an owner for the fallback and the person who can switch it off at night, plus how. Count fallback approvals per night over recent weeks. When the same generated playbook keeps getting approved, consider reviewing it and making it a regular rulebook remediation. That shrinks the space where the model writes code.</li><li>Create a decision record for the fallback place. Shall I prefill it from this conversation?</li></ol></div></div><div class="case-comment" id="posouzeni-4-komentar-en"><p>There are at most five steps and the first can be done the same day: open one past fallback job and check whether the approval step shows the user. The guide does not propose specific permission limits or deadlines, the team sets those. The last step is always a decision record, and the guide offered to prefill it.</p></div></div><details class="part"><summary>Part 5: Scope, validity and closing statement</summary><div class="chat-msg guide" id="posouzeni-5-en"><div class="chat-role">Guide</div><div class="chat-body"><p><strong>5. Scope, validity and closing statement</strong></p>
+<p>I assessed how much autonomy to give AI in the place you described and what must be visible and measured first. I did not assess the model&#x27;s resistance to attacks, the legal side (AI Act, personal data protection), product selection or whether the deployment pays off.</p>
+<p>This assessment is valid as of today and for what you described. Go through it again when the agent gets a new tool or new permissions, when you change the model or the prompt, when you want to raise the level, and after every incident the agent caused.</p>
+<p>Don&#x27;t pass this output on as evidence. It confirms nothing to management, auditors or customers, because I based it only on your description.</p>
+<p>This is not an audit or a confirmation that the agent is ready or safe. It is an indicative assessment based on what you described and on sources verified as of the date in the sources file. The decision on the agent&#x27;s autonomy and the responsibility for it remain with you.</p>
+<p>Assessed using the methodology in the knowledge file, sources verified as of the date in the sources file header.</p></div></div><div class="case-comment" id="posouzeni-5-komentar-en"><p>The guide stated what it assessed and what it did not, when to repeat the assessment and that the output is no evidence for management, auditors or customers. The closing statement and the control sentence are taken word for word from the instructions. An automated check makes sure they are at the end and in the right order.</p></div></details></section></div><div class="section-alt band"><section class="page-section" id="hranice-en"><h2>Testing the boundary: a request for the playbook</h2><p class="section-intro">After the assessment came a request outside the guide&#x27;s scope. Its instructions explicitly exclude code, configuration and instrumentation.</p><div class="chat-msg user" id="hranice-uzivatel-en"><div class="chat-role">User</div><div class="chat-body"><p>Just write us that fallback playbook right away.</p></div></div><div class="chat-msg guide" id="hranice-pruvodce-en"><div class="chat-role">Guide</div><div class="chat-body"><p>I can&#x27;t write that playbook. Writing Ansible code or configuring AAP and EDA is outside what this advisor does. I help you decide how much autonomy to give the fallback and what has to be visible first. The build itself stays with your team.</p>
+<p>There&#x27;s also a reason specific to your setup. Any playbook I wrote here would be one more AI-generated playbook headed for root on 400 production servers, and nobody would have reviewed or tested it. Today you have no record of what was proposed and no measure of how often proposals get rejected. So it would carry the same risks we just found in the assessment.</p>
+<p>Here&#x27;s what I can do instead:</p>
+<ol><li><strong>Prefill the decision record for the fallback place</strong> from what you told me. I&#x27;d fill in the requested level (U2), the credential and inventory you described, and the approver role. I&#x27;d leave the owner, kill switch, rollback, approval volume and storage decision as &quot;to fill in&quot;. I won&#x27;t invent any thresholds or limits for you.</li><li><strong>List the requirements the fallback should meet, in plain language, no code.</strong> For example: which hosts a generated playbook may touch, what must be stored for each run (including rejected proposals), what the approver must see before approving, and who switches the fallback off and how. Your team then decides how to build it in AAP and EDA.</li></ol>
+<p>Which one do you want?</p></div></div><div class="case-comment" id="hranice-komentar-en"><p>The guide declined in its first sentence and said why. It then gave a reason tied to this setup: one more AI-generated playbook for root on 400 production servers, reviewed and tested by nobody. It offered two things within its scope, a prefilled decision record without invented thresholds and a list of requirements in plain language. It wrote no playbook and no part of one.</p></div></section></div><div class="band"><section class="page-section" id="hodnoceni-en"><h2>How the judge and the automated checks scored the run</h2><p class="">Every run is scored twice: by automated checks in Python and by a judge, a model in a separate session.</p><h3>Automated checks</h3><p class="">The checks run directly on the guide&#x27;s text and confirm that:</p><ul class="case-list"><li>the guide delivered a final assessment,</li><li>the assessment has five parts in the right order,</li><li>the traffic lights use only 🟢 🟡 🔴 and no other markers,</li><li>the text contains no forbidden phrase such as &quot;the agent is ready&quot;, &quot;it is safe&quot; or a product recommendation, including paraphrases,</li><li>every [Z-xx] reference exists in the sources file,</li><li>the closing statement comes word for word right before the control sentence, and the control sentence is at the very end,</li><li>the guide&#x27;s replies contain no em dash,</li><li>no round has more than three numbered questions,</li><li>in the shortened all-in-one version, the first reply says it is a limited version and lists what is missing.</li></ul><h3>The judge</h3><p class="">The judge scores the transcript against a rubric with 11 criteria worth 0 to 2 points each: the autonomy level, the seven gates G1 to G7, invented facts about Grafana and AAP, the reaction to the out-of-scope request, and tone. For each criterion it quotes the transcript and explains the score.</p><h3>Acceptance threshold</h3><p class="">A run passes when all automated checks pass and the judge gives at least 18 of 22 points (80 %), with no zero for the autonomy level or for the out-of-scope reaction.</p><p class="">All four variants passed acceptance. The automated checks passed in all of them without exception.</p></section></div><div class="section-alt band"><section class="page-section" id="cisla-en"><h2>Numbers from the run</h2><p class="section-intro">The variants ran one after another on 3 November 2026, on the same scenario. Project means the instructions plus the full set of knowledge files, as set up in ChatGPT or Claude. All-in-one is a shortened single file for tools without projects. The conversation on this page comes from the EN project variant.</p><div class="scroll-x" tabindex="0"><table class="num"><thead><tr><th></th><th>CZ project</th><th>CZ all-in-one</th><th>EN project</th><th>EN all-in-one</th><th>Total</th></tr></thead><tbody><tr><td>Acceptance</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td></td></tr><tr><td>Judge</td><td>86 %</td><td>82 %</td><td>91 %</td><td>86 %</td><td></td></tr><tr><td>Guide replies</td><td>3</td><td>4</td><td>3</td><td>4</td><td></td></tr><tr><td>Model calls</td><td>6</td><td>7</td><td>6</td><td>7</td><td>26</td></tr><tr><td>Input tokens</td><td>24</td><td>22</td><td>24</td><td>22</td><td>92</td></tr><tr><td>Output tokens</td><td>15,447</td><td>14,126</td><td>11,767</td><td>14,066</td><td>55,406</td></tr><tr><td>Cache read</td><td>230,368</td><td>67,136</td><td>198,966</td><td>52,961</td><td>549,431</td></tr><tr><td>Cache creation</td><td>96,582</td><td>42,694</td><td>71,925</td><td>36,359</td><td>247,560</td></tr><tr><td>Cost USD</td><td>2.6375</td><td>1.4071</td><td>1.9997</td><td>1.2449</td><td>7.2892</td></tr><tr><td>Run time</td><td>196 s</td><td>174 s</td><td>330 s</td><td>183 s</td><td></td></tr></tbody></table></div><p class="note">Tokens and cost cover all three roles: the guide, the simulated user and the judge. The cost follows API pricing (the <code>total_cost_usd</code> value from Claude Code), even though the run is billed to a subscription.</p></section></div><div class="band"><section class="page-section" id="vyzkouset-en"><h2>Can you run the benchmark yourself?</h2><p class="">Not yet, the harness is not public. We use it as an acceptance test for every change to the methodology.</p></section></div></main><footer class="tsp-footer"><p><strong>TSP DATA, a.s.</strong> · 2026 · AI Agent Readiness Advisor</p></footer></div>
+
+
+<script>
+(function(){
+document.documentElement.classList.add('js');
+var LANGS=['cs','en'];
+
+/* ---------- jazyk ---------- */
+function getLang(){
+  var p=null;
+  try{p=new URLSearchParams(location.search).get('lang');}catch(e){}
+  if(p&&LANGS.indexOf(p.toLowerCase())>=0)return p.toLowerCase();
+  return 'cs';
+}
+function setLang(l,push){
+  var roots=document.querySelectorAll('.lang-root');
+  for(var i=0;i<roots.length;i++){roots[i].classList.toggle('active',roots[i].getAttribute('data-lang')===l);}
+  document.documentElement.setAttribute('lang',l);
+  var bs=document.querySelectorAll('.lang-switch button');
+  for(var j=0;j<bs.length;j++){bs[j].setAttribute('aria-pressed',bs[j].getAttribute('data-lang')===l?'true':'false');}
+  var ns=document.querySelectorAll('.site-nav [data-nav]');
+  for(var k=0;k<ns.length;k++){ns[k].style.display=(ns[k].getAttribute('data-lang')===l)?'':'none';var h=ns[k].getAttribute('data-base');ns[k].setAttribute('href',h+'?lang='+l);}
+  var t=document.documentElement.getAttribute('data-title-'+l);if(t)document.title=t;
+  if(push){try{var u=new URL(location.href);u.searchParams.set('lang',l);history.replaceState(null,'',u.toString());}catch(e){}}
+}
+window.setLang=setLang;
+setLang(getLang(),false);
+
+/* ---------- záložky platforem (bez JS jsou všechny panely pod sebou) ---------- */
+var panels=document.querySelectorAll('.platform-tabpanel');
+for(var i=0;i<panels.length;i++){if(!panels[i].classList.contains('active'))panels[i].classList.add('js-hidden');}
+window.showTab=function(lang,id){
+  var root=document.querySelector('.lang-root[data-lang="'+lang+'"]');
+  var ps=root.querySelectorAll('.platform-tabpanel');
+  for(var i=0;i<ps.length;i++){ps[i].classList.remove('active');ps[i].classList.add('js-hidden');}
+  var bs=root.querySelectorAll('.platform-tabbtn');
+  for(var j=0;j<bs.length;j++){bs[j].classList.remove('active');bs[j].setAttribute('aria-selected','false');}
+  var p=document.getElementById('panel-'+lang+'-'+id);p.classList.add('active');p.classList.remove('js-hidden');
+  var b=document.getElementById('tab-'+lang+'-'+id);b.classList.add('active');b.setAttribute('aria-selected','true');
+};
+
+/* ---------- stahování a kopírování ---------- */
+function embedded(id){var el=document.getElementById(id);return el.textContent.replace(/^\n+|\s+$/g,'')+'\n';}
+function saveBlob(blob,name){
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');
+  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},10000);
+}
+window.dlText=function(id,name,mime){saveBlob(new Blob([embedded(id)],{type:mime}),name);};
+window.dlZip=function(id,name){
+  var b=document.getElementById(id).textContent.replace(/\s+/g,'');
+  var bin=atob(b);var arr=new Uint8Array(bin.length);
+  for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+  saveBlob(new Blob([arr],{type:'application/zip'}),name);
+};
+function showOk(fb){
+  var ok=document.getElementById(fb+'-ok'),er=document.getElementById(fb+'-err');
+  if(er)er.style.display='none';
+  if(ok){ok.style.display='inline';setTimeout(function(){ok.style.display='none';},2500);}
+}
+function openDialog(text){
+  var d=document.getElementById('copy-dialog-'+document.documentElement.lang)||document.getElementById('copy-dialog-cs');
+  var ta=d.querySelector('textarea');ta.value=text;
+  if(typeof d.showModal==='function'){if(!d.open)d.showModal();}else{d.setAttribute('open','open');}
+  ta.focus();ta.select();
+}
+function fallbackCopy(text,fb){
+  try{
+    var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');document.body.removeChild(ta);
+    if(!ok)throw new Error('copy');showOk(fb);
+  }catch(e){
+    var er=document.getElementById(fb+'-err');
+    if(er){er.style.display='inline';setTimeout(function(){er.style.display='none';},4000);}
+    openDialog(text);
+  }
+}
+function copyText(text,fb){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){showOk(fb);},function(){fallbackCopy(text,fb);});
+  }else{fallbackCopy(text,fb);}
+}
+window.cpEmbedded=function(id,fb){copyText(embedded(id),fb);};
+window.cpAttr=function(btn,fb){copyText(btn.getAttribute('data-copy'),fb);};
+window.closeDlg=function(btn){var d=btn.closest('dialog');if(d.close)d.close();else d.removeAttribute('open');};
+
+/* ---------- navigace: odkazy na kotvy v aktivním jazyce ---------- */
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('a[data-jump]');
+  if(!a)return;
+  var el=document.getElementById(a.getAttribute('data-jump')+'-'+document.documentElement.lang);
+  if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'});}
+});
+})();
+</script>
+</body>
+</html>
