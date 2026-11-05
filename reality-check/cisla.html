@@ -14,14 +14,14 @@
   -->
   <script>
     var PO_PREDNASCE = {
-      lide: 200,          /* skutečný počet lidí v sále */
-      minuty: 25,         /* naměřený čas v minutách, včetně dotazů */
-      radek: null         /* null = věta s odhadem; po přednášce např. "Naměřeno: 240 lidí a 27 minut včetně dotazů." */
+      lide: 100,          /* skutečný počet lidí v sále */
+      minuty: 1,         /* naměřený čas v minutách, včetně dotazů */
+      radek: "Naměřeno: 1 minuta od začátku přednášky do posledního kliknutí, v sále asi 100 lidí."         /* null = věta s odhadem; po přednášce např. "Naměřeno: 27 minut od začátku přednášky do posledního kliknutí, v sále asi 240 lidí." */
     };
     var PO_VYHODNOCENI = {
       roi: "Zatím jen náklad a hypotéza."   /* přepsat až po vyhodnocení výzvy */
     };
-    var NAKLAD_PRIPRAVA_CESTA = 21786;      /* 3 428 + 5 258 + 1 700 + 11 400 Kč */
+    var NAKLAD_PRIPRAVA_CESTA = 23165;      /* 3 428 + 5 258 + 1 700 + 9 826 + 2 953 Kč */
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -290,15 +290,16 @@
       <h2>Náklad této přednášky</h2>
       <p>Během přednášky běžel v rohu plátna graf nákladu. Příprava a cesta v něm byly od začátku a každou minutou přibýval čas sálu.</p>
       <!-- po_prednasce -->
-      <div class="strip hl" id="po-radek">Odhad pro 200 lidí a 25 minut. Skutečný počet lidí a naměřený čas doplníme po přednášce.</div>
+      <div class="strip hl" id="po-radek">Naměřeno: 1 minuta od začátku přednášky do posledního kliknutí, v sále asi 100 lidí.</div>
       <!-- /po_prednasce -->
       <div class="tw"><table><caption>Položky nákladu přednášky</caption><thead><tr><th class="">Položka</th><th class="">Jak jsme počítali</th><th class="r">Částka</th><th class="tg">Značka</th></tr></thead><tbody>
 <tr><td class="" data-l="Položka">Příprava: tokeny září a říjen</td><td class="" data-l="Jak jsme počítali">podle ceníku API, platíme předplatné a faktura se tím nezvýšila</td><td class="r" data-l="Částka">3 428 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
 <tr><td class="" data-l="Položka">Příprava: čas řečníka</td><td class="" data-l="Jak jsme počítali">4,95 h z výkazu a logů práce, spodní hranice, 8 500 Kč za MD</td><td class="r" data-l="Částka">5 258 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
 <tr><td class="" data-l="Položka">Příprava: tokeny srpen</td><td class="" data-l="Jak jsme počítali">dopočet z ceny za token naměřené od září</td><td class="r" data-l="Částka">≈ 1 700 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
-<tr><td class="" data-l="Položka">Cesta z Plzně do Brna a zpět</td><td class="" data-l="Jak jsme počítali">asi 590 km autem a šest hodin řízení po 8 500 Kč za MD</td><td class="r" data-l="Částka">≈ 11 400 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
-<tr><td class="" data-l="Položka">Čas publika</td><td class="" data-l="Jak jsme počítali"><!-- po_prednasce --><span data-po="lide">200</span><!-- /po_prednasce --> lidí × <!-- po_prednasce --><span data-po="minuty">25</span><!-- /po_prednasce --> min × 1 000 Kč za hodinu na člověka</td><td class="r" data-l="Částka"><!-- po_prednasce --><span data-po="publikum">83 333</span><!-- /po_prednasce --> Kč</td><td class="tg" data-l="Značka"><span class="est">expertní odhad</span></td></tr>
-<tr class="sum"><td class="" data-l="Položka">Náklad celkem</td><td class="" data-l="Jak jsme počítali">součet, značka nejslabšího vstupu</td><td class="r" data-l="Částka">≈ <!-- po_prednasce --><span data-po="celkem">105</span><!-- /po_prednasce --> tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Cesta vlakem z Plzně do Brna a zpět</td><td class="" data-l="Jak jsme počítali">jízdenky 795 Kč a 8,5 h ve vlaku po 8 500 Kč za MD</td><td class="r" data-l="Částka">≈ 9 800 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Ubytování v Brně, 2 noci</td><td class="" data-l="Jak jsme počítali">119,16 EUR podle kurzu ČNB z 30. 10. a poplatek 50 Kč</td><td class="r" data-l="Částka">2 953 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
+<tr><td class="" data-l="Položka">Čas publika</td><td class="" data-l="Jak jsme počítali"><!-- po_prednasce --><span data-po="lide">100</span><!-- /po_prednasce --> lidí × <!-- po_prednasce --><span data-po="minuty">1</span><!-- /po_prednasce --> min × 1 000 Kč za hodinu na člověka</td><td class="r" data-l="Částka"><!-- po_prednasce --><span data-po="publikum">1 667</span><!-- /po_prednasce --> Kč</td><td class="tg" data-l="Značka"><span class="est">expertní odhad</span></td></tr>
+<tr class="sum"><td class="" data-l="Položka">Náklad celkem</td><td class="" data-l="Jak jsme počítali">součet, značka nejslabšího vstupu</td><td class="r" data-l="Částka">≈ <!-- po_prednasce --><span data-po="celkem">25</span><!-- /po_prednasce --> tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
 </tbody></table></div>
     </div>
   </section>
@@ -310,7 +311,7 @@
         <div class="lab">Hypotéza přínosu: jeden zrušený zbytečný výdaj na AI</div>
         <div class="big">5 000 Kč měsíčně <span class="est">příklad</span></div>
         <div class="sub">60 000 Kč za rok <span class="est">příklad</span></div>
-        <div class="goal">Aby se náklad vrátil do roka: <!-- po_prednasce --><span data-po="vydaje">2 zrušené výdaje</span><!-- /po_prednasce --> <span class="est">příklad</span></div>
+        <div class="goal">Aby se náklad vrátil do roka: <!-- po_prednasce --><span data-po="vydaje">1 zrušený výdaj</span><!-- /po_prednasce --> <span class="est">příklad</span></div>
       </div>
       <p style="margin-top:14px">Někdo z účastníků díky přednášce najde zbytečný výdaj na AI za 5 000 Kč měsíčně a opravdu ho zruší. Za rok je to 60 000 Kč. Jestli se to stane, zatím nevíme.</p>
       <div class="strip big">Známe náklad, máme hypotézu přínosu, nemáme důkaz.</div>
