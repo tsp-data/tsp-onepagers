@@ -14,9 +14,9 @@
   -->
   <script>
     var PO_PREDNASCE = {
-      lide: 100,          /* skutečný počet lidí v sále */
-      minuty: 1,         /* naměřený čas v minutách, včetně dotazů */
-      radek: "Naměřeno: 1 minuta od začátku přednášky do posledního kliknutí, v sále asi 100 lidí."         /* null = věta s odhadem; po přednášce např. "Naměřeno: 27 minut od začátku přednášky do posledního kliknutí, v sále asi 240 lidí." */
+      lide: 60,          /* skutečný počet lidí v sále */
+      minuty: 20,         /* naměřený čas v minutách, včetně dotazů */
+      radek: "Naměřeno: 20 minut od začátku přednášky do posledního kliknutí, v sále asi 60 lidí."         /* null = věta s odhadem; po přednášce např. "Naměřeno: 27 minut od začátku přednášky do posledního kliknutí, v sále asi 240 lidí." */
     };
     var PO_VYHODNOCENI = {
       roi: "Zatím jen náklad a hypotéza."   /* přepsat až po vyhodnocení výzvy */
@@ -290,7 +290,7 @@
       <h2>Náklad této přednášky</h2>
       <p>Během přednášky běžel v rohu plátna graf nákladu. Příprava a cesta v něm byly od začátku a každou minutou přibýval čas sálu.</p>
       <!-- po_prednasce -->
-      <div class="strip hl" id="po-radek">Naměřeno: 1 minuta od začátku přednášky do posledního kliknutí, v sále asi 100 lidí.</div>
+      <div class="strip hl" id="po-radek">Naměřeno: 20 minut od začátku přednášky do posledního kliknutí, v sále asi 60 lidí.</div>
       <!-- /po_prednasce -->
       <div class="tw"><table><caption>Položky nákladu přednášky</caption><thead><tr><th class="">Položka</th><th class="">Jak jsme počítali</th><th class="r">Částka</th><th class="tg">Značka</th></tr></thead><tbody>
 <tr><td class="" data-l="Položka">Příprava: tokeny září a říjen</td><td class="" data-l="Jak jsme počítali">podle ceníku API, platíme předplatné a faktura se tím nezvýšila</td><td class="r" data-l="Částka">3 428 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
@@ -298,8 +298,8 @@
 <tr><td class="" data-l="Položka">Příprava: tokeny srpen</td><td class="" data-l="Jak jsme počítali">dopočet z ceny za token naměřené od září</td><td class="r" data-l="Částka">≈ 1 700 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
 <tr><td class="" data-l="Položka">Cesta vlakem z Plzně do Brna a zpět</td><td class="" data-l="Jak jsme počítali">jízdenky 795 Kč a 8,5 h ve vlaku po 8 500 Kč za MD</td><td class="r" data-l="Částka">≈ 9 800 Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
 <tr><td class="" data-l="Položka">Ubytování v Brně, 2 noci</td><td class="" data-l="Jak jsme počítali">119,16 EUR podle kurzu ČNB z 30. 10. a poplatek 50 Kč</td><td class="r" data-l="Částka">2 953 Kč</td><td class="tg" data-l="Značka"><span class="est doc">doloženo</span></td></tr>
-<tr><td class="" data-l="Položka">Čas publika</td><td class="" data-l="Jak jsme počítali"><!-- po_prednasce --><span data-po="lide">100</span><!-- /po_prednasce --> lidí × <!-- po_prednasce --><span data-po="minuty">1</span><!-- /po_prednasce --> min × 1 000 Kč za hodinu na člověka</td><td class="r" data-l="Částka"><!-- po_prednasce --><span data-po="publikum">1 667</span><!-- /po_prednasce --> Kč</td><td class="tg" data-l="Značka"><span class="est">expertní odhad</span></td></tr>
-<tr class="sum"><td class="" data-l="Položka">Náklad celkem</td><td class="" data-l="Jak jsme počítali">součet, značka nejslabšího vstupu</td><td class="r" data-l="Částka">≈ <!-- po_prednasce --><span data-po="celkem">25</span><!-- /po_prednasce --> tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
+<tr><td class="" data-l="Položka">Čas publika</td><td class="" data-l="Jak jsme počítali"><!-- po_prednasce --><span data-po="lide">60</span><!-- /po_prednasce --> lidí × <!-- po_prednasce --><span data-po="minuty">20</span><!-- /po_prednasce --> min × 1 000 Kč za hodinu na člověka</td><td class="r" data-l="Částka"><!-- po_prednasce --><span data-po="publikum">20 000</span><!-- /po_prednasce --> Kč</td><td class="tg" data-l="Značka"><span class="est">expertní odhad</span></td></tr>
+<tr class="sum"><td class="" data-l="Položka">Náklad celkem</td><td class="" data-l="Jak jsme počítali">součet, značka nejslabšího vstupu</td><td class="r" data-l="Částka">≈ <!-- po_prednasce --><span data-po="celkem">43</span><!-- /po_prednasce --> tis. Kč</td><td class="tg" data-l="Značka"><span class="est">odhad</span></td></tr>
 </tbody></table></div>
     </div>
   </section>
