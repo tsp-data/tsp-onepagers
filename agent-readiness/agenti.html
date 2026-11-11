@@ -29,6 +29,10 @@ html:not(.js) .lang-root[data-lang="cs"]{display:block}
 .js-only{display:none}
 html.js .js-only{display:revert}
 html.js .js-only.inline-flex{display:inline-flex}
+html:not(.js) .js-only{display:none!important}
+/* bez JS je hlavní akce karty odkaz Stáhnout přímo */
+html:not(.js) .file-fallback-link{margin-top:.6rem}
+html:not(.js) .file-fallback-link a{display:block;text-align:center;background:var(--tsp-red);color:#fff;border-radius:6px;padding:.8rem 1rem;font-size:1rem;font-weight:700;text-decoration:none}
 
 /* ===== HLAVIČKA ===== */
 .tsp-header{background:var(--tsp-white);border-bottom:3px solid var(--tsp-red);padding:.75rem 2rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
@@ -65,7 +69,7 @@ html.js .js-only.inline-flex{display:inline-flex}
 .btn-primary:hover{background:#c42212}
 .btn-secondary{background:transparent;color:#fff;border-color:#fff}
 .btn-secondary:hover{background:#fff;color:var(--tsp-dark)}
-.btn:focus-visible,.btn-copy:focus-visible,.platform-tabbtn:focus-visible,.lang-switch button:focus-visible{outline:2px solid var(--tsp-teal);outline-offset:2px}
+.btn:focus-visible,.btn-copy:focus-visible,details.fold>summary:focus-visible,details.platform>summary:focus-visible,details.subfold>summary:focus-visible,details.faq-item>summary:focus-visible,.mail-link:focus-visible,.lang-switch button:focus-visible{outline:2px solid var(--tsp-teal);outline-offset:2px}
 
 /* ===== SEKCE ===== */
 .page-section{max-width:960px;margin:0 auto;padding:2.5rem 1rem}
@@ -140,16 +144,8 @@ table.gt td:first-child{font-weight:600}
 .other-files .of-btns{display:flex;gap:.4rem;flex-wrap:wrap}
 
 /* platformy */
-.platform-tabnav{display:flex;flex-wrap:wrap;gap:.25rem;border-bottom:1px solid var(--tsp-light);margin:1.25rem 0}
-.platform-tabbtn{background:none;border:none;border-bottom:3px solid transparent;padding:.55rem 1rem;font-size:.95rem;font-weight:500;font-family:var(--font-primary);color:var(--tsp-blue);cursor:pointer}
-.platform-tabbtn:hover{color:var(--tsp-dark)}
-.platform-tabbtn.active{color:var(--tsp-dark);border-bottom-color:var(--tsp-red);font-weight:700}
-.platform-tabpanel.js-hidden{display:none}
-.platform-tabpanel>.tsp-card{margin-bottom:1rem}
 .platform-requirements{background:var(--tsp-offwhite);border-radius:6px;padding:.85rem 1rem;font-size:.92rem;color:var(--tsp-blue)}
 .platform-requirements b,.mini-test b{display:inline}
-.variant-heading{margin:1.5rem 0 .5rem;padding-top:1rem;border-top:1px dashed var(--tsp-light);font-size:1.05rem;font-weight:700}
-.platform-tabpanel .tsp-card>.variant-heading:first-child{margin-top:0;padding-top:0;border-top:none}
 .steps-list{list-style:none;counter-reset:step;margin:1rem 0}
 .steps-list li{position:relative;padding:.6rem 0 .6rem 2.4rem;border-bottom:1px solid var(--tsp-light);font-size:.95rem;overflow-wrap:anywhere}
 .steps-list li:last-child{border-bottom:none}
@@ -261,13 +257,14 @@ dialog#copy-dialog button{background:var(--tsp-red);color:#fff;border:none;borde
   .brand-lockup{gap:.6rem}
   .header-right{margin-left:0;width:100%;justify-content:space-between}
   .tsp-hero{padding:2.5rem 1rem 2.5rem}
+  .hero-onepager{padding:1.5rem 1rem 2rem}
+  .hero-onepager .hero-meta{margin-bottom:1.1rem}
   .hero-inner{padding-left:0}
   .tsp-hero::before{width:6%;opacity:.9}
   .page-section{padding:1.75rem 1rem}
   .page-section h2{font-size:1.4rem}
   .btn{padding:.7rem 1.1rem}
   .hero-btns .btn{flex:1 1 100%;justify-content:center}
-  .platform-tabbtn{padding:.5rem .6rem;font-size:.88rem}
   /* tabulka Grafany jako karty */
   table.gt thead{display:none}
   table.gt,table.gt tbody,table.gt tr,table.gt td{display:block;width:100%}
@@ -278,12 +275,12 @@ dialog#copy-dialog button{background:var(--tsp-red);color:#fff;border:none;borde
 
 /* ===== TISK ===== */
 @media print{
-  .no-print,.platform-tabnav,.site-nav,.lang-switch{display:none!important}
-  .platform-tabpanel,.platform-tabpanel.js-hidden{display:block!important;margin-bottom:1.5rem}
-  .platform-tabpanel::before{content:attr(data-print-label);display:block;font-weight:700;font-size:1.2rem;margin-bottom:.5rem}
-  details.faq-item,.tsp-card,.file-card,.flow-box,table.gt tr,.wireframe,.quote-final,.mini-test{break-inside:avoid}
-  details.faq-item>*:not(summary){display:block!important}
-  details.faq-item summary::after{display:none}
+  .no-print,.site-nav,.lang-switch{display:none!important}
+  /* zavřený <details> se v Chromiu jinak netiskne; JS na beforeprint navíc otevře všechno (viz JS) */
+  details::details-content{content-visibility:visible;display:block}
+  details.faq-item,.tsp-card,.file-card,.flow-box,table.gt tr,.wireframe,.quote-final,.mini-test,.demo-msg{break-inside:avoid}
+  details.fold,details.platform,details.subfold{break-inside:auto}
+  details>summary::after{display:none}
   body{background:#fff}
   .tsp-hero,.tsp-footer,table.gt th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
@@ -352,6 +349,59 @@ details.faq-item.scenar .scenar-body .note{font-size:.9rem}
   .site-nav a{padding:.35rem .5rem;font-size:.85rem}
   .header-right{gap:.5rem}
 }
+
+/* ===== onepager: souhrn, instalace, sbalené bloky ===== */
+.hero-hook{font-size:clamp(1.25rem,3.6vw,1.75rem);font-weight:600;line-height:1.25;max-width:34ch;margin-bottom:1rem;color:#fff}
+.hero-event{margin:1.25rem 0 0}
+.demo{margin:0 0 .5rem}
+.demo-badge{display:inline-block;font-family:var(--font-mono);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:var(--color-warning);color:var(--tsp-dark);border-radius:3px;padding:2px 9px;margin-bottom:.4rem}
+.demo-msg{border-radius:10px;padding:.8rem 1.1rem;margin:.6rem 0;max-width:100%;border:1px solid var(--tsp-light)}
+.demo-msg.user{background:#E3EEF1;border-left:5px solid var(--tsp-teal);margin-right:8%}
+.demo-msg.guide{background:#fff;border-left:5px solid var(--tsp-red);margin-left:8%;box-shadow:var(--shadow-card)}
+.demo-msg .chat-role{font-family:var(--font-mono);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+.demo-msg.user .chat-role{color:var(--tsp-blue)}
+.demo-msg.guide .chat-role{color:var(--tsp-red)}
+.page-section .demo-msg p{margin:0 0 .5rem;font-size:.95rem;max-width:none}
+.page-section .demo-msg p:last-child{margin-bottom:0}
+.demo-caption{margin-top:.25rem}
+.boundary{font-weight:600;border-left:4px solid var(--color-warning);padding-left:.9rem}
+.mobile-note .mail-link{font-weight:600;white-space:nowrap}
+.install-step{margin-top:2.25rem}
+.page-section .install-step>h3{font-size:1.35rem;margin:0 0 .6rem}
+.page-section h4{font-size:1.05rem;font-weight:600;margin:1.25rem 0 .4rem;overflow-wrap:anywhere}
+.tsp-card h4{margin:0 0 .4rem;font-size:1.05rem}
+.file-card h4{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:0 0 .5rem;font-size:1.05rem}
+p.tight{margin-bottom:.25rem}
+.podrobnosti-head{padding-bottom:.5rem}
+.fold-section{padding-top:0;padding-bottom:.5rem}
+.fold-section:last-child{padding-bottom:2.5rem}
+details.fold,details.platform,details.subfold{background:#fff;border:1px solid var(--tsp-light);border-radius:6px;margin:.5rem 0}
+.section-alt details.fold{background:var(--tsp-offwhite)}
+details.platform[open],details.fold[open]{border-color:var(--tsp-blue)}
+details.fold>summary,details.platform>summary,details.subfold>summary{display:block;cursor:pointer;list-style:none;position:relative;padding:.9rem 2.6rem .9rem 1.1rem;font-weight:600}
+details.fold>summary::-webkit-details-marker,details.platform>summary::-webkit-details-marker,details.subfold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after,details.platform>summary::after,details.subfold>summary::after{content:'';position:absolute;right:1.1rem;top:1.35rem;width:.5rem;height:.5rem;border-right:2px solid var(--tsp-blue);border-bottom:2px solid var(--tsp-blue);transform:rotate(45deg);transition:transform .15s}
+details.fold[open]>summary::after,details.platform[open]>summary::after,details.subfold[open]>summary::after{transform:rotate(-135deg);top:1.6rem}
+.page-section details.fold>summary h2,.page-section details.fold>summary h3{margin:0;font-size:1.15rem;line-height:1.3}
+.fold-note{display:block;font-weight:400;font-size:.92rem;color:var(--tsp-blue);margin-top:.3rem}
+.plat-name{display:block;font-weight:700;font-size:1.05rem}
+.fold-body{padding:0 1.1rem 1.1rem}
+details.subfold{background:var(--tsp-offwhite);margin:1rem 0}
+details.subfold>summary{font-weight:600;font-size:.95rem;padding:.7rem 2.6rem .7rem 1rem}
+details.subfold>summary::after{top:1.1rem}
+details.subfold[open]>summary::after{top:1.3rem}
+.platform-list{margin:1rem 0}
+.dr-box details.fold{background:transparent;border:none;margin:0}
+.dr-box details.fold>summary{padding:0 2.6rem 0 0}
+.dr-box details.fold>summary::after{right:.2rem;top:.7rem}
+.dr-box details.fold[open]>summary::after{top:.9rem}
+.dr-box .fold-body{padding:1rem 0 0}
+.demo-msg.bench{margin-bottom:.5rem}
+@media (max-width:700px){
+  .demo-msg.user{margin-right:0}
+  .demo-msg.guide{margin-left:0}
+}
+@media print{.fold-note{display:block}}
 </style>
 </head>
 <body>
@@ -423,19 +473,6 @@ function setLang(l,push){
 window.setLang=setLang;
 setLang(getLang(),false);
 
-/* ---------- záložky platforem (bez JS jsou všechny panely pod sebou) ---------- */
-var panels=document.querySelectorAll('.platform-tabpanel');
-for(var i=0;i<panels.length;i++){if(!panels[i].classList.contains('active'))panels[i].classList.add('js-hidden');}
-window.showTab=function(lang,id){
-  var root=document.querySelector('.lang-root[data-lang="'+lang+'"]');
-  var ps=root.querySelectorAll('.platform-tabpanel');
-  for(var i=0;i<ps.length;i++){ps[i].classList.remove('active');ps[i].classList.add('js-hidden');}
-  var bs=root.querySelectorAll('.platform-tabbtn');
-  for(var j=0;j<bs.length;j++){bs[j].classList.remove('active');bs[j].setAttribute('aria-selected','false');}
-  var p=document.getElementById('panel-'+lang+'-'+id);p.classList.add('active');p.classList.remove('js-hidden');
-  var b=document.getElementById('tab-'+lang+'-'+id);b.classList.add('active');b.setAttribute('aria-selected','true');
-};
-
 /* ---------- stahování a kopírování ---------- */
 function embedded(id){var el=document.getElementById(id);return el.textContent.replace(/^\n+|\s+$/g,'')+'\n';}
 function saveBlob(blob,name){
@@ -481,12 +518,42 @@ window.cpEmbedded=function(id,fb){copyText(embedded(id),fb);};
 window.cpAttr=function(btn,fb){copyText(btn.getAttribute('data-copy'),fb);};
 window.closeDlg=function(btn){var d=btn.closest('dialog');if(d.close)d.close();else d.removeAttribute('open');};
 
-/* ---------- navigace: odkazy na kotvy v aktivním jazyce ---------- */
+/* ---------- navigace: kotvy a odkazy otevřou sbalené bloky ---------- */
+function reveal(el){
+  for(var p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}
+  var f=el.querySelector&&el.querySelector(':scope > details.fold, :scope > .dr-box > details.fold');if(f)f.open=true;
+}
 document.addEventListener('click',function(e){
   var a=e.target.closest&&e.target.closest('a[data-jump]');
   if(!a)return;
   var el=document.getElementById(a.getAttribute('data-jump')+'-'+document.documentElement.lang);
-  if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth'});}
+  if(el){e.preventDefault();reveal(el);el.scrollIntoView({behavior:'smooth'});try{history.replaceState(null,'','#'+el.id);}catch(x){}}
+});
+function fromHash(){
+  var id=location.hash.slice(1);var el=id&&document.getElementById(id);
+  var root=el&&el.closest&&el.closest('.lang-root');
+  if(el&&(!root||root.classList.contains('active'))){reveal(el);el.scrollIntoView();}
+}
+window.addEventListener('hashchange',fromHash);fromHash();
+
+/* ---------- akordeon platforem: po otevření posun titulku do zorného pole ---------- */
+var printing=false,opened=[];
+document.querySelectorAll('details.platform').forEach(function(d){
+  d.addEventListener('toggle',function(){if(d.open&&!printing)d.querySelector('summary').scrollIntoView({block:'nearest'});});
+});
+
+/* ---------- tisk: otevřít všechny <details>, exkluzivní akordeon (atribut name) dočasně vypnout ---------- */
+window.addEventListener('beforeprint',function(){
+  printing=true;opened=[];
+  document.querySelectorAll('details').forEach(function(d){
+    if(d.hasAttribute('name')){d.setAttribute('data-name',d.getAttribute('name'));d.removeAttribute('name');}
+    if(!d.open){d.open=true;opened.push(d);}
+  });
+});
+window.addEventListener('afterprint',function(){
+  opened.forEach(function(d){d.open=false;});
+  document.querySelectorAll('details[data-name]').forEach(function(d){d.setAttribute('name',d.getAttribute('data-name'));d.removeAttribute('data-name');});
+  printing=false;opened=[];
 });
 })();
 </script>
